@@ -1,0 +1,12 @@
+#!/usr/bin/python3
+# path to python
+
+#!/usr/bin/env python3
+# this is more universal path
+
+###
+# This is a executable script.
+# To run must enter the command in the terminal: chmod +x name
+###
+
+import this
