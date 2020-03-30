@@ -42,18 +42,18 @@ print(some_text+"\n")
 
 # method find, return index or -1 if not find
 print(some_text.find("th"))
-# method to replace the slice another string
-print(some_text.replace("me", "r"), "\n")
+# method to replace the slice another string, how much to replace
+print(some_text.replace("me", "r", 1), "\n")
 
-another_text = "aaa,bbb,cccc,dd"
+another_text = "aaa,bbb,cccc,dd\n"
 # split string into list by delimiter
 print(another_text.split(","))
 # to uppercase, or to lowercase
 print(some_text.upper(), some_text.lower())
 # is number, or is a string
 print(some_text.isdigit(), some_text.isalpha())
-# deletes the whitespaces rsplit/lsplit/split - right/left/both
-print(some_text.rsplit())
+# deletes the whitespaces rstrip/lstrip/strip - right/left/both
+print(another_text.rstrip())
 # format replace {}
 print("{} and {}".format("cheese", "ham"))
 print("{1} and {0}".format("cheese", "ham"), "\n")
@@ -63,7 +63,7 @@ print(dir(some_text), "\n")
 # display information about method
 # help(some_text.replace)
 
-# \n-new line \t-tab \r-carriage return
+# \n-new line \t-tab \r-carriage return \a-bell \b-backspace
 another_text = "A\tB\nC\rD"
 print(another_text)
 # ord return value of ascii
@@ -236,7 +236,12 @@ print(data)
 
 # string to set
 some_set = set('something')
-some_set_check = {'a', 'b', 'e', 't', 'h', 'i', 'j'}
+some_set_check = {
+    'a', 'b', 
+    'e', 't', 
+    'h', 'i', 
+    'j'
+    }
 # part of the common
 print(some_set & some_set_check)
 # sum of both set
@@ -257,12 +262,26 @@ print(some_decimal+1)
 # set the precision
 decimal.getcontext().prec = 2
 print(decimal.Decimal('1.00')/decimal.Decimal('3.00'))
+# set the local precision
+with decimal.localcontext() as ctx:
+    ctx.prec = 6
+    print(decimal.Decimal('1')/decimal.Decimal(str(3)))
+
+print(decimal.Decimal('1')/decimal.Decimal('3'))
 
 # advanced fractions
 from fractions import Fraction
 some_fractions = Fraction(2, 3)
 print(some_fractions + 1)
-print(some_fractions + Fraction(1, 2))
+print(some_fractions + Fraction('1.5'))
+# other method to create fractions
+some_fractions = Fraction.from_float(1.75)
+some_fractions = Fraction(*(1.75).as_integer_ratio())
+# convert to float
+print(float(some_fractions))
+# simplification to the nearest fraction good to big number
+some_fractions.limit_denominator(10)
+print(some_fractions)
 
 ###
 # other type and checks type
