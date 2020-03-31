@@ -211,7 +211,7 @@ print(some_tuple.index(3))
 ###
 
 # create and open file to write
-some_file = open('1/data.txt', 'w')
+some_file = open('basics/data.txt', 'w')
 # write something to file
 some_file.write('Hello,\n')
 some_file.write('Kamil.\n')
@@ -219,16 +219,12 @@ some_file.write('Kamil.\n')
 some_file.close()
 
 # open file to read
-some_file = open('1/data.txt', 'r')
+some_file = open('basics/data.txt', 'r')
 # read all data from file, type is always string
 some_text = some_file.read()
 
 print(some_text)
 some_file.close()
-
-# open a binary file and read all and close
-data = open('1/data.bin', 'rb').read()
-print(data)
 
 ###
 # sets

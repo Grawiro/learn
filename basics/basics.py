@@ -38,7 +38,7 @@ import os
 # shows files and directories in the current directory
 print(os.listdir(), "\n")
 # run the file
-exec(open('1/file_to_import.py').read())
+exec(open('file_to_import.py').read())
 print()
 
 ###
