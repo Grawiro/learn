@@ -1,0 +1,32 @@
+### Plik: b.py
+
+def spam(text):
+   print(text, 'mielonka')
+
+
+
+
+### Plik: a.py
+
+import b
+b.spam('gumby')
+
+
+
+# UWAGA: opisane, ale nie pokazane w książce
+C:\misc> a.py
+gumby mielonka
+
+
+
+### Plik: C:\Python30\pydirs.pth
+c:\pycode\utilities
+d:\pycode\package1
+
+
+
+>>> import sys
+>>> sys.path
+['', 'C:\\users', 'C:\\Windows\\system32\\python30.zip', 'c:\\Python30\\DLLs', 
+'c:\\Python30\\lib', 'c:\\Python30\\lib\\plat-win', 'c:\\Python30', 
+'C:\\Users\\Mark', 'c:\\Python30\\lib\\site-packages']

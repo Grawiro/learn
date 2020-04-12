@@ -1,0 +1,301 @@
+C:\misc> C:\Python25\python
+>>> myexc = "Mój łańcuch znaków wyjątku"              # Czy kiedykolwiek byliśmy tacy młodzi?
+>>> try:
+...    raise myexc
+... except myexc:
+...    print('przechwycony')
+...
+przechwycony
+
+
+
+
+### Plik: classexc.py
+
+class General(Exception): pass
+class Specific1(General): pass
+class Specific2(General): pass
+
+def raiser0():
+   X = General()                             # Zgłoszenie instancji klasy nadrzędnej
+   raise X
+
+def raiser1():
+   X = Specific1()                           # Zgłoszenie instancji klasy podrzędnej
+   raise X
+
+def raiser2():
+   X = Specific2()                           # Zgłoszenie instancji innej klasy podrzędnej
+   raise X
+
+for func in (raiser0, raiser1, raiser2):
+   try:
+      func()
+   except General:                           # Dopasowanie General lub którejś z jej podklas
+      import sys
+      print('przechwycono:', sys.exc_info()[0])
+
+C:\python30> python classexc.py
+przechwycono: <class '__main__.General'>
+przechwycono: <class '__main__.Specific1'>
+przechwycono: <class '__main__.Specific2'>
+
+
+
+
+class General(Exception): pass
+class Specific1(General): pass
+class Specific2(General): pass
+
+def raiser0(): raise General()
+def raiser1(): raise Specific1()
+def raiser2(): raise Specific2()
+
+for func in (raiser0, raiser1, raiser2):
+   try:
+      func()
+   except General as X:                              # X to zgłoszona instancja
+      print('przechwycono:', X.__class__)            # To samo co sys.exc_info()[0]
+
+
+
+
+try:
+   func()
+except (General, Specific1, Specific2):            # Przechwycenie dowolnego z tych wyjątków
+   ...
+
+
+
+
+# Plik mathlib.py
+
+class Divzero(Exception): pass
+class Oflow(Exception): pass
+
+def func():
+   ...
+   raise Divzero()
+
+
+
+
+# Plik mathlib.py
+
+class Divzero(Exception): pass
+class Oflow(Exception): pass
+
+def func():
+   ...
+   raise Divzero()
+
+
+
+
+# Plik mathlib.py
+
+class Divzero(Exception): pass
+class Oflow(Exception): pass
+class Uflow(Exception): pass
+
+
+
+
+# Plik client.py
+
+try:
+   mathlib.func(...)
+except (mathlib.Divzero, mathlib.Oflow, mathlib.Uflow):
+   ...zgłoszenie i poradzenie sobie z wyjątkiem...
+
+
+
+
+# Plik client.py
+
+try:
+   mathlib.func(...)
+except:                                      # Przechwytywanie tutaj wszystkiego
+   ...zgłoszenie i poradzenie sobie z wyjątkiem...
+
+
+
+
+# Plik mathlib.py
+
+class NumErr(Exception): pass
+class Divzero(NumErr): pass
+class Oflow(NumErr): pass
+...
+def func():
+   ...
+   raise DivZero()
+
+
+
+
+# Plik client.py
+
+import mathlib
+...
+try:
+   mathlib.func(...)
+except mathlib.NumErr:
+   ...zgłoszenie i poradzenie sobie z wyjątkiem...
+
+
+
+
+# Plik mathlib.py
+
+...
+class Uflow(NumErr): pass
+
+
+
+
+>>> import exceptions                   # Tylko w Pythonie 2.X
+>>> help(exceptions)
+
+
+
+try:
+   action()
+except Exception:
+   ...obsługa wszystkich wyjątków aplikacji...
+else:
+   ...obsługa przypadków bez wyjątków...
+
+
+
+
+>>> raise IndexError                         # To samo co IndexError() — brak argumentów
+Traceback (most recent call last):
+   File "<stdin>", line 1, in <module>
+IndexError
+
+>>> raise IndexError('mielonka')              # Argument konstruktora dołączony i wyświetlony
+Traceback (most recent call last):
+   File "<stdin>", line 1, in <module>
+IndexError: mielonka
+
+>>> I = IndexError('mielonka')                # Dostępny w atrybucie obiektu
+>>> I.args
+('mielonka',)
+
+
+
+
+>>> class E(Exception): pass
+...
+>>> try:
+...    raise E('mielonka')
+... except E as X:
+...    print(X, X.args)                       # Wyświetla i zapisuje argumenty konstruktora
+...
+mielonka ('mielonka',)
+>>> try:
+...    raise E('mielonka', 'jajka', 'szynka')
+... except E as X:
+...    print(X, X.args)
+...
+('mielonka', 'jajka', 'szynka') ('mielonka', 'jajka', 'szynka')
+
+
+
+
+>>> class MyBad(Exception): pass
+...
+>>> try:
+...    raise MyBad('Przepraszam -- mój błąd!')
+... except MyBad as X:
+...    print(X)
+...
+Przepraszam -- mój błąd!
+
+
+
+
+>>> raise MyBad('Przepraszam -- mój błąd!')
+Traceback (most recent call last):
+   File "<stdin>", line 1, in <module>
+__main__.MyBad: Przepraszam -- mój błąd!
+
+
+
+>>> class MyBad(Exception):
+...    def __str__(self):
+...       return 'Zawsze patrz na życie z humorem...'
+...
+>>> try:
+...    raise MyBad()
+... except MyBad as X:
+...    print(X)
+...
+Zawsze patrz na życie z humorem...
+
+>>> raise MyBad()
+Traceback (most recent call last):
+   File "<stdin>", line 1, in <module>
+__main__.MyBad: Zawsze patrz na życie z humorem...
+
+
+
+
+>>> class FormatError(Exception):
+...    def __init__(self, line, file):
+...       self.line = line
+...       self.file = file
+...
+>>> def parser():                               
+...    raise FormatError(42, file='spam.txt')     # Kiedy znaleziony zostanie błąd
+...
+>>> try:
+...    parser()
+... except FormatError as X:
+...    print('Błąd w', X.file, X.line)
+...
+Błąd w spam.txt 42
+
+
+
+
+>>> class FormatError(Exception): pass            # Odziedziczony konstruktor
+...
+>>> def parser():
+...    raise FormatError(42, 'spam.txt')          # Słowa kluczowe nie są dozwolone!
+...
+>>> try:
+...    parser()
+... except FormatError as X:
+...    print('Błąd w:', X.args[0], X.args[1])     # Nie jest specyficzne dla tej aplikacji
+...
+Błąd w: 42 spam.txt
+
+
+
+
+### Plik: parse.py
+
+class FormatError(Exception):
+   logfile = 'formaterror.txt'
+   def __init__(self, line, file):
+      self.line = line
+      self.file = file
+   def logerror(self):
+      log = open(self.logfile, 'a')
+      print('Błąd w', self.file, self.line, file=log)
+
+def parser():
+   raise FormatError(40, 'spam.txt')
+
+try:
+   parser()
+except FormatError as exc:
+   exc.logerror()
+
+
+
+C:\misc> C:\Python30\python parse.py
+C:\misc> type formaterror.txt
+Błąd w spam.txt 40

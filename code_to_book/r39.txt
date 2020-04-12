@@ -1,0 +1,775 @@
+class Extras:
+   def extra(self, args):               # Normalne dziedziczenie: zbyt statyczne
+      ...
+
+class Client1(Extras): ...              # Klasy Client dziedziczą dodatkowe metody
+class Client2(Extras): ...
+class Client3(Extras): ...
+
+X = Client1()                           # Utworzenie instancji
+X.extra()                               # Wykonanie dodatkowych metod
+
+
+
+
+def extra(self, arg): ...
+
+class Client1: ...                      # Klasa Client rozszerza: zbyt rozdrobnione
+if required():
+   Client1.extra = extra
+
+class Client2: ...
+if required():
+   Client2.extra = extra
+
+class Client3: ...
+if required():
+   Client3.extra = extra
+
+X = Client1()
+X.extra()
+
+
+
+
+def extra(self, arg): ...
+
+def extras(Class):                      # Funkcja zarządzająca: zbyt ręczna
+   if required():
+      Class.extra = extra
+
+class Client1: ...
+extras(Client1)
+
+class Client2: ...
+extras(Client2)
+
+class Client3: ...
+extras(Client3)
+
+X = Client1()
+X.extra()
+
+
+
+
+def extra(self, arg): ...
+
+class Extras(type):
+   def __init__(Class, classname, superclasses, attributedict):
+      if required():
+         Class.extra = extra
+
+class Client1(metaclass=Extras): ...    # Jedynie deklaracja metaklasy
+class Client2(metaclass=Extras): ...    # Klasa Client jest instancją metaklasy
+class Client3(metaclass=Extras): ...
+
+X = Client1()                           # X jest instancją klasy Client1
+X.extra()
+
+
+
+
+def extra(self, arg): ...
+
+def extras(Class):
+   if required():
+      Class.extra = extra
+   return Class
+
+class Client1: ...
+Client1 = extras(Client1)
+
+class Client2: ...
+Client2 = extras(Client2)
+
+class Client3: ...
+Client3 = extras(Client3)
+
+X = Client1()
+X.extra()
+
+
+
+
+def extra(self, arg): ...
+
+def extras(Class):
+   if required():
+      Class.extra = extra
+   return Class
+
+@extras
+class Client1: ...             # Client1 = extras(Client1)
+
+@extras
+class Client2: ...             # Ponownie dowiązuje klasę niezależnie od instancji
+
+@extras
+class Client3: ...
+
+X = Client1()                  # Tworzy instancję rozszerzonej klasy
+X.extra()                      # X jest instancją oryginalnej klasy Client1
+
+
+
+
+C:\misc> c:\python30\python
+>>> type([])                            # W 3.0 lista jest instancją typu list
+<class 'list'>
+>>> type(type([]))                      # Dla list typem jest klasa type
+<class 'type'>
+
+>>> type(list)                          # To samo, ale z nazwami typów
+<class 'type'>
+>>> type(type)                          # Typem type jest type: szczyt hierarchii
+<class 'type'>
+
+
+
+
+C:\misc> c:\python26\python
+>>> type([])                            # W 2.6 type jest czymś nieco innym
+<type 'list'>
+>>> type(type([]))
+<type 'type'>
+
+>>> type(list)
+<type 'type'>
+>>> type(type)
+<type 'type'>
+
+
+
+
+C:\misc> c:\python30\python
+>>> class C: pass                 # Obiekt klasy z 3.0 (nowy styl)
+...
+>>> X = C()                       # Obiekt instancji klasy
+
+>>> type(X)                       # Instancja jest instancją klasy
+<class '__main__.C'>
+>>> X.__class__                   # Klasa instancji
+<class '__main__.C'>
+
+>>> type(C)                       # Klasa jest instancją type
+<class 'type'>
+>>> C.__class__                   # Klasa klasy C to type
+<class 'type'>
+
+
+
+
+C:\misc> c:\python26\python
+>>> class C(object): pass         # W klasach w nowym stylu z 2.6
+...                               # także klasy mają klasę
+>>> X = C()
+
+>>> type(X)
+<class '__main__.C'>
+>>> type(C)
+<type 'type'>
+
+>>> X.__class__
+<class '__main__.C'>
+>>> C.__class__
+<type 'type'>
+
+
+
+
+C:\misc> c:\python26\python
+>>> class C: pass                 # W tradycyjnych klasach z 2.6
+...                               # klasy same nie mają klasy
+>>> X = C()
+
+>>> type(X)
+<type 'instance'>
+>>> type(C)
+<type 'classobj'>
+
+>>> X.__class__
+<class __main__.C at 0x005F85A0>
+>>> C.__class__
+AttributeError: class C has no attribute '__class__'
+
+
+
+class = type(nazwa_klasy, klasa_nadrzędna, słownik_atrybutów)
+
+
+type.__new__(klasa_typu, nazwa_klasy, klasa_nadrzędna, słownik_atrybutów)
+type.__init__(klasa, nazwa_klasy, klasa_nadrzędna, słownik_atrybutów)
+
+
+
+
+class Spam(Eggs):                # Dziedziczy po Eggs
+   data = 1                      # Atrybut danych klasy
+   def meth(self, arg):          # Atrybut metody klasy
+      pass
+
+
+Spam = type('Spam', (Eggs,), {'data': 1, 'meth': meth, '__module__': '__main__'})
+
+
+
+
+class Spam(metaclass=Meta):                   # Wersja 3.0 i nowsze
+
+class Spam(Eggs, metaclass=Meta):             # Dopuszczalne inne klasy nadrzędne
+
+class spam(object):                           # Tylko wersja 2.6
+   __metaclass__ = Meta
+
+   
+   
+
+class = Meta(nazwa_klasy, klasa_nadrzędna, słownik_atrybutów)
+
+Meta.__new__(Meta, nazwa_klasy, klasa_nadrzędna, słownik_atrybutów)
+
+Meta.__init__(klasa, nazwa_klasy, klasy_nadrzędne, słownik_atrybutów)
+
+
+
+
+class Spam(Eggs, metaclass=Meta):      # Dziedziczy po Eggs, instancji Meta
+   data = 1                            # Atrybut danych klasy
+   def meth(self, arg):                # Atrybut metody klasy
+      pass
+
+Spam = Meta('Spam', (Eggs,), {'data': 1, 'meth': meth, '__module__': '__main__'})
+
+
+
+
+class Meta(type):
+   def __new__(metaklasa, nazwa_klasy, klasy_nadrzędne, słownik_atrybutów):
+      # Wykonywane przez odziedziczone type.__call__
+      return type.__new__(metaklasa, nazwa_klasy, klasy_nadrzędne, słownik_atrybutów)
+
+
+
+
+class MetaOne(type):
+   def __new__(meta, classname, supers, classdict):
+      print('W MetaOne.new:', classname, supers, classdict, sep='\n...')
+      return type.__new__(meta, classname, supers, classdict)
+  
+class Eggs: 
+   pass
+
+print('tworzenie klasy')
+class Spam(Eggs, metaclass=MetaOne):      # Dziedziczy po Eggs, instancji Meta
+   data = 1                               # Atrybut danych klasy
+   def meth(self, arg):                   # Atrybut metody klasy
+      pass
+
+print('tworzenie instancji')
+X = Spam()
+print('data:', X.data)
+
+
+
+
+class MetaOne(type):
+   def __new__(meta, classname, supers, classdict):
+      print('W MetaOne.new: ', classname, supers, classdict, sep='\n...')
+      return type.__new__(meta, classname, supers, classdict)
+    
+   def __init__(Class, classname, supers, classdict):
+      print('W MetaOne init:', classname, supers, classdict, sep='\n...')
+      print('...obiekt zainicjalizowanej klasy:', list(Class.__dict__.keys()))
+  
+class Eggs: 
+   pass
+
+print('tworzenie klasy')
+class Spam(Eggs, metaclass=MetaOne):      # Dziedziczy po Eggs, instancji Meta
+   data = 1                               # Atrybut danych klasy
+   def meth(self, arg):                   # Atrybut metody klasy
+      pass
+
+print('tworzenie instancji')
+X = Spam()
+print('data:', X.data)
+
+
+
+
+# Prosta funkcja może także działać jak metaklasa
+
+def MetaFunc(classname, supers, classdict):
+   print('W MetaFunc: ', classname, supers, classdict, sep='\n...')
+   return type(classname, supers, classdict)
+  
+class Eggs: 
+   pass
+
+print('tworzenie klasy')
+class Spam(Eggs, metaclass=MetaFunc):            # Wykonanie prostej funkcji na końcu
+   data = 1                                      # Funkcja zwraca klasę
+   def meth(self, args):
+      pass
+
+print('tworzenie instancji')
+X = Spam()
+print('data:', X.data)
+
+
+
+
+# Metodę __call__ można redefiniować, metaklasy mogą mieć metaklasy
+
+class SuperMeta(type):
+   def __call__(meta, classname, supers, classdict):
+      print('W SuperMeta.call: ', classname, supers, classdict, sep='\n...')
+      return type.__call__(meta, classname, supers, classdict)
+
+class SubMeta(type, metaclass=SuperMeta):
+   def __new__(meta, classname, supers, classdict):
+      print('W SubMeta.new: ', classname, supers, classdict, sep='\n...')
+      return type.__new__(meta, classname, supers, classdict)
+
+   def __init__(Class, classname, supers, classdict):
+      print('W SubMeta init:', classname, supers, classdict, sep='\n...')
+      print('...obiekt zainicjalizowanej klasy:', list(Class.__dict__.keys()))
+
+class Eggs: 
+   pass
+
+print('tworzenie klasy')
+class Spam(Eggs, metaclass=SubMeta):      
+   data = 1                            
+   def meth(self, arg):               
+      pass
+
+print('tworzenie instancji')
+X = Spam()
+print('data:', X.data)
+
+
+
+
+class SuperMeta:
+   def __call__(self, classname, supers, classdict):
+      print('W SuperMeta.call: ', classname, supers, classdict, sep='\n...')
+      Class = self.__New__(classname, supers, classdict)
+      self.__Init__(Class, classname, supers, classdict)
+      return Class
+
+class SubMeta(SuperMeta):
+   def __New__(self, classname, supers, classdict):
+      print('W SubMeta.new: ', classname, supers, classdict, sep='\n...')
+      return type(classname, supers, classdict)
+
+   def __Init__(self, Class, classname, supers, classdict):
+      print('W SubMeta init:', classname, supers, classdict, sep='\n...')
+      print('...obiekt zainicjalizowanej klasy:', list(Class.__dict__.keys()))
+
+class Eggs: 
+   pass
+
+print('tworzenie klasy')
+class Spam(Eggs, metaclass=SubMeta()):          # Meta jest normalną instancją klasy
+   data = 1                                     # Wywoływane na końcu instrukcji
+   def meth(self, arg):               
+      pass
+
+print('tworzenie instancji')
+X = Spam()
+print('data:', X.data)
+
+
+
+
+class MetaOne(type):                                  
+   def __new__(meta, classname, supers, classdict):     # Redefiniuje metodę klasy type
+      print('W MetaOne.new:', classname)
+      return type.__new__(meta, classname, supers, classdict)
+   def toast(self):
+      print('tost')
+
+class Super(metaclass=MetaOne):           # Metaklasy dziedziczone także przez klasy podrzędne
+   def spam(self):                        # MetaOne wykonana 2 razy dla 2 klas
+      print('mielonka')
+        
+class C(Super):                           # Klasa nadrzędna: dziedziczenie a instancja
+   def eggs(self):                        # Klasy dziedziczą po klasach nadrzędnych
+      print('jajka')                      # Ale nie po metaklasach
+
+X = C()
+X.eggs()                                  # Odziedziczone po C
+X.spam()                                  # Odziedziczone po Super
+X.toast()                                 # Nie odziedziczone po metaklasie
+
+
+
+
+# Ręczne rozszerzanie - dodawanie nowych metod do klas
+
+class Client1:
+   def __init__(self, value):
+      self.value = value
+   def spam(self):
+      return self.value * 2
+
+class Client2:
+   value = 'ni?'
+
+def eggsfunc(obj):
+   return obj.value * 4
+
+def hamfunc(obj, value):
+   return value + 'szynka'
+
+Client1.eggs = eggsfunc
+Client1.ham  = hamfunc
+
+Client2.eggs = eggsfunc
+Client2.ham  = hamfunc
+
+X = Client1('Ni!')
+print(X.spam())
+print(X.eggs())
+print(X.ham('bekon'))
+
+Y = Client2()
+print(Y.eggs())
+print(Y.ham('bekon'))
+
+
+
+
+# Rozszerzenie za pomocą metaklasy - lepiej obsługuje przyszłe zmiany
+
+def eggsfunc(obj):
+   return obj.value * 4
+
+def hamfunc(obj, value):
+   return value + 'szynka'
+
+class Extender(type):
+   def __new__(meta, classname, supers, classdict):
+      classdict['eggs'] = eggsfunc
+      classdict['ham']  = hamfunc
+      return type.__new__(meta, classname, supers, classdict)
+
+class Client1(metaclass=Extender):
+   def __init__(self, value):
+      self.value = value
+   def spam(self):
+      return self.value * 2
+
+class Client2(metaclass=Extender):
+   value = 'ni?'
+
+X = Client1('Ni!')
+print(X.spam())
+print(X.eggs())
+print(X.ham('bekon'))
+
+Y = Client2()
+print(Y.eggs())
+print(Y.ham('bekon'))
+
+
+
+
+# Można również skonfigurować klasę w oparciu o testy w czasie wykonania
+
+class MetaExtend(type):
+   def __new__(meta, classname, supers, classdict):
+      if sometest():
+         classdict['eggs'] = eggsfunc1
+      else:
+         classdict['eggs'] = eggsfunc2
+      if someothertest():
+         classdict['ham']  = hamfunc
+      else:
+         classdict['ham']  = lambda *args: 'Nie jest obsługiwane'
+      return type.__new__(meta, classname, supers, classdict)
+
+
+
+
+# Rozszerzenie za pomocą metaklasy - to samo co udostępnienie __init__ w metaklasie
+
+def eggsfunc(obj):
+   return obj.value * 4
+
+def hamfunc(obj, value):
+   return value + 'ham'
+
+def Extender(aClass):
+   aClass.eggs = eggsfunc                    # Zarządza klasą, a nie instancją
+   aClass.ham  = hamfunc                     # Odpowiednik __init__ metaklasy
+   return aClass
+
+@Extender
+class Client1:                               # Client1 = Extender(Client1)
+   def __init__(self, value):                # Dowiązane ponownie na końcu instrukcji class
+      self.value = value
+   def spam(self):
+      return self.value * 2
+
+@Extender
+class Client2:
+   value = 'ni?'
+
+X = Client1('Ni!')                           # X jest instancją Client1
+print(X.spam())
+print(X.eggs())
+print(X.ham('bacon'))
+
+Y = Client2()
+print(Y.eggs())
+print(Y.ham('bacon'))
+
+
+
+
+# Dekorator klasy śledzi zewnętrzne pobrania atrybutów instancji
+
+def Tracer(aClass):                                   # Dla @decorator
+   class Wrapper:
+      def __init__(self, *args, **kargs):             # W momencie tworzenia instancji
+         self.wrapped = aClass(*args, **kargs)        # Użycie nazwy zakresu obejmującego 
+      def __getattr__(self, attrname):
+         print('Śledzenie:', attrname)                # Przechwytuje wszystko poza .wrapped 
+         return getattr(self.wrapped, attrname)       # Deleguje do obiektu wrapped
+   return Wrapper
+
+@Tracer
+class Person:                                         # Person = Tracer(Person)
+   def __init__(self, name, hours, rate):             # Wrapper pamięta Person
+      self.name = name
+      self.hours = hours
+      self.rate = rate                                # Pobranie wewnątrz metody nie jest śledzone
+   def pay(self):
+      return self.hours * self.rate
+
+bob = Person('Robert', 40, 50)                        # bob to tak naprawdę Wrapper
+print(bob.name)                                       # Wrapper obejmuje Person
+print(bob.pay())                                      # Wywołuje __getattr__
+
+
+
+
+# Zarządzanie instancjami jak w poprzednim przykładzie, jednak za pomocą metaklasy
+
+def Tracer(classname, supers, classdict):             # W momencie wywołania tworzącego klasę
+   aClass = type(classname, supers, classdict)        # Utworzenie klasy klienta
+   class Wrapper:
+      def __init__(self, *args, **kargs):             # W momencie tworzenia instancji
+         self.wrapped = aClass(*args, **kargs)
+      def __getattr__(self, attrname):
+         print('Śledzenie:', attrname)                # Przechwytuje wszystko poza .wrapped  
+         return getattr(self.wrapped, attrname)       # Deleguje do obiektu wrapped
+   return Wrapper
+
+class Person(metaclass=Tracer):                       # Tworzy Person za pomocą Tracer
+   def __init__(self, name, hours, rate):             # Wrapper pamięta Person
+      self.name = name
+      self.hours = hours
+      self.rate = rate                                # Pobranie wewnątrz metody nie jest śledzone
+   def pay(self):
+      return self.hours * self.rate
+
+bob = Person('Robert', 40, 50)                        # bob to tak naprawdę Wrapper
+print(bob.name)                                       # Wrapper osadza Person
+print(bob.pay())                                      # Wywołuje __getattr__
+
+
+
+
+### Plik mytools.py
+# Plik mytools.py - wybrane narzędzia dekoratorów
+
+def tracer(func):                         # Użycie z __call__ funkcji, a nie klasy
+   calls = 0                              # Inaczej self będzie jedynie instancją dekoratora
+   def onCall(*args, **kwargs):
+      nonlocal calls
+      calls += 1
+      print('wywołanie %s %s' % (calls, func.__name__))
+      return func(*args, **kwargs)
+   return onCall
+
+import time
+def timer(label='', trace=True):          # Dla argumentów dekoratora - zachowanie argumentów
+   def onDecorator(func):                 # Dla @ - zachowanie udekorowanej funkcji
+      def onCall(*args, **kargs):         # W momencie wywołania - wywołanie oryginału
+         start   = time.clock()           # Stan to zakresy + atrybuty funkcji
+         result  = func(*args, **kargs)
+         elapsed = time.clock() - start
+         onCall.alltime += elapsed
+         if trace:
+            format = '%s%s: %.5f, %.5f'
+            values = (label, func.__name__, elapsed, onCall.alltime)
+            print(format % values)
+         return result
+      onCall.alltime = 0
+      return onCall
+   return onDecorator
+
+
+
+
+from mytools import tracer
+
+class Person:
+   @tracer
+   def __init__(self, name, pay):
+      self.name = name
+      self.pay  = pay
+
+   @tracer
+   def giveRaise(self, percent):          # giveRaise = tracer(giverRaise)
+      self.pay *= (1.0 + percent)         # onCall pamięta giveRaise
+
+   @tracer
+   def lastName(self):                    # lastName = tracer(lastName)
+      return self.name.split()[-1]
+
+bob = Person('Robert Zielony', 50000)
+anna = Person('Anna Czerwona', 100000)
+print(bob.name, anna.name)
+anna.giveRaise(.10)                        # Wykonuje onCall(anna, .10)
+print(anna.pay)
+print(bob.lastName(), anna.lastName())     # Wykonuje onCall(bob), pamięta lastName
+
+
+
+
+# Metaklasa dodająca dekorator śledzący do każdej metody klasy klienta
+
+from types import FunctionType
+from mytools import tracer
+
+class MetaTrace(type):                                  
+   def __new__(meta, classname, supers, classdict):
+      for attr, attrval in classdict.items():
+         if type(attrval) is FunctionType:                      # Metoda?
+            classdict[attr] = tracer(attrval)                   # Udekorowanie jej
+      return type.__new__(meta, classname, supers, classdict)   # Utworzenie klasy
+
+class Person(metaclass=MetaTrace):
+   def __init__(self, name, pay):
+      self.name = name
+      self.pay  = pay
+   def giveRaise(self, percent):
+      self.pay *= (1.0 + percent)
+   def lastName(self):
+      return self.name.split()[-1]
+
+bob = Person('Robert Zielony', 50000)
+anna = Person('Anna Czerwona', 100000)
+print(bob.name, anna.name)
+anna.giveRaise(.10)
+print(anna.pay)
+print(bob.lastName(), anna.lastName())
+
+
+
+
+# Fabryka metaklas - zastosowanie dowolnego dekoratora do wszystkich metod klasy
+
+from types import FunctionType
+from mytools import tracer, timer
+
+def decorateAll(decorator):
+   class MetaDecorate(type):                                  
+      def __new__(meta, classname, supers, classdict):
+         for attr, attrval in classdict.items():
+            if type(attrval) is FunctionType:         
+               classdict[attr] = decorator(attrval)  
+         return type.__new__(meta, classname, supers, classdict)
+   return MetaDecorate
+
+class Person(metaclass=decorateAll(tracer)):       # Zastosowanie dekoratora do wszystkich metod
+   def __init__(self, name, pay):
+      self.name = name
+      self.pay  = pay
+   def giveRaise(self, percent):
+      self.pay *= (1.0 + percent)
+   def lastName(self):
+      return self.name.split()[-1]
+
+bob = Person('Robert Zielony', 50000)
+anna = Person('Anna Czerwona', 100000)
+print(bob.name, anna.name)
+anna.giveRaise(.10)
+print(anna.pay)
+print(bob.lastName(), anna.lastName())
+
+
+
+
+class Person(metaclass=decorateAll(tracer)):               # Zastosowanie dekoratora tracer
+
+class Person(metaclass=decorateAll(timer())):              # Zastosowanie dekoratora timer, argumenty domyślne
+
+class Person(metaclass=decorateAll(timer(label='**'))):    # Argumenty dekoratora
+
+
+
+
+# Przy użyciu dekoratora timer - całkowity czas dla metody
+
+print('-'*40)
+print('%.5f' % Person.__init__.alltime)
+print('%.5f' % Person.giveRaise.alltime)
+print('%.5f' % Person.lastName.alltime)
+
+
+
+
+# Fabryka dekoratora klas - zastosowanie dowolnego dekoratora do wszystkich metod klasy
+
+from types import FunctionType
+from mytools import tracer, timer
+
+def decorateAll(decorator):
+   def DecoDecorate(aClass):
+      for attr, attrval in aClass.__dict__.items():
+         if type(attrval) is FunctionType: 
+            setattr(aClass, attr, decorator(attrval))        # Nie __dict__  
+      return aClass
+   return DecoDecorate
+
+@decorateAll(tracer)                      # Użycie dekoratora klasy
+class Person:                             # Stosuje dekorator funkcji do metod
+   def __init__(self, name, pay):         # Person = decorateAll(..)(Person)
+      self.name = name                    # Person = DecoDecorate(Person)
+      self.pay  = pay
+   def giveRaise(self, percent):
+      self.pay *= (1.0 + percent)
+   def lastName(self):
+      return self.name.split()[-1]
+
+bob = Person('Robert Zielony', 50000)
+anna = Person('Anna Czerwona', 100000)
+print(bob.name, anna.name)
+anna.giveRaise(.10)
+print(anna.pay)
+print(bob.lastName(), anna.lastName())
+
+
+
+
+@decorateAll(tracer)                      # Udekorowanie wszystkiego za pomocą dekoratora tracer
+
+@decorateAll(timer())                     # Udekorowanie wszystkiego za pomocą dekoratora timer, argumenty domyślne
+
+@decorateAll(timer(label='@@'))           # To samo, ale z przekazanym argumentem dekoratora
+
+
+
+
+# Przy użyciu dekoratora timer - całkowity czas dla metody
+
+print('-'*40)
+print('%.5f' % Person.__init__.alltime)
+print('%.5f' % Person.giveRaise.alltime)
+print('%.5f' % Person.lastName.alltime)

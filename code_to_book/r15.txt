@@ -1,0 +1,171 @@
+>>> import sys
+>>> dir(sys)
+
+
+
+>>> dir([])
+
+>>> dir('')
+
+>>> dir(str) == dir('')                      # Ten sam wynik co w poprzednim przykładzie
+
+>>> dir(list) == dir([])
+
+
+
+### Plik: docstrings.py
+
+"""
+Dokumentacja modułu
+Tutaj jego opis
+"""
+
+spam = 40
+
+def square(x):
+   """
+   Dokumentacja funkcji
+   Możemy wziąć Pańską wątrobę?
+   """
+   return x **2                               # Kwadrat
+
+class Employee:
+   "dokumentacja klasy"
+   pass
+
+print(square(4))
+print(square.__doc__)
+
+
+
+
+>>> import docstrings
+16
+
+   Dokumentacja funkcji
+   Możemy wziąć Pańską wątrobę?
+
+>>> print(docstrings.__doc__)
+
+Dokumentacja modułu
+Tutaj jego opis
+
+>>> print(docstrings.square.__doc__)
+   
+   Dokumentacja funkcji
+   Możemy wziąć Pańską wątrobę?
+
+>>> print(docstrings.Employee.__doc__)
+   dokumentacja klasy
+
+
+
+
+>>> import sys
+>>> print(sys.__doc__)
+
+
+
+>>> print(sys.getrefcount.__doc__)
+
+
+
+>>> print(int.__doc__)
+
+>>> print(map.__doc__)
+
+
+
+>>> import sys
+>>> help(sys.getrefcount)
+
+>>> help(sys)
+
+>>> help(dict)
+
+>>> help(str.replace)
+
+>>> help(ord)
+
+
+
+>>> import docstrings
+>>> help(docstrings.square)
+Help on function square in module docstrings:
+
+square(x)
+   Dokumentacja funkcji
+   Możemy wziąć Pańską wątrobę?
+
+>>> help(docstrings.Employee)
+Help on class Employee in module docstrings:
+
+class Employee(builtins.object)
+ | dokumentacja klasy
+ |
+ | Data descriptors defined here:
+ ...resztę tekstu pominięto...
+
+>>> help(docstrings)
+Help on module docstrings:
+
+NAME
+   docstrings
+
+FILE
+   c:\misc\docstrings.py
+
+DESCRIPTION
+   Dokumentacja modułu
+   Tutaj jego opis
+
+CLASSES
+   builtins.object
+      Employee
+
+   class Employee(builtins.object)
+    | dokumentacja klasy
+    |
+    | Data descriptors defined here:
+    ...resztę tekstu pominięto...
+
+FUNCTIONS
+   square(x)
+      Dokumentacja funkcji
+      Możemy wziąć Pańską wątrobę?
+
+DATA
+      spam = 40
+
+
+
+
+
+#### Kod ćwiczeń
+
+
+for i in range(50):
+   print('Witaj %d\n\a' % i)
+
+
+
+## Plik: power.py
+
+L = [1, 2, 4, 8, 16, 32, 64]
+X = 5
+
+found = False
+i = 0
+while not found and i < len(L):
+   if 2 ** X == L[i]:
+      found = True
+   else:
+      i = i+1   
+
+if found:
+   print('pod indeksem', i)
+else:
+   print(X, 'nie odnaleziono')
+
+C:\book\tests> python power.py
+pod indeksem 5

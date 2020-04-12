@@ -1,0 +1,445 @@
+# UWAGA: pierwsze kilka fragmentów kodu z tego rozdziału nie nadaje się
+# do wykonania, jednak zamieszczono je tutaj na wypadek gdyby ktoś chciał
+# przekształcić je w działające przykłady.
+
+try:
+   <instrukcje>                        # Wykonanie najpierw tego głównego działania
+except <nazwa1>:
+   <instrukcje>                        # Wykonane, jeśli nazwa1 zostanie zgłoszona w bloku try
+except (nazwa2, nazwa3):
+   <instrukcje>                        # Wykonane, kiedy wystąpi jeden z tych wyjątków
+except <nazwa4> as <dane>:
+   <instrukcje>                        # Wykonane, jeśli nazwa4 zostaje zgłoszona i zgłoszona zostaje instancja
+except:
+   <instrukcje>                        # Wykonane dla wszystkich (pozostałych) zgłoszonych wyjątków
+else:
+   <instrukcje>                        # Wykonane, jeśli żaden wyjątek nie został zgłoszony w bloku try
+
+
+
+try:
+   action()
+except NameError:
+   ...
+except IndexError
+   ...
+except KeyError:
+   ...
+except (AttributeError, TypeError, SyntaxError):
+   ...
+else:
+   ...
+
+
+
+try:
+   action()
+except NameError:
+   ...                                       # Obsługa NameError
+except IndexError:
+   ...                                       # Obsługa IndexError
+except:
+   ...                                       # Obsługa wszystkich pozostałych wyjątków
+else:
+   ...                                       # Obsługa przypadku bez wyjątku
+
+
+
+try:
+   action()
+except:
+   ...                                       # Przechwytuje wszystkie możliwe wyjątki
+
+
+
+try:
+   action()
+except Exception:
+   ...                              # Przechwytuje wszystkie możliwe wyjątki z wyjątkiem wyjść z programu
+
+
+
+try:
+   ...wykonanie kodu...
+except IndexError:
+   ...obsłużenie wyjątku...
+# Czy trafiliśmy tutaj dlatego, że instrukcja try się nie powiodła, czy wręcz przeciwnie?
+
+
+
+try:
+   ...wykonanie kodu...
+except IndexError:
+   ...obsłużenie wyjątku...
+else:
+   ...wyjątek nie wystąpił...
+
+
+
+try:
+   ...wykonanie kodu...
+   ...wyjątek nie wystąpił...
+except IndexError:
+   ...obsłużenie wyjątku...
+
+
+
+
+### Plik: bad.py
+
+def gobad(x, y):
+   return x / y
+
+def gosouth(x):
+   print(gobad(x, 0))
+
+gosouth(1)
+
+
+
+
+% python bad.py
+
+
+
+### Plik: kaboom.py
+
+def kaboom(x, y):
+   print(x + y)                              # Wywołanie TypeError
+
+try:
+   kaboom([0,1,2], "mielonka")
+except TypeError:                            # Przechwycenie błędu i poradzenie sobie z nim
+   print('Witaj, świecie!')
+print('wznowienie tutaj')                    # Kontynuacja bez względu na wystąpienie wyjątku
+
+
+
+
+% python kaboom.py
+Witaj, świecie!
+wznowienie tutaj
+
+
+
+
+try:
+   <instrukcje>                              # Wykonanie najpierw tego działania
+finally:
+   <instrukcje>                              # Zawsze wykonuje ten kod na wyjściu
+
+
+
+
+class MyError(Exception): pass
+
+def stuff(file):
+   raise MyError()
+
+file = open('data', 'w')                     # Otwarcie pliku wyjścia
+try:
+   stuff(file)                               # Zgłoszenie wyjątku
+finally:
+   file.close()                              # Zawsze zamykanie pliku w celu wyczyszczenia bufora wyjścia
+print('nie doszliśmy tutaj')                 # Kontynuacja tutaj tylko jeśli nie ma wyjątku
+
+
+
+
+try:                                              # Forma połączona
+   podstawowe_działanie
+except Wyjątek1:
+   program_obsługi_1
+except Wyjątek2:
+   program_obsługi_2
+...
+else:
+   blok_else
+finally:
+   blok_finally
+
+
+
+
+try:                                           # Format 1
+   instrukcje
+except [typ [as wartość]]:                     # W Pythonie 2: [typ [, wartość]]
+   instrukcje
+[except [typ [as wartość]]:
+   instrukcje]*
+[else:
+   instrukcje]
+[finally:
+   instrukcje]
+
+try:                                           # Format 2
+   instrukcje
+finally:
+   instrukcje
+
+
+
+
+try:                                           # Zagnieżdżony odpowiednik formy połączonej
+   try:
+      podstawowe_działanie
+   except Wyjątek1:
+      program_obsługi_1
+   except Wyjątek2:
+      program_obsługi_2
+   ...
+   else:
+      bez_błędu
+finally:
+   czyszczenie
+
+
+
+
+### Plik: mergedexc.py
+
+sep = '-' * 32 + '\n'
+print(sep + 'WYJĄTEK ZGŁOSZONY I PRZECHWYCONY')
+try:
+   x = 'spam'[99]
+except IndexError:
+   print('wykonano except')
+finally:
+   print('wykonano finally')
+print('po wykonaniu')
+
+print(sep + 'WYJĄTEK NIE ZOSTAŁ ZGŁOSZONY')
+try:
+   x = 'spam'[3]
+except IndexError:
+   print('wykonano except')
+finally:
+   print('wykonano finally')
+print('po wykonaniu')
+
+print(sep + 'WYJĄTEK NIE ZOSTAŁ ZGŁOSZONY, WYKONANO ELSE')
+try:
+   x = 'spam'[3]
+except IndexError:
+   print('wykonano except')
+else:
+   print('wykonano else')
+finally:
+   print('wykonano finally')
+print('po wykonaniu')
+
+print(sep + 'WYJĄTEK ZGŁOSZONY, ALE NIEPRZECHWYCONY')
+try:
+   x = 1 / 0
+except IndexError:
+   print('wykonano except')
+finally:
+   print('wykonano finally')
+print('po wykonaniu')
+
+
+
+
+c:\misc> C:\Python30\python mergedexc.py
+
+
+
+raise <instancja>                            # Zgłoszenie instancji klasy
+raise <klasa>                                # Utworzenie i zgłoszenie instancji klasy
+raise                                        # Ponowne zgłoszenie ostatniego wyjątku
+
+
+
+
+raise IndexError                             # Klasa (utworzenie instancji)
+raise IndexError()                           # Instancja (utworzona w instrukcji)
+
+
+
+
+exc = IndexError()                            # Utworzenie instancji z wyprzedzeniem
+raise exc
+
+excs = [IndexError, TypeError]
+raise excs[0]
+
+
+
+
+try:
+   ...
+except IndexError as X:                        # Do X przypisany zostaje zgłoszony obiekt instancji
+   ...
+
+
+
+
+class MyExc(Exception): pass
+   ...
+raise MyExc('mielonka')                         # Klasa wyjątku z argumentami konstruktora
+   ...
+try:
+   ...
+except MyExc as X:                              # Atrybuty instancji dostępne w programie obsługi
+   print(X.args)
+
+
+
+
+>>> try:
+...    raise IndexError('mielonka')              # Wyjątki pamiętają argumenty
+... except IndexError:
+...    print('przekazywanie')
+...    raise                                     # Ponowne zgłoszenie ostatniego wyjątku
+...
+przekazywanie
+Traceback (most recent call last):
+   File "<stdin>", line 2, in <module>
+IndexError: mielonka
+
+
+
+raise wyjątek from inny_wyjątek
+
+
+>>> try:
+...    1 / 0
+... except Exception as E:
+...    raise TypeError('Źle!') from E
+...
+Traceback (most recent call last):
+   File "<stdin>", line 2, in <module>
+ZeroDivisionError: int division or modulo by zero
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+   File "<stdin>", line 4, in <module>
+TypeError: Źle!
+
+
+
+
+assert <test>, <dane>                        # Część <dane> jest opcjonalna
+
+
+if __debug__:
+   if not <test>:
+      raise AssertionError(<dane>)
+
+
+
+
+### Plik: asserter.py
+
+def f(x):
+   assert x < 0, 'x musi być ujemne'
+   return x ** 2
+
+% python
+>>> import asserter
+>>> asserter.f(1)
+Traceback (most recent call last):
+   File "<stdin>", line 1, in <module>
+   File "asserter.py", line 2, in f
+      assert x < 0, 'x musi być ujemne'
+AssertionError: x musi być ujemne
+
+
+
+
+def reciprocal(x):
+   assert x != 0                             # Bezużyteczna instrukcja assert!
+   return 1 / x                              # Python automatycznie sprawdza dzielenie przez zero
+
+
+
+
+from __future__ import with_statement
+
+
+with wyrażenie [as zmienna]:
+   blok_with
+
+
+
+
+with open(r'C:\misc\data') as myfile:
+   for line in myfile:
+      print(line)
+      ...tutaj więcej kodu...
+
+
+
+
+myfile = open(r'C:\misc\data')
+try:
+   for line in myfile:
+      print(line)
+      ...tutaj więcej kodu...
+finally:
+   myfile.close()
+
+
+
+
+lock = threading.Lock()
+with lock:
+   # kluczowy fragment kodu
+   ...dostęp do współdzielonych zasobów...
+
+
+
+
+with decimal.localcontext() as ctx:
+   ctx.prec = 2
+   x = decimal.Decimal('1.00') / decimal.Decimal('3.00')
+
+
+
+
+### Plik: withas.py
+
+class TraceBlock:
+   def message(self, arg):
+      print('wykonywanie', arg)
+   def __enter__(self):
+      print('rozpoczęcie bloku with')
+      return self
+   def __exit__(self, exc_type, exc_value, exc_tb):
+      if exc_type is None:
+         print('normalne wyjście\n')
+      else:
+         print('zgłoszenie wyjątku!', exc_type)
+         return False                        # Przekazanie
+
+with TraceBlock() as action:
+   action.message('test 1')
+   print('osiągnięty')
+
+with TraceBlock() as action:
+   action.message('test 2')
+   raise TypeError
+   print('nie został osiągnięty')
+
+
+
+% python withas.py
+
+
+
+with open('data') as fin, open('res', 'w') as fout:
+   for line in fin:
+      if 'some key' in line:
+         fout.write(line)
+
+
+
+
+with A() as a, B() as b:
+   ...instrukcje...
+
+
+with A() as a:
+   with B() as b:
+      ...instrukcje...

@@ -1,0 +1,516 @@
+>>> class SharedData:
+...    spam = 42                             # Wygenerowanie atrybutu danych klasy
+...
+>>> x = SharedData()                         # Utworzenie dwóch instancji
+>>> y = SharedData()
+>>> x.spam, y.spam                           # Dziedziczą i współdzielą zmienną spam
+(42, 42)
+
+
+
+
+>>> SharedData.spam = 99
+>>> x.spam, y.spam, SharedData.spam
+(99, 99, 99)
+
+
+
+>>> x.spam = 88
+>>> x.spam, y.spam, SharedData.spam
+(88, 99, 99)
+
+
+
+class MixedNames:                            # Zdefiniowanie klasy
+   data = 'mielonka'                         # Przypisanie atrybutu klasy
+   def __init__(self, value):                # Przypisanie nazwy metody
+      self.data = value                      # Przypisanie atrybutu instancji
+   def display(self):
+      print(self.data, MixedNames.data)      # Atrybut instancji, atrybut klasy
+
+
+
+
+>>> x = MixedNames(1)                        # Utworzenie dwóch obiektów instancji
+>>> y = MixedNames(2)                        # Każdy ma własne dane
+>>> x.display(); y.display()                 # self.data jest inny, Subclass.data jest tym samym
+1 mielonka
+2 mielonka
+
+
+
+
+class NextClass:                             # Zdefiniowanie klasy
+   def printer(self, text):                  # Zdefiniowanie metody
+      self.message = text                    # Modyfikacja instancji
+      print(self.message)                    # Dostęp do instancji
+
+
+
+
+>>> x = NextClass()                         # Utworzenie instancji
+
+>>> x.printer('wywołanie instancji')         # Wywołanie jej metody
+wywołanie instancji
+
+>>> x.message                                # Modyfikacja instancji
+'wywołanie instancji'
+
+
+
+
+>>> NextClass.printer(x, 'wywołanie klasy')  # Bezpośrednie wywołanie klasy
+wywołanie klasy
+
+>>> x.message                                # Ponowna modyfikacja instancji
+'wywołanie klasy'
+
+
+
+
+>>> NextClass.printer('złe wywołanie')
+TypeError: unbound method printer() must be called with NextClass instance...
+
+
+
+class Super:
+   def __init__(self, x):
+      ...kod domyślny...
+
+class Sub(Super):
+   def __init__(self, x, y):
+      Super.__init__(self, x)                # Wykonanie metody __init__ klasy nadrzędnej
+      ...własny kod...                       # Wykonanie własnych działań inicjalizacyjnych
+
+I = Sub(1, 2)
+
+
+
+
+>>> class Super:
+...    def method(self):
+...       print('w Super.method')
+...
+>>> class Sub(Super):
+...    def method(self):                     # Przesłonienie metody
+...       print('początek Sub.method')       # Dodanie działań
+...       Super.method(self)                 # Wykonanie działania domyślnego
+...       print('koniec Sub.method')
+...
+
+
+
+
+>>> x = Super()                             # Utworzenie instancji klasy Super
+>>> x.method()                              # Wykonanie metody Super.method
+w Super.method
+
+>>> x = Sub()                               # Utworzenie instancji klasy Sub
+>>> x.method()                              # Wykonuje Sub.method, co wywołuje Super.method
+początek Sub.method
+w Super.method
+koniec Sub.method
+
+
+
+
+### Plik: specialize.py
+
+class Super:
+   def method(self):
+      print('w Super.method')               # Zachowanie domyślne
+   def delegate(self):
+      self.action()                         # Oczekuje zdefiniowania
+
+class Inheritor(Super):                      # Odziedziczenie wszystkich metod
+   pass
+
+class Replacer(Super):                       # Całkowite zastąpienie metody method
+   def method(self):
+      print('w Replacer.method')
+
+class Extender(Super):                       # Rozszerzenie działania metody method
+   def method(self):
+      print('początek Extender.method')
+      Super.method(self)
+      print('koniec Extender.method')
+
+class Provider(Super):                       # Uzupełnienie wymaganej metody
+   def action(self):
+      print('w Provider.action')
+
+if __name__ == '__main__':
+   for klass in (Inheritor, Replacer, Extender):
+      print('\n' + klass.__name__ + '...')
+      klass().method()
+   print('\nProvider...')
+   x = Provider()
+   x.delegate()
+
+
+
+
+class Super:
+   def delegate(self):
+      self.action()
+   def action(self):
+      assert False, 'działanie musi zostać zdefiniowane!'     # Jeśli wywołana jest ta wersja
+
+>>> X = Super()
+>>> X.delegate()
+AssertionError: działanie musi zostać zdefiniowane!
+
+
+
+
+class Super:
+   def delegate(self):
+      self.action()
+   def action(self):
+      raise NotImplementedError('działanie musi zostać zdefiniowane!')
+
+>>> X = Super()
+>>> X.delegate()
+NotImplementedError: działanie musi zostać zdefiniowane!
+
+
+
+
+>>> class Sub(Super): pass
+...
+>>> X = Sub()
+>>> X.delegate()
+NotImplementedError: działanie musi zostać zdefiniowane!
+
+>>> class Sub(Super):
+...    def action(self): print('mielonka')
+...
+>>> X = Sub()
+>>> X.delegate()
+mielonka
+
+
+
+
+from abc import ABCMeta, abstractmethod
+
+class Super(metaclass=ABCMeta):
+   @abstractmethod
+   def method(self, ...):
+      pass
+
+
+
+
+class Super:
+   __metaclass__ = ABCMeta
+   @abstractmethod
+   def method(self, ...):
+      pass
+
+
+
+>>> from abc import ABCMeta, abstractmethod
+>>>
+>>> class Super(metaclass=ABCMeta):
+...    def delegate(self):
+...       self.action()
+...    @abstractmethod
+...    def action(self):
+...       pass
+...
+>>> X = Super()
+TypeError: Can't instantiate abstract class Super with abstract methods action
+
+>>> class Sub(Super): pass
+...
+>>> X = Sub()
+TypeError: Can't instantiate abstract class Sub with abstract methods action
+
+>>> class Sub(Super):
+...    def action(self): print('mielonka')
+...
+>>> X = Sub()
+>>> X.delegate()
+mielonka
+
+
+
+
+# Plik manynames.py
+
+X = 11                                       # Globalna zmienna/atrybut z modułu (X lub manynames.X)
+
+def f():
+   print(X)                                  # Dostęp do zmiennej globalnej X (11)
+
+def g():
+   X = 22                                    # Zmienna lokalna (funkcji) — X ukrywa X z modułu
+   print(X)
+
+class C:
+   X = 33                                    # Atrybut klasy (C.X)
+   def m(self):
+      X = 44                                 # Zmienna lokalna metody (X)
+      self.X = 55                            # Atrybut instancji (instance.X)
+
+
+
+# Ciąg dalszy pliku manynames.py
+
+if __name__ == '__main__':
+   print(X)                                 # 11: moduł (czyli manynames.X poza plikiem)
+   f()                                      # 11: zmienna globalna
+   g()                                      # 22: zmienna lokalna
+   print(X)                                 # 11: zmienna modułu bez zmian
+
+   obj = C()                                # Utworzenie instancji
+   print(obj.X)                             # 33: zmienna klasy odziedziczona przez instancję
+
+   obj.m()                                  # Dołączenie nazwy atrybutu X do instancji
+   print(obj.X)                             # 55: instancja
+   print(C.X)                               # 33: klasa (czyli obj.X jeśli nie ma X w instancji)
+
+   #print(C.m.X)                            # PORAŻKA: widoczna tylko w metodzie
+   #print(g.X)                              # PORAŻKA: widoczna tylko w funkcji
+
+
+
+
+# Plik otherfile.py
+
+import manynames
+
+X = 66
+print(X)                                    # 66: zmienna globalna tutaj
+print(manynames.X)                          # 11: po zaimportowaniu zmienne globalne stają się atrybutami
+
+manynames.f()                               # 11: X z manynames, nie zmienna globalna!
+manynames.g()                               # 22: zmienna lokalna z funkcji innego pliku
+
+print(manynames.C.X)                        # 33: atrybut klasy z innego modułu
+I = manynames.C()
+print(I.X)                                  # 33: nadal z klasy
+I.m()
+print(I.X)                                  # 55: teraz z instancji!
+
+
+
+
+X = 11                                        # Zmienna globalna w module
+
+def g1():
+   print(X)                                   # Referencja do zmiennej globalnej modułu
+
+def g2():
+   global X
+   X = 22                                     # Modyfikacja zmiennej globalnej modułu
+
+def h1():
+   X = 33                                     # Zmienna lokalna w funkcji
+   def nested():
+      print(X)                                # Referencja do zmiennej lokalnej w zakresie zawierającym
+
+def h2():
+   X = 33                                     # Zmienna lokalna w funkcji
+   def nested():
+      nonlocal X                              # Instrukcja Pythona 3.0
+      X = 44                                  # Modyfikacja zmiennej lokalnej w zakresie zawierającym
+
+
+
+
+>>> class super:
+...    def hello(self):
+...       self.data1 = 'mielonka'
+...
+>>> class sub(super):
+...    def hola(self):
+...       self.data2 = 'jajka'
+...
+
+
+
+
+>>> X = sub()
+>>> X.__dict__                                  # Słownik przestrzeni nazw instancji
+{}
+
+>>> X.__class__                                 # Klasa instancji
+<class '__main__.sub'>
+
+>>> sub.__bases__                               # Klasa nadrzędna klasy
+(<class '__main__.super'>,)
+
+>>> super.__bases__                             # W Pythonie 2.6 pusta krotka ()
+(<class 'object'>,)
+
+
+
+
+>>> Y = sub()
+
+>>> X.hello()
+>>> X.__dict__
+{'data1': 'mielonka'}
+
+>>> X.hola()
+>>> X.__dict__
+{'data1': 'mielonka', 'data2': 'jajka'}
+
+>>> sub.__dict__.keys()
+['__module__', '__doc__', 'hola']
+
+>>> super.__dict__.keys()
+['__dict__', '__module__', '__weakref__', 'hello', '__doc__']
+
+>>> Y.__dict__
+{}
+
+
+
+
+>>> X.data1, X.__dict__['data1']
+('mielonka', 'mielonka')
+
+>>> X.data3 = 'tost'
+>>> X.__dict__
+{'data1': 'mielonka', 'data3': 'tost', 'data2': 'jajka'}
+
+>>> X.__dict__['data3'] = 'szynka'
+>>> X.data3
+'szynka'
+
+
+
+
+>>> X.__dict__, Y.__dict__
+({'data1': 'mielonka', 'data3': 'szynka', 'data2': 'jajka'}, {})
+>>> list(X.__dict__.keys())                     # W Pythonie 3.0 wywołanie list jest niezbędne
+['data1', 'data3', 'data2']
+
+# W Pythonie 2.6
+>>>> dir(X)
+['__doc__', '__module__', 'data1', 'data2', 'data3', 'hello', 'hola']
+>>> dir(sub)
+['__doc__', '__module__', 'hello', 'hola']
+>>> dir(super)
+['__doc__', '__module__', 'hello']
+
+# W Pythonie 3.0
+>>> dir(X)
+['__class__', '__delattr__', '__dict__', '__doc__', '__eq__', '__format__', ...pozostałe nazwy pominięto... 'data1', 'data2', 'data3', 'hello', 'hola']
+
+>>> dir(sub)
+['__class__', '__delattr__', '__dict__', '__doc__', '__eq__', '__format__', ...pozostałe nazwy pominięto... 'hello', 'hola']
+
+>>> dir(super)
+['__class__', '__delattr__', '__dict__', '__doc__', '__eq__', '__format__', ...pozostałe nazwy pominięto... 'hello']
+
+
+
+
+# Plik classtree.py
+
+"""
+Wspinanie się w górę drzewa dziedziczenia za pomocą łączy przestrzeni nazw, wyświetlające wyższe klasy nadrzędne z wcięciem.
+"""
+
+def classtree(cls, indent):
+   print('.' * indent, cls.__name__)         # Wyświetlenie tu nazwy klasy
+   for supercls in cls.__bases__:            # Rekurencja po wszystkich klasach nadrzędnych
+      classtree(supercls, indent+3)          # Może odwiedzić klasę nadrzędną więcej niż raz
+
+def instancetree(inst):
+   print('Drzewo', inst)                     # Pokazanie instancji
+   classtree(inst.__class__, 3)              # Przejście do jej klasy
+
+def selftest():
+   class A: pass
+   class B(A): pass
+   class C(A): pass
+   class D(B,C): pass
+   class E: pass
+   class F(D,E): pass
+   instancetree(B())
+   instancetree(F())
+
+if __name__ == '__main__': selftest()
+
+
+
+
+C:\misc> c:\python30\python
+>>> class Emp: pass
+...
+>>> class Person(Emp): pass
+>>> bob = Person()
+
+>>> import classtree
+>>> classtree.instancetree(bob)
+Drzewo <__main__.Person object at 0x028203B0>
+... Person
+...... Emp
+.........object
+
+
+
+
+### Plik: docstr.py
+
+"Jestem: docstr.__doc__"
+
+def func(args):
+   "Jestem: docstr.func.__doc__"
+   pass
+
+class spam:
+   "Jestem: spam.__doc__ lub docstr.spam.__doc__"
+   def method(self, arg):
+      "Jestem: spam.method.__doc__ lub self.method.__doc__"
+      pass
+
+
+
+
+>>> import docstr
+>>> docstr.__doc__
+'Jestem: docstr.__doc__'
+
+>>> docstr.func.__doc__
+'Jestem: docstr.func.__doc__'
+
+>>> docstr.spam.__doc__
+'Jestem: spam.__doc__ lub docstr.spam.__doc__'
+
+>>> docstr.spam.method.__doc__
+'Jestem: spam.method.__doc__ lub self.method.__doc__'
+
+
+
+
+>>> help(docstr)
+Help on module docstr:
+
+NAME
+   docstr - Jestem: docstr.__doc__
+
+FILE
+   c:\misc\docstr.py
+
+CLASSES
+   spam
+
+   class spam
+      | Jestem: spam.__doc__ lub docstr.spam.__doc__
+      |
+      | Methods defined here:
+      |
+      | method(self, arg)
+      | Jestem: spam.method.__doc__ lub self.method.__doc__
+
+FUNCTIONS
+   func(args)
+      Jestem: docstr.func.__doc__
+
+

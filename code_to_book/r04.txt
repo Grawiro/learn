@@ -1,0 +1,655 @@
+>>> 123 + 222                                # Dodawanie liczb całkowitych
+345
+>>> 1.5 * 4                                  # Mnożenie liczb zmiennoprzecinkowych
+6.0
+>>> 2 ** 100                                 # 2 do potęgi 100
+1267650600228229401496703205376
+
+
+
+>>> len(str(2 ** 1000000))                  # Ile cyfr będzie w naprawdę DUŻEJ liczbie?
+301030
+
+
+
+>>> 3.1415 * 2                              # repr: jako kod
+6.2830000000000004
+>>> print(3.1415 * 2)                       # str: w postaci przyjaznej dla użytkownika
+6.283
+
+
+
+>>> import math
+>>> math.pi
+3.1415926535897931
+>>> math.sqrt(85)
+9.2195444572928871
+
+
+
+>>> import random
+>>> random.random()
+0.59268735266273953
+>>> random.choice([1, 2, 3, 4])
+1
+
+
+
+>>> S = 'Mielonka'
+>>> len(S)                                   # Długość
+8
+>>> S[0]                                     # Pierwszy element w S, indeksowanie rozpoczyna się od zera
+'M'
+>>> S[1]                                     # Drugi element od lewej
+'i'
+
+
+
+>>> S[-1]                                    # Pierwszy element od końca S
+'a'
+>>> S[-2]                                    # Drugi element od końca S
+'k'
+
+
+
+>>> S[-1]                                    # Ostatni element w S
+'a'
+>>> S[len(S)-1]                              # Indeks ujemny zapisany w trudniejszy sposób
+'a'
+
+
+
+>>> S                                        # Łańcuch z ośmioma znakami
+'Mielonka'
+>>> S[1:3]                                   # Wycinek z S z indeksami od 1 do 2 (bez 3)
+'ie'
+
+
+
+>>> S[1:]                                    # Wszystko poza pierwszym znakiem (1:len(S))
+'ielonka'
+>>> S                                        # Łańcuch S się nie zmienił
+'Mielonka'
+>>> S[0:7]                                   # Wszystkie elementy bez ostatniego
+'Mielonk'
+>>> S[:7]                                    # To samo co S[0:7]
+'Mielonk'
+>>> S[:-1]                                   # Wszystkie elementy bez ostatniego w łatwiejszej postaci
+'Mielonk'
+>>> S[:]                                     # Całość S jako kopia najwyższego poziomu (0:len(S))
+'Mielonka'
+
+
+
+>>> S
+'Mielonka'
+>>> S + 'xyz'                                # Konkatenacja
+'Mielonkaxyz'
+>>> S                                        # S pozostaje bez zmian
+'Mielonka'
+>>> S * 8                                    # Powtórzenie
+'MielonkaMielonkaMielonkaMielonkaMielonkaMielonkaMielonkaMielonka'
+
+
+
+>>> S
+'Mielonka'
+>>> S[0] = 'z'                               # Niezmienne obiekty nie mogą być modyfikowane
+...pominięto tekst błędu...
+TypeError: 'str' object does not support item assignment
+
+>>> S = 'z' + S[1:]                          # Można jednak tworzyć wyrażenia budujące nowe obiekty
+>>> S
+'zielonka'
+
+
+
+>>> S.find('ie')                             # Odnalezienie przesunięcia podłańcucha
+1
+>>> S
+'Mielonka'
+
+>>> S.replace('ie', 'XYZ')                   # Zastąpienie wystąpień podłańcucha innym
+'MXYZlonka'
+>>> S
+'Mielonka'
+
+
+
+>>> line = 'aaa,bbb,ccccc,dd'
+>>> line.split(',')                          # Podzielenie na ograniczniku na listę podłańcuchów
+['aaa', 'bbb', 'ccccc', 'dd']
+>>> S = 'mielonka'
+>>> S.upper()                                # Konwersja na wielkie litery
+'MIELONKA'
+
+>>> S.isalpha()                              # Sprawdzenie zawartości: isalpha, isdigit
+True
+
+>>> line = 'aaa,bbb,ccccc,dd\n'
+>>> line = line.rstrip()                     # Usunięcie białych znaków po prawej stronie
+>>> line
+'aaa,bbb,ccccc,dd'
+
+
+
+>>> '%s, jajka i %s' % ('mielonka', 'MIELONKA!')       # Wyrażenie formatujące (wszystkie wersje)
+'mielonka, jajka i MIELONKA!'
+>>> '{0}, jajka i {1}'.format('mielonka', 'MIELONKA!') # Metoda formatująca (2.6, 3.0)
+'mielonka, jajka i MIELONKA!'
+
+
+
+>>> dir(S)
+>>> help(S.replace)
+
+
+
+>>> S = 'A\nB\tC'                            # \n to koniec wiersza, \t to tabulator
+>>> len(S)                                   # Każde jest jednym znakiem
+5
+
+>>> ord('\n')                                # \n jest bajtem z wartością binarną 10 w ASCII
+10
+
+>>> S = 'A\0B\0C'                            # \0, binarny bajt zerowy, nie kończy łańcucha znaków
+>>> len(S)
+5
+
+
+
+>>> msg = """ aaaaaaaaaaaaa
+bbb'''bbbbbbbbbb""bbbbbbb'bbbb
+cccccccccccccc"""
+>>> msg
+'\naaaaaaaaaaaaa\nbbb\'\'\'bbbbbbbbbb""bbbbbbb\'bbbb\ncccccccccccccc'
+
+
+
+>>> import re
+>>> match = re.match('Witaj,[ \t]*(.*)Robinie', 'Witaj, sir   Robinie')
+>>> match.group(1)
+'sir '
+
+
+
+>>> match = re.match('/(.*)/(.*)/(.*)', '/usr/home/drwal')
+>>> match.groups()
+('usr', 'home', 'drwal')
+
+
+
+>>> L = [123, 'mielonka', 1.23]              # Trzyelementowa lista z elementami różnego typu
+>>> len(L)                                   # Liczba elementów listy
+3
+
+
+
+>>> L[0]                                     # Indeksowanie po pozycji
+123
+
+>>> L[:-1]                                   # Wycinkiem listy jest nowa lista
+[123, 'mielonka']
+
+>>> L + [4, 5, 6]                            # Konkatenacja także zwraca nową listę
+[123, 'mielonka', 1.23, 4, 5, 6]
+
+>>> L                                        # Oryginalna lista pozostaje bez zmian
+[123, 'mielonka', 1.23]
+
+
+
+>>> L.append('NI')                           # Rośnięcie: dodanie obiektu na końcu listy
+>>> L
+[123, 'mielonka', 1.23, 'NI']
+
+>>> L.pop(2)                                 # Kurczenie się: usunięcie obiektu ze środka listy
+1.23
+
+>>> L                                        # "del L[2]" również usuwa element z listy
+[123, 'mielonka', 'NI']
+
+
+
+>>> M = ['bb', 'aa', 'cc']
+>>> M.sort()
+>>> M
+['aa', 'bb', 'cc']
+
+>>> M.reverse()
+>>> M
+['cc', 'bb', 'aa']
+
+
+
+>>> L
+[123, 'mielonka', 'NI']
+
+>>> L[99]
+...pominięto tekst błędu...
+IndexError: list index out of range
+
+>>> L[99] = 1
+...pominięto tekst błędu...
+IndexError: list assignment index out of range
+
+
+
+>>> M = [[1, 2, 3],                    # Macierz 3x3 w postaci list zagnieżdżonych
+         [4, 5, 6],                    # Kod może się rozciągać na kilka wierszy, jeśli znajduje się w nawiasach
+         [7, 8, 9]]
+>>> M
+[[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+
+
+
+>>> M[1]                                     # Pobranie drugiego wiersza
+[4, 5, 6]
+
+>>> M[1][2]                                  # Pobranie drugiego wiersza, a z niego trzeciego elementu
+6
+
+
+
+>>> col2 = [row[1] for row in M]             # Zebranie elementów z drugiej kolumny
+>>> col2
+[2, 5, 8]
+
+>>> M                                        # Macierz pozostaje bez zmian
+[[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+
+
+
+>>> [row[1] + 1 for row in M]                # Dodanie 1 do każdego elementu w drugiej kolumnie
+[3, 6, 9]
+
+>>> [row[1] for row in M if row[1] % 2 == 0] # Odfiltrowanie elementów nieparzystych
+[2, 8]
+
+
+
+>>> diag = [M[i][i] for i in [0, 1, 2]]      # Pobranie przekątnej z macierzy
+>>> diag
+[1, 5, 9]
+
+>>> doubles = [c * 2 for c in 'mielonka']    # Powtórzenie znaków w łańcuchu
+>>> doubles
+['mm', 'ii', 'ee', 'll', 'oo', 'nn', 'kk', 'aa']
+
+
+
+# Uwaga: więcej informacji na temat protokołu iteracji można znaleźć w dalszej
+# części książki. Jego pełna realizacja to G = (...); I = iter(G); I.next() until StopIteration;
+# Generatory są własnymi iteratorami (iter(G) zwraca samo G), dlatego wywołanie iter(G) opisane
+# w dalszej części rozdziału nie jest w poniższym kodzie wymagane. 
+
+>>> G = (sum(row) for row in M)             # Utworzenie generatora sum wierszy
+>>> next(G)                                 # iter(G) nie jest tu wymagane
+6
+>>> next(G)                                 # Wykonanie protokołu iteracji
+15
+
+
+
+>>> list(map(sum, M))                       # Wykonanie funkcji sum dla elementów M
+[6, 15, 24]
+
+
+
+>>> {sum(row) for row in M}                 # Utworzenie zbioru sum wierszy
+{24, 6, 15}
+>>> {i : sum(M[i]) for i in range(3)}       # Utworzenie tabeli klucz-wartość sum wierszy
+{0: 6, 1: 15, 2: 24}
+
+
+
+>>> [ord(x) for x in 'mieloonka']           # Lista numerów porządkowych znaków
+[109, 105, 101, 108, 111, 111, 110, 107, 97]
+>>> {ord(x) for x in 'mieloonka'}           # Zbiory usuwają duplikaty
+{97, 101, 105, 107, 108, 109, 110, 111}
+>>> {x: ord(x) for x in 'mieloonka'}        # Klucze słownika są unikalne
+{'a': 97, 'e': 101, 'i': 105, 'k': 107, 'm': 109, 'l': 108, 'o': 111, 'n': 110}
+
+
+
+>>> D = {'jedzenie': 'Mielonka', 'ilość': 4, 'kolor': 'różowy'}
+
+>>> D['jedzenie']                            # Pobranie wartości klucza "jedzenie"
+'Mielonka'
+
+>>> D['ilość'] += 1                          # Dodanie 1 do wartości klucza "ilość"
+>>> D
+{'jedzenie': 'Mielonka', 'kolor': 'różowy', 'ilość': 5}
+
+
+
+>>> D = {}
+>>> D['imię'] = 'Robert'                     # Tworzenie kluczy przez przypisanie
+>>> D['zawód'] = 'programista'
+>>> D['wiek'] = 40
+
+>>> D
+{'wiek': 40, 'zawód': 'programista', 'imię': 'Robert'}
+
+>>> print(D['imię'])
+Robert
+
+
+
+>>> rec = {'dane osobowe': {'imię': 'Robert', 'nazwisko': 'Zielony'},
+           'zawód': ['programista', 'inżynier'],
+           'wiek': 40.5}
+
+
+
+>>> rec['dane osobowe']                      # 'dane osobowe' to zagnieżdżony słownik
+{'nazwisko': 'Zielony', 'imię': 'Robert'}
+
+>>> rec['dane osobowe']['nazwisko']          # Indeksowanie zagnieżdżonego słownika
+'Zielony'
+
+>>> rec['zawód']                             # 'zawód' to zagnieżdżona lista
+['programista', 'inżynier']
+>>> rec['zawód'][-1]                         # Indeksowanie zagnieżdżonej listy
+'inżynier'
+
+>>> rec['zawód'].append('leśniczy')          # Rozszerzenie listy zawodów Roberta
+>>> rec
+{'wiek': 40.5, 'zawód': ['programista', 'inżynier', 'leśniczy'], 'dane osobowe': {'nazwisko': 'Zielony', 'imię': 'Robert'}}
+
+
+
+>>> rec = 0                                  # Miejsce zajmowane przez obiekt zostaje odzyskane
+
+
+
+>>> D = {'a': 1, 'b': 2, 'c': 3}
+>>> D
+{'a': 1, 'c': 3, 'b': 2}
+
+
+
+>>> Ks = list(D.keys())                      # Nieuporządkowana lista kluczy
+>>> Ks
+['a', 'c', 'b']
+
+>>> Ks.sort()                                # Posortowana lista kluczy
+>>> Ks
+['a', 'b', 'c']
+
+>>> for key in Ks:                           # Iteracja przez posortowane klucze
+       print(key, '=>', D[key])              # <== Tutaj należy dwukrotnie nacisnąć Enter
+       
+a => 1
+b => 2
+c => 3
+
+
+
+>>> D
+{'a': 1, 'c': 3, 'b': 2}
+
+>>> for key in sorted(D):
+       print(key, '=>', D[key])
+       
+a => 1
+b => 2
+c => 3
+
+
+
+>>> for c in 'mielonka':
+       print(c.upper())
+
+M
+I
+E
+L
+O
+N
+K
+A
+
+
+
+>>> x = 4
+>>> while x > 0:
+       print('mielonka!' * x)
+       x -= 1
+
+mielonka!mielonka!mielonka!mielonka!
+mielonka!mielonka!mielonka!
+mielonka!mielonka!
+mielonka!
+
+
+
+>>> squares = [x ** 2 for x in [1, 2, 3, 4, 5]]
+>>> squares
+[1, 4, 9, 16, 25]
+
+
+
+>>> squares = []
+>>> for x in [1, 2, 3, 4, 5]:                # To robi lista składana
+       squares.append(x ** 2)                # Wewnętrznie wykonują protokół iteracji
+
+>>> squares
+[1, 4, 9, 16, 25]
+
+
+
+>>> D
+{'a': 1, 'c': 3, 'b': 2}
+
+>>> D['e'] = 99                              # Przypisanie nowego klucza rozszerza słownik
+>>> D
+{'a': 1, 'c': 3, 'b': 2, 'e': 99}
+
+>>> D['f']                                   # Referencja do nieistniejącego klucza jest błędem
+...pominięto tekst błędu...
+KeyError: 'f'
+
+
+
+>>> 'f' in D
+False
+
+>>> if not 'f' in D:
+       print('nie ma')
+
+nie ma
+
+
+
+>>> value = D.get('x', 0)                  # Indeks, ale z wartością domyślną
+>>> value
+0
+>>> value = D['x'] if 'x' in D else 0      # Forma wyrażenia if/else
+>>> value
+0
+
+
+
+>>> T = (1, 2, 3, 4)                         # Krotka z 4 elementami
+>>> len(T)                                   # Długość krotki
+4
+
+>> T + (5, 6)                                # Konkatenacja
+(1, 2, 3, 4, 5, 6)
+
+>>> T[0]                                     # Indeksowanie i wycinki
+1
+
+
+
+>>> T.index(4)                               # Metody krotek — 4 znajduje się na wartości przesunięcia 3
+3
+>>> T.count(4)                               # 4 pojawia się raz
+1
+
+
+
+>>> T[0] = 2                                 # Krotki są niezmienne
+...pominięto tekst błędu...
+TypeError: 'tuple' object does not support item assignment
+
+
+
+>>> T = ('mielonka', 3.0, [11, 22, 33])
+>>> T[1]
+3.0
+>>> T[2][1]
+22
+>>> T.append(4)
+AttributeError: 'tuple' object has no attribute 'append'
+
+
+
+>>> f = open('data.txt', 'w')                # Utworzenie nowego pliku w trybie do zapisu
+>>> f.write('Witaj,\n')                      # Zapisanie do niego łańcuchów bajtów
+6
+>>> f.write('Brian\n')                       # Zwraca liczbę zapisanych bajtów w Pythonie 3.0
+6
+>>> f.close()                                # Zamknięcie pliku i wyczyszczenie bufora wyjściowego na dysku
+
+
+
+>>> f = open('data.txt')                     # 'r' jest domyślnym trybem przetwarzania
+>>> text = f.read()                          # Wczytanie całego pliku do łańcucha znaków
+>>> text
+'Witaj,\nBrian\n'
+
+>>> print(text)                              # Instrukcja print interpretuje znaki sterujące
+Witaj,
+Brian
+
+>>> text.split()                             # Zawartość pliku jest zawsze łańcuchem znaków
+['Witaj,', 'Brian']
+
+
+
+>>> dir(f)
+>>> help(f.seek)
+
+
+
+# Uwaga: poniższy przykład nie zadziała, o ile nie utworzyliśmy wcześniej
+# w katalogu roboczym pliku binarnego. By dowiedzieć się, jak to zrobić,
+# należy zerknąć do omówienia plików w rozdziale 9. książki.
+
+>>> data = open('data.bin', 'rb').read()  # Otwarcie pliku binarnego
+>>> data                                  # Łańcuch bajtowy przechowuje dane binarne
+b'\x00\x00\x00\x07mielonka\x00\x08'
+>>> data[4:12]
+b'spam'
+
+
+
+>>> X = set('mielonka')                      # Utworzenie zbioru z sekwencji w wersjach 2.6 oraz 3.0
+>>> Y = {'s', 'z', 'y', 'n', 'k', 'a'}       # Utworzenie zbioru za pomocą nowego literału z wersji 3.0
+>>> X, Y
+({'a', 'e', 'i', 'k', 'm', 'l', 'o', 'n'}, {'a', 'k', 'n', 's', 'y', 'z'})
+
+>>> X & Y                                    # Część wspólna zbiorów
+{'a', 'k', 'n'}
+
+>>> X | Y                                    # Suma zbiorów
+{'a', 'e', 'i', 'k', 'm', 'l', 'o', 'n', 's', 'y', 'z'}
+
+>>> X – Y                                    # Różnica
+{'i', 'm', 'e', 'l', 'o'}
+
+>>> {x ** 2 for x in [1, 2, 3, 4]}           # Zbiory składane z wersji 3.0
+{16, 1, 4, 9}
+
+
+
+>>> 1 / 3                                    # Liczby zmiennoprzecinkowe (w Pythonie 2.6 należy użyć .0)
+0.33333333333333331
+>>> (2/3) + (1/2)
+1.1666666666666665
+
+>>> import decimal                           # Liczby dziesiętne — stała precyzja
+>>> d = decimal.Decimal('3.141')
+>>> d + 1
+Decimal('4.141')
+
+>>> decimal.getcontext().prec = 2
+>>> decimal.Decimal('1.00') / decimal.Decimal('3.00')
+Decimal('0.33')
+
+>>> from fractions import Fraction            # Ułamki — licznik i mianownik
+>>> f = Fraction(2, 3)
+>>> f + 1
+Fraction(5, 3)
+>>> f + Fraction(1, 2)
+Fraction(7, 6)
+
+
+
+>>> 1 > 2, 1 < 2                             # Wartości typu Boolean
+(False, True)
+
+>>> bool('mielonka')
+True
+
+>>> X = None                                 # Pojemnik None
+>>> print(X)
+None
+>>> L = [None] * 100                         # Inicjalizacja listy stu None
+>>> L
+[None, None, None, None, None, None, None, None, None, None, None, None, None, ...lista stu None...]
+
+
+
+# W Pythonie 2.6:
+
+>>> type(L)                                 # Typy: L jest obiektem typu lista
+<type 'list'>
+>>> type(type(L))                           # Typy też są obiektami
+<type 'type'>
+
+# W Pythonie 3.0:
+
+>>> type(L)                                  # 3.0: typy są klasami i odwrotnie
+<class 'list'>
+>>> type(type(L))                            # Więcej na temat typów klas w rozdziale 31.
+<class 'type'>
+
+
+
+>>> if type(L) == type([]):                  # Sprawdzanie typów, skoro już musimy…
+       print('tak')
+
+tak
+>>> if type(L) == list:                      # Użycie nazwy typu
+       print('tak')
+
+tak
+>>> if isinstance(L, list):                  # Sprawdzanie zorientowane obiektowo
+       print('tak')
+
+tak
+
+
+
+>>> class Worker:
+       def __init__(self, name, pay):        # Inicjalizacja przy utworzeniu
+          self.name = name                   # self jest nowym obiektem; name to nazwisko, a pay — płaca
+          self.pay = pay
+       def lastName(self):
+          return self.name.split()[-1]       # Podział łańcucha znaków na znakach pustych
+       def giveRaise(self, percent):
+          self.pay *= (1.0 + percent)        # Uaktualnienie płacy w miejscu
+
+
+>>> bob = Worker('Robert Zielony', 50000)    # Utworzenie dwóch obiektów
+>>> anna = Worker('Anna Czerwona', 60000)    # Każdy ma atrybut imienia i nazwiska oraz płacy
+>>> bob.lastName()                           # Wywołanie metody — self to bob
+'Zielony'
+>>> anna.lastName()                          # Teraz self to anna
+'Czerwona'
+>>> anna.giveRaise(.10)                      # Uaktualnienie płacy Anny
+>>> anna.pay
+66000.0

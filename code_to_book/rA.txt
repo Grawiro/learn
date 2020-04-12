@@ -1,0 +1,67 @@
+setenv PYTHONPATH /usr/home/pycode/utilities:/usr/lib/pycode/package1
+
+export PYTHONPATH="/usr/home/pycode/utilities:/usr/lib/pycode/package1"
+
+
+
+### Plik: C:\Python30\mypath.pth
+
+c:\pycode\utilities
+d:\pycode\package1
+
+
+
+
+#### Plik: main.py
+import sys
+print(sys.argv)
+
+
+
+c:\Python30> python main.py a b –c       # Najpopularniejsze rozwiązanie: wykonanie pliku skryptu
+['main.py', 'a', 'b', '-c']
+
+
+
+
+c:\Python30> python -c "print(2 ** 100)"        # Wczytanie kodu z argumentu polecenia
+1267650600228229401496703205376
+
+c:\Python30> python -c "import main"            # Zaimportowanie pliku w celu wykonania jego kodu
+['-c']
+
+c:\Python30> python - < main.py a b –c          # Wczytanie kodu ze standardowego wejścia
+['-', 'a', 'b', '-c']
+
+c:\Python30> python - a b -c < main.py          # Ten sam efekt co poprzedni wiersz
+['-', 'a', 'b', '-c']
+
+
+
+c:\Python30> python -m main a b –c              # Zlokalizowanie i wykonanie modułu jako skryptu
+['c:\\Python30\\main.py', 'a', 'b', '-c']
+
+
+
+
+
+c:\Python30> python -m pdb main.py a b -c            # Debugowanie skryptu
+--Return--
+> c:\python30\lib\io.py(762)closed()->False
+-> return self.raw.closed
+(Pdb) c
+
+c:\Python30> C:\python26\python -m pdb main.py a b -c  # W wersji 2.6 jest lepiej?
+> c:\python30\main.py(1)<module>()
+-> import sys
+(Pdb) c
+
+c:\Python30> python -m profile main.py a b -c       # Profilowanie skryptu
+
+c:\Python30> python -m cProfile main.py a b -c      # Narzędzie profilujące o mniejszych wymaganiach
+
+
+
+c:\Python30> python –u main.py a b -c               # Standardowe strumienie bez bufora
+
+c:\Python30> python -?

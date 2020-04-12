@@ -1,0 +1,205 @@
+>>> if 1:
+...    print('prawda')
+...
+prawda
+
+
+
+
+>>> if not 1:
+...    print('prawda')
+... else:
+...    print('fałsz')
+...
+fałsz
+
+
+
+>>> x = 'zabójczy królik'
+>>> if x == 'roger':
+...    print("jak się ma jessica?")
+... elif x == 'bugs':
+...    print("co słychać, doktorku?")
+... else:
+...    print('Uciekaj! Uciekaj!')
+...
+Uciekaj! Uciekaj!
+
+
+
+>>> choice = 'szynka'
+>>> print({'mielonka': 1.25,                 # Instrukcja 'switch' oparta na słowniku
+...        'szynka': 1.99,                   # Wartość domyślna dzięki has_key lub get
+...        'jajka': 0.99,
+...        'boczek': 1.10}[choice])
+1.99
+
+
+
+>>> if choice == 'mielonka':
+...    print(1.25)
+... elif choice == 'szynka':
+...    print(1.99)
+... elif choice == 'jajka':
+...    print(0.99)
+... elif choice == 'boczek':
+...    print(1.10)
+... else:
+...    print('Zły wybór')
+...
+1.99
+
+
+
+>>> branch = {'mielonka': 1.25,
+...           'szynka': 1.99,
+...           'jajka': 0.99}
+
+>>> print(branch.get('mielonka', 'Zły wybór'))
+1.25
+>>> print(branch.get('boczek', 'Zły wybór'))
+Zły wybór
+
+
+
+>>> choice = 'boczek'
+>>> if choice in branch:
+...    print(branch[choice])
+... else:
+...    print('Zły wybór')
+...
+Zły wybór
+
+
+
+x = 1
+if x:
+   y = 2
+   if y:
+      print('blok2')
+   print('blok1')
+print('blok0')
+
+
+
+   x = 'MIELONKA'                             # Błąd — wcięcie pierwszego wiersza
+if 'płot' in 'żywopłot':
+   print(x * 8)
+      x += 'NI'                               # Błąd — nieoczekiwana indentacja
+      if x.endswith('NI'):
+            x *= 2
+         print(x)                             # Błąd — niespójna indentacja
+
+
+
+x = 'MIELONKA'
+if 'płot' in 'żywopłot':
+   print(x * 8)
+   x += 'NI'
+   if x.endswith('NI'):
+      x *= 2
+      print(x)                                 # Wyświetla "MIELONKANIMIELONKANI"
+
+
+
+L = ["Dobry",
+     "Zły",
+     "Paskudny"]                            # Para nawiasów rozciąga się na kilka wierszy
+
+
+
+if a == b and c == d and \
+   d == e and f == g:
+   print('stary')                            # Ukośniki lewe pozwalają na kontynuację
+
+
+
+if (a == b and c == d and
+    d == e and e == f):
+    print('nowy')                            # To samo robią nawiasy
+
+
+
+x = 1 + 2 + 3 \                              # Pominięcie znaku \ znacznie zmienia kod
++4
+
+
+
+x = 1; y = 2; print(x)                       # Większa liczba prostych instrukcji
+
+
+S = """
+aaaa
+bbbb
+cccc"""
+
+S = ('aaaa'
+     'bbbb'                                  # Tutaj komentarze są ignorowane
+     'cccc')
+
+
+
+if 1: print('witaj')                         # Prosta instrukcja w wierszu nagłówka
+
+
+
+>>> 2 < 3, 3 < 2                             # Mniejszy od — zwraca True lub False (1 lub 0)
+(True, False)
+
+
+
+>>> 2 or 3, 3 or 2                           # Zwrócenie lewego argumentu, jeśli jest prawdą
+(2, 3)                                       # Inaczej zwrócenie prawego argumentu (prawdy lub fałszu)
+>>> [] or 3
+3
+>>> [] or {}
+{}
+
+
+
+>>> 2 and 3, 3 and 2                         # Zwrócenie lewego argumentu, jeśli jest fałszem
+(3, 2)                                       # Inaczej zwrócenie prawego argumentu (prawdy lub fałszu)
+>>> [] and {}
+[]
+>>> 3 and []
+[]
+
+
+
+if X:
+    A = Y
+else:
+    A = Z
+
+
+A = Y if X else Z
+
+
+>>> A = 't' if 'mielonka' else 'f'           # Niepusty, czyli prawda
+>>> A
+'t'
+>>> A = 't' if '' else 'f'
+>>> A
+'f'
+
+
+
+A = ((X and Y) or Z)
+
+A = [Z, Y][bool(X)]
+
+>>> ['f', 't'][bool('')]
+'f'
+>>> ['f', 't'][bool('mielonka')]
+'t
+
+
+
+X = A or B or C or None
+
+X = A or default
+
+if f1() or f2(): ...
+
+tmp1, tmp2 = f1(), f2()
+if tmp1 or tmp2: ...

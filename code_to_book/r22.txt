@@ -1,0 +1,254 @@
+### Plik: module1.py
+
+def printer(x):                              # Atrybut modułu
+   print(x)
+
+
+
+
+>>> import module1                           # Pobranie modułu jako całości
+>>> module1.printer('Witaj, świecie!')       # Zapis z kropką w celu otrzymania zmiennej
+Witaj, świecie!
+
+
+
+
+>>> from module1 import printer              # Skopiowanie jednej zmiennej
+>>> printer('Witaj, świecie!')               # Nie ma konieczności użycia nazwy modułu
+Witaj, świecie!
+
+
+
+
+>>> from module1 import *                    # Skopiowanie wszystkich zmiennych
+>>> printer('Witaj, świecie!')  
+Witaj, świecie!
+
+
+
+
+### Plik: simple.py
+
+print('witam')
+spam = 1                                     # Inicjalizacja zmiennej
+
+
+
+
+>>> import simple                            # Pierwszy import: ładuje i wykonuje kod pliku
+witam
+>>> simple.spam                              # Przypisanie tworzy atrybut
+1
+
+
+
+
+>>> simple.spam = 2                          # Modyfikacja atrybutu w module
+>>> import simple                            # Pobiera już załadowany moduł
+>>> simple.spam                              # Kod nie został wykonany ponownie — atrybut nie zmienia się
+2
+
+
+
+
+### Plik: small.py
+
+x = 1
+y = [1, 2]
+
+% python
+>>> from small import x, y                   # Skopiowanie dwóch zmiennych z modułu
+>>> x = 42                                   # Modyfikacja jedynie lokalnej zmiennej x
+>>> y[0] = 42                                # Modyfikacja współdzielonego obiektu zmiennego w miejscu
+
+
+
+
+>>> import small                             # Pobranie nazwy modułu (from tego nie robi)
+>>> small.x                                  # x z modułu small nie jest moim x
+1
+>>> small.y                                  # Współdzielimy jednak zmienny obiekt
+[42, 2]
+
+
+
+
+>>> from small import x, y                   # Skopiowanie dwóch zmiennych z modułu
+>>> x = 42                                   # Modyfikacja jedynie lokalnej zmiennej x
+
+>>> import small                             # Pobranie nazwy modułu
+>>> small.x = 42                             # Modyfikuje zmienną x w innym module
+
+
+
+
+from module import name1, name2              # Skopiowanie tylko tych dwóch zmiennych z modułu
+
+import module                                # Pobranie obiektu modułu
+name1 = module.name1                         # Skopiowanie zmiennych przez przypisanie
+name2 = module.name2
+del module                                   # Pozbycie się nazwy modułu
+
+
+
+
+# Plik M.py
+
+def func():
+   ...coś robi...
+
+# Plik N.py
+
+def func():
+   ...robi coś innego...
+
+
+# Plik O.py
+
+from M import func
+from N import func                           # Nadpisuje zmienną otrzymaną z modułu M
+func()                                       # Wywołuje tylko N.func
+
+
+
+# Plik O.py
+
+import M, N                                  # Pobranie całych modułów, nie ich zmiennych
+M.func()                                     # Teraz możemy wywołać obie zmienne
+N.func()                                     # Dzięki nazwom modułów są one unikalne
+
+
+
+
+### Plik: module2.py
+
+print('rozpoczęto ładowanie...')
+import sys
+name = 42
+
+def func(): pass
+
+class klass: pass
+
+print('zakończono ładowanie.')
+
+
+
+
+>>> import module2
+rozpoczęto ładowanie...
+zakończono ładowanie.
+
+
+>>> module2.sys
+<module 'sys' (built-in)>
+
+>>> module2.name
+42
+
+>>> module2.func
+<function func at 0x026D3BB8>
+
+>>> module2.klass
+<class 'module2.klass'>
+
+
+
+>>> list(module2.__dict__.keys())
+['name', '__builtins__', '__file__', '__package__', 'sys', 'klass', 'func', 
+'__name__', '__doc__']
+
+
+
+## Plik: moda.py
+
+X = 88                                       # X — zmienna globalna dla tego pliku
+def f():
+   global X                                  # Modyfikuje zmienną X tego pliku
+   X = 99                                    # Nie widzi zmiennych z innych modułów
+
+
+
+
+### Plik: modb.py
+
+X = 11                                       # X — zmienna globalna dla tego pliku
+
+import moda                                  # Dostęp do zmiennych z moda
+moda.f()                                     # Ustawia moda.X, a nie X z tego pliku
+print(X, moda.X)
+
+
+
+
+% python modb.py
+11 99
+
+
+
+### Plik: mod3.py
+
+X = 3
+
+
+### Plik: mod2.py
+
+X = 2
+import mod3
+
+print(X, end=' ')                            # Globalna zmienna X pliku
+print(mod3.X)                                # Zmienna X z modułu mod3
+
+
+
+### Plik: mod1.py
+
+X = 1
+import mod2
+
+print(X, end=' ')                            # Globalna zmienna X pliku
+print(mod2.X, end=' ')                       # Zmienna X z modułu mod2
+print(mod2.mod3.X)                           # Zmienna X z zagnieżdżonego modułu mod3
+
+
+
+
+% python mod1.py
+2 3
+1 2 3
+
+
+
+### Plik: changer.py
+
+message = "Pierwsza wersja"
+def printer():
+   print(message)
+
+
+
+
+>>> import changer
+>>> changer.printer()
+Pierwsza wersja
+
+
+
+
+### Plik: changer.py (po edycji i zapisie)
+
+message = "Po edycji"
+def printer():
+   print('przeładowany:', message)
+
+
+
+
+>>> import changer
+>>> changer.printer()                        # Brak efektu — wykorzystuje załadowany moduł
+Pierwsza wersja
+>>> from imp import reload
+>>> reload(changer)                          # Wymusza załadowanie i wykonanie nowego kodu
+<module 'changer' from 'changer.py'>
+>>> changer.printer()                        # Teraz wykonuje nową wersję
+przeładowany: Po edycji

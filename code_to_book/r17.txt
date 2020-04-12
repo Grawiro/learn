@@ -1,0 +1,611 @@
+X = 99
+
+def func():
+   X = 88
+
+
+
+
+# Zakres globalny
+X = 99                                       # X i func przypisane w module: globalne
+
+def func(Y):                                 # Y i Z przypisane w funkcji: lokalne
+   # Zakres lokalny
+   Z = X + Y                                 # X jest globalne
+   return Z
+
+func(1)                                      # func w module: wynik = 100
+
+
+
+
+>>> import builtins
+>>> dir(builtins)
+
+
+
+>>> zip                                      # W normalny sposób
+<class 'zip'>
+
+>>> import builtins                          # W bardziej skomplikowany sposób
+>>> builtins.zip
+<class 'zip'>
+
+
+
+
+def hider():
+   open = 'mielonka'                         # Zmienna lokalna, ukrywa wbudowaną
+   ...
+   open('data.txt')                          # Polecenie to nie otworzy w tym zakresie pliku!
+
+
+
+
+X = 88                                       # Zmienna globalna X
+
+def func():
+   X = 99                                    # Zmienna lokalna X: ukrywa globalną
+
+func()
+print(X)                                     # Wyświetla 88: bez zmian
+
+
+
+
+X = 88                                       # Zmienna globalna X
+
+def func():
+   global X
+   X = 99                                    # Zmienna globalna X: poza def
+
+func()
+print(X)                                     # Wyświetla 99
+
+
+
+
+y, z = 1, 2                                  # Zmienne globalne w module
+def all_global():
+   global x                                  # Deklaracja przypisanych zmiennych globalnych
+   x = y + z                                 # Nie trzeba przypisywać y i z — działa reguła LEGB
+
+
+
+
+X = 99
+
+def func1():
+   global X
+   X = 88
+
+def func2():
+   global X
+   X = 77
+
+
+
+
+# Plik first.py
+X = 99                                  # Ten kod nie wie nic o pliku second.py
+
+# Plik second.py
+import first
+print(first.X)                          # OK: referencja do zmiennej w innym pliku
+first.X = 88                            # Zmodyfikowanie jej może być zbyt subtelne i niejawne
+
+
+
+
+# Plik first.py
+X = 99
+
+def setX(new):
+   global X
+   X = new
+
+# Plik second.py
+import first
+first.setX(88)
+
+
+
+
+# Plik thismod.py
+
+var = 99                                     # Zmienna globalna == atrybut modułu
+
+def local():
+   var = 0                                   # Modyfikacja zmiennej lokalnej var
+
+def glob1():
+   global var                                # Deklaracja zmiennej globalnej (normalnej)
+   var += 1                                  # Modyfikacja zmiennej globalnej var
+
+def glob2():
+   var = 0                                   # Modyfikacja zmiennej lokalnej var
+   import thismod                            # Zaimportowanie siebie
+   thismod.var += 1                          # Modyfikacja zmiennej globalnej var
+
+def glob3():
+   var = 0                                   # Modyfikacja zmiennej lokalnej var
+   import sys                                # Zaimportowanie tabeli systemowej
+   glob = sys.modules['thismod']             # Pobranie obiektu modułu (można też użyć __name__)
+   glob.var += 1                             # Modyfikacja zmiennej globalnej var
+
+def test():
+   print(var)
+   local(); glob1(); glob2(); glob3()
+   print(var)
+
+
+
+
+>>> import thismod
+>>> thismod.test()
+99
+102
+>>> thismod.var
+102
+
+
+
+X = 99                                       # Zmienna z zakresu globalnego — nieużywana
+
+def f1():
+   X = 88                                    # Zmienna lokalna z zakresu zawierającego
+   def f2():
+      print(X)                               # Referencja w zagnieżdżonej instrukcji def
+   f2()
+
+f1()                                         # Wyświetla 88 — zmienną lokalną funkcji zawierającej
+
+
+
+
+def f1():
+   X = 88
+   def f2():
+      print(X)                               # Pamięta X w zakresie funkcji zawierającej
+   return f2                                 # Zwraca f2, ale nie wywołuje
+
+action = f1()                                # Utworzenie i zwrócenie funkcji
+action()                                     # Teraz wywołanie jej — wyświetla 88
+
+
+
+
+>>> def maker(N):
+...    def action(X):                        # Utworzenie i zwrócenie funkcji action
+...       return X ** N                      # Funkcja action zachowuje N z zakresu funkcji zawierającej
+...    return action
+...
+
+
+>>> f = maker(2)                             # Przekazanie 2 do N
+>>> f
+<function action at 0x014720B0>
+
+
+>>> f(3)                                     # Przekazanie 3 do X, N pamięta 2 — 3 ** 2
+9
+>>> f(4)                                     # 4 ** 2
+16
+
+
+>>> g = maker(3)                             # g pamięta 3, f pamięta 2
+>>> g(3)                                     # 3 ** 3
+27
+>>> f(3)                                     # 3 ** 2
+9
+
+
+
+
+def f1():
+   x = 88
+   def f2(x=x):                        # Pamięta x z zakresu funkcji zawierającej z wartościami domyślnymi
+      print(x)
+   f2()
+
+f1()                                   # Wyświetla 88
+
+
+
+
+>>> def f1():
+...    x = 88                             # Przekazanie x zamiast zagnieżdżania
+...    f2(x)                              # Referencja z wyprzedzeniem jest OK
+...
+>>> def f2(x):
+...    print(x)
+...
+>>> f1()
+88
+
+
+
+
+def func():
+   x = 4
+   action = (lambda n: x ** n)               # x pamiętane z zakresu zawierającego
+   return action
+
+x = func()
+print(x(2))                                  # Wyświetla 16 (4 ** 2)
+
+
+
+
+def func():
+   x = 4
+   action = (lambda n, x=x: x ** n)          # Ręczne przekazanie x
+   return action
+
+
+
+
+>>> def makeActions():
+...    acts = []
+...    for i in range(5):                    # Próbuje zapamiętać każde i
+...       acts.append(lambda x: i ** x)      # Wszystkie pamiętają to samo ostatnie i!
+...    return acts
+...
+>>> acts = makeActions()
+>>> acts[0]
+<function <lambda> at 0x012B16B0>
+
+
+
+
+>>> acts[0](2)                               # Wszystkie to 4 ** 2, wartość ostatniego i
+16
+>>> acts[2](2)                               # Powinno być 2 ** 2
+16
+>>> acts[4](2)                               # Powinno być 4 ** 2
+16
+
+
+
+
+>>> def makeActions():
+...    acts = []
+...    for i in range(5):                    # Użycie domyślnych wartości argumentów
+...       acts.append(lambda x, i=i: i ** x) # Pamiętanie bieżącej wartości zmiennej i
+...    return acts
+...
+>>> acts = makeActions()
+>>> acts[0](2)                               # 0 ** 2
+0
+>>> acts[2](2)                               # 2 ** 2
+4
+>>> acts[4](2)                               # 4 ** 2
+16
+
+
+
+
+>>> def f1():
+...    x = 99
+...    def f2():
+...       def f3():
+...          print(x)                        # Znalezione w zakresie lokalnym f1!
+...       f3()
+...    f2()
+...
+>>> f1()
+99
+
+
+
+
+def func():
+   nonlocal zmienna1, zmienna2, ...
+
+
+
+
+C:\\misc>c:\python30\python
+
+>>> def tester(start):
+...    state = start                 # Referencja do zmiennej nielokalnej działa normalnie
+...    def nested(label):
+...       print(label, state)        # Pamięta stan w zakresie funkcji zawierającej
+...    return nested
+...
+>>> F = tester(0)
+>>> F('mielonka')
+mielonka 0
+>>> F('szynka')
+szynka 0
+
+
+
+
+>>> def tester(start):
+...    state = start
+...    def nested(label):
+...       print(label, state)
+...       state += 1                 # Domyślnie nie może się zmienić (w 2.6 też nie)
+...    return nested
+...
+>>> F = tester(0)
+>>> F('mielonka')
+UnboundLocalError: local variable 'state' referenced before assignment
+
+
+
+
+>>> def tester(start):
+...    state = start                  # Każde wywołanie otrzymuje własną zmienną state
+...    def nested(label):
+...       nonlocal state              # Pamięta state z zakresu funkcji zawierającej
+...       print(label, state)
+...       state += 1                  # Można zmienić, jeśli nonlocal
+...    return nested
+...
+>>> F = tester(0)
+>>> F('mielonka')                     # Inkrementuje state z każdym wywołaniem
+mielonka 0
+>>> F('szynka')
+szynka 1
+>>> F('jajka')
+jajka 2
+
+
+
+>>> G = tester(42)                 # Utworzenie nowej funkcji tester rozpoczynającej się od 42
+>>> G('mielonka')
+mielonka 42
+>>> G('jajka')                     # Informacje o stanie uaktualnione do 43
+jajka 43
+>>> F('bekon')                     # Dla F pozostają takie, jakie były: 3
+bekon 3
+
+
+
+
+>>> def tester(start):
+...    def nested(label):
+...       nonlocal state           # Zmienne nielokalne muszą już istnieć w zakresie funkcji zawierającej!
+...       state = 0
+...       print(label, state)
+...    return nested
+...
+SyntaxError: no binding for nonlocal 'state' found
+
+>>> def tester(start):
+...    def nested(label):
+...       global state             # Zmienne globalne nie muszą istnieć przy deklarowaniu ich
+...       state = 0                # To tworzy teraz zmienną w module
+...       print(label, state)
+...    return nested
+...
+>>> F = tester(0)
+>>> F('abc')
+abc 0
+>>> state
+0
+
+
+
+
+>>> spam = 99
+>>> def tester():
+...    def nested():
+...       nonlocal spam            # Musi być w instrukcji def, nie w module!
+...       print('Aktualna wartość=', spam)
+...       spam += 1
+...    return nested
+...
+SyntaxError: no binding for nonlocal 'spam' found
+
+
+
+
+
+def tester(start):
+   state = start                             # Każde wywołanie otrzymuje własną zmienną state
+   def nested(label):
+      nonlocal state                         # Pamięta state z zakresu funkcji zawierającej
+      print(label, state)
+      state += 1                             # Można zmienić, jeśli nonlocal
+   return nested
+
+F = tester(0)
+F('mielonka')
+
+
+
+
+>>> def tester(start):
+...    global state                  # Przeniesienie do modułu w celu modyfikacji
+...    state = start                 # global pozwala na zmiany w zakresie modułu
+...    def nested(label):
+...       global state
+...       print(label, state)
+...       state += 1
+...    return nested
+...
+>>> F = tester(0)
+>>> F('mielonka')                    # Każde wywołanie inkrementuje współdzieloną zmienną globalną state
+mielonka 0
+>>> F('jajka')
+jajka 1
+
+
+
+>>> G = tester(42)                   # Przywraca wartość jedynej kopii zmiennej state w zakresie globalnym
+>>> G('tost')
+tost 42
+>>> G('bekon')
+bekon 43
+>>> F('szynka')                      # Oj — mój licznik został nadpisany!
+szynka 44
+
+
+
+>>> class tester:                      # Alternatywa oparta na klasach (patrz część VI)
+...    def __init__(self, start):      # Przy tworzeniu obiektu stan jest...
+...       self.state = start           # …zapisywany w nowym obiekcie w sposób jawny
+...    def nested(self, label):
+...       print(label, self.state)     # Jawna referencja do zmiennej state
+...       self.state += 1              # Modyfikacja jest zawsze dozwolona
+...
+>>> F = tester(0)                      # Tworzenie instancji, wywołanie __init__
+>>> F.nested('mielonka')               # F przekazywane jest do self
+mielonka 0
+>>> F.nested('szynka')
+szynka 1
+>>> G = tester(42)                     # Każda instancja otrzymuje nową kopię zmiennej state
+>>> G.nested('tost')                   # Zmiana jednej nie wpływa na pozostałe
+tost 42
+>>> G.nested('bekon')
+bekon 43
+
+>>> F.nested('jajka')                  # Zmienna state dla F jest taka, na jakiej skończyliśmy
+jajka 2
+>>> F.state                            # Dostęp do state poza klasą
+3
+
+
+
+
+>>> class tester:
+...    def __init__(self, start):
+...       self.state = start
+...    def __call__(self, label):      # Przechwycenie bezpośrednich wywołań instancji
+...       print(label, self.state)     # .nested() nie jest wymagane
+...       self.state += 1
+...
+>>> H = tester(99)
+>>> H('sok')                           # Wywołanie __call__
+sok 99
+>>> H('naleśniki')
+naleśniki 100
+
+
+
+
+>>> def tester(start):
+...    def nested(label):
+...       print(label, nested.state)        # nested jest w zakresie funkcji zawierającej
+...       nested.state += 1                 # Zmiana atrybutu, a nie samej nested
+...    nested.state = start                 # Początkowy stan po zdefiniowaniu funkcji
+...    return nested
+...
+>>> F = tester(0)
+>>> F('mielonka')                           # F to nested z dołączonym stanem
+mielonka 0
+>>> F('szynka')
+szynka 1
+>>> F.state                                 # Można także uzyskać dostęp do stanu spoza funkcji
+2
+>>>
+>>> G = tester(42)                          # G ma własny stan, nie nadpisuje stanu F
+>>> G('jajka')
+jajka 42
+>>> F('szynka')
+szynka 2
+
+
+
+
+# UWAGA: zgodnie ze stroną z uaktualnieniem książki (dostępną pod adresem 
+# http://www.rmi.net/~lutz/lp4e-updates.html) stan można również zachować za pomocą
+# modyfikacji obieku zmiennego w miejscu za pomocą użycia jego nazwy w zakresie
+# zawierającym, bez instrukcji "nonlocal". Jest to nieco mniej jasne rozwiązanie,
+# ale jest możliwe do wykonania w Pythonie 2.X. Poniższego kodu nie ma w książce,
+# jednak pokazuje on, w jaki sposób można to wykonać.
+
+>>> def tester(start):
+...    def nested(label):
+...       print(label, state[0])
+...       state[0] += 1                # Zmiana obiektu, a nie nazwy
+...    state = [start]
+...    return nested
+...
+>>> F = tester(0)                      # Stan na wywołanie znowu jest zachowywany:
+>>> F('mielonka')                      # każde wywołanie tester() ma nowy zakres lokalny
+('mielonka', 0)
+>>> F('jajka')                         # F.state nie jest tutaj dostępny
+('jajka', 1)
+>>>
+>>> G = tester(42)
+>>> G('szynka')
+('szynka', 42)
+>>> G('bekon')
+('bekon', 43)
+>>>
+>>> F('kiełbasa')
+('kiełbasa', 2)
+
+
+
+
+#### Kod quizu
+
+
+>>> X = 'Mielonka'
+>>> def func():
+...    print(X)
+...
+>>> func()
+
+
+
+
+>>> X = 'Mielonka'
+>>> def func():
+...    X = 'NI!'
+...
+>>> func()
+>>> print(X)
+
+
+
+
+>>> X = 'Mielonka'
+>>> def func():
+...    X = 'NI'
+...    print(X)
+...
+>>> func()
+>>> print(X)
+
+
+
+
+>>> X = 'Mielonka'
+>>> def func():
+...    global X
+...    X = 'NI'
+...
+>>> func()
+>>> print(X)
+
+
+
+
+>>> X = 'Mielonka'
+>>> def func():
+...    X = 'NI'
+...    def nested():
+...       print(X)
+...    nested()
+...
+>>> func()
+>>> X
+
+
+
+
+>>> def func():
+...    X = 'NI'
+...    def nested():
+...       nonlocal X
+...       X = 'Mielonka'
+...    nested()
+...    print(X)
+...
+>>> func()

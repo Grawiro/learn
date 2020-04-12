@@ -1,0 +1,1357 @@
+>>> ord('a')                      # 'a' jest w ASCII bajtem z wartością binarną 97
+97
+>>> hex(97)
+'0x61'
+>>> chr(97)                       # Wartość binarna 97 oznacza znak 'a'
+'a'
+
+
+
+
+>>> 0xC4
+196
+>>> chr(196)
+'Ä'
+
+
+
+
+C:\misc> c:\python30\python
+
+>>> B = b'mielonka'           # Utworzenie obiektu typu bytes (8-bitowe bajty)
+>>> S = 'jajka'               # Utworzenie obiektu typu str (znaki Unicode, 8-bitowe lub większe)
+
+>>> type(B), type(S)
+(<class 'bytes'>, <class 'str'>)
+
+>>> B                         # Wyświetla jako łańcuchy znaków, a tak naprawdę są to sekwencje liczb całkowitych
+b'mielonka'
+>>> S
+'jajka'
+
+
+
+
+>>> B[0], S[0]                 # Indeksowanie zwraca typ int dla bytes, typ str dla str
+(109, 'j')
+
+>>> B[1:], S[1:]               # Wycinek tworzy inny obiekt bytes lub str
+(b'ielonka', 'ajka')
+
+>>> list(B), list(S)           # bytes to tak naprawdę liczby całkowite
+([109, 105, 101, 108, 111, 110, 107, 97], ['j', 'a', 'j', 'k', 'a']) 
+
+
+
+
+>>> B[0] = 'x'      # Oba są niezmienne
+TypeError: 'bytes' object does not support item assignment
+
+>>> S[0] = 'x'
+TypeError: 'str' object does not support item assignment
+
+>>> B = B"""        # Przedrostek bytes działa dla apostrofów, cudzysłowów i podwójnych apostrofów oraz cudzysłowów
+... xxxx
+... yyyy
+... """
+>>> B
+b'\nxxxx\nyyyy\n'
+
+
+
+
+>>> S = 'jajka'
+>>> S.encode()                       # Ze str na bytes: kodowanie tekstu na bajty
+b'jajka'
+
+>>> bytes(S, encoding='utf-8')       # Ze str na bytes, alternatywa
+b'jajka'
+
+>>> B = b'mielonka'
+>>> B.decode()                       # Z bytes do str: zdekodowanie bajtów na tekst
+'mielonka'
+
+>>> str(B, encoding='utf-8')         # Z bytes do str, alternatywa
+'mielonka'
+
+
+
+
+>>> import sys
+>>> sys.platform                          # Wykorzystywana platforma
+'win32'
+>>> sys.getdefaultencoding()              # Domyślne kodowanie dla obiektów str
+'utf-8'
+
+>>> bytes(S)
+TypeError: string argument without an encoding
+
+>>> str(B)                                 # Obiekt str bez kodowania
+"b'mielonka                                # Łańcuch znaków wyświetlania, a nie konwersja!
+>>> len(str(B))
+11
+>>> len(str(B, encoding='utf-8'))          # Użycie kodowania w celu konwersji na str
+8
+
+
+
+
+C:\misc> c:\python30\python
+
+>>> ord('X')                     # 'X' ma wartość binarną 88 w kodowaniu domyślnym
+88
+>>> chr(88)                      # 88 oznacza znak 'X'
+'X'
+
+>>> S = 'XYZ'                    # Łańcuch znaków Unicode dla tekstu ASCII
+>>> S
+'XYZ'
+>>> len(S)                       # Długość 3 znaków
+3
+>>> [ord(c) for c in S]          # 3 bajty z liczbowymi wartościami porządkowymi
+[88, 89, 90]
+
+
+
+
+>>> S.encode('ascii')            # Wartości 0..127, każde w 1 bajcie (7 bitach)
+b'XYZ'
+>>> S.encode('latin-1')          # Wartości 0..255, każde w 1 bajcie (8 bitach)
+b'XYZ'
+>>> S.encode('utf-8')            # Wartości 0..127, każde w 1 bajcie, 128..2047 w 2, inne w 3 lub 4
+b'XYZ'
+
+
+
+
+>>> S.encode('latin-1')[0]
+88
+>>> list(S.encode('latin-1'))
+[88, 89, 90]
+
+
+
+
+>>> chr(0xc4)                    # 0xC4, 0xE8: znaki spoza zakresu ASCII
+'Ä'
+>>> chr(0xe8)
+'è'
+
+>>> S = '\xc4\xe8'               # Jednobajtowe 8-bitowe szesnastkowe sekwencje ucieczki
+>>> S
+'Äè'
+
+>>> S = '\u00c4\u00e8'           # 16-bitowe sekwencje ucieczki Unicode
+>>> S
+'Äè'
+>>> len(S)                       # 2 znaki długości (nie liczba bajtów!)
+2
+
+
+
+
+>>> S = '\u00c4\u00e8'
+>>> S
+'Äè'
+>>> len(S)
+2
+
+>>> S.encode('ascii')
+UnicodeEncodeError: 'ascii' codec can't encode characters in position 0-1: ordinal not in range(128)
+
+>>> S.encode('latin-1')                 # Jeden bajt na znak
+b'\xc4\xe8'
+
+>>> S.encode('utf-8')                   # Dwa bajty na znak
+b'\xc3\x84\xc3\xa8'
+
+>>> len(S.encode('latin-1'))            # 2 bajty w latin-1, 4 w utf-8
+2
+>>> len(S.encode('utf-8'))
+4
+
+
+
+
+>>> B = b'\xc4\xe8'
+>>> B
+b'\xc4\xe8'
+>>> len(B)                       # 2 surowe bajty, 2 znaki
+2
+>>> B.decode('latin-1')          # Zdekodowanie do tekstu latin-1
+'Äè'
+
+>>> B = b'\xc3\x84\xc3\xa8'
+>>> len(B)                       # 4 surowe bajty
+4
+>>> B.decode('utf-8')
+'Äè'
+>>> len(B.decode('utf-8'))       # 2 znaki Unicode
+2
+
+
+
+
+>>> S = 'A\u00c4B\U000000e8C'
+>>> S                          # A, B, C i dwa znaki spoza ASCII
+'AÄBèC'
+>>> len(S)                     # 5 znaków długości
+5
+
+>>> S.encode('latin-1')
+b'A\xc4B\xe8C'
+>>> len(S.encode('latin-1'))   # 5 bajtów w latin-1
+5
+
+>>> S.encode('utf-8')
+b'A\xc3\x84B\xc3\xa8C'
+>>> len(S.encode('utf-8'))     # 7 bajtów w utf-8
+7
+
+
+
+
+>>> S
+'AÄBèC'
+>>> S.encode('cp500')                # Dwa inne kodowania zachodnioeuropejskie
+b'\xc1c\xc2T\xc3'
+>>> S.encode('cp850')                # 5 bajtów każdy
+b'A\x8eB\x8aC'
+
+>>> S = 'mielonka'                   # Tekst ASCII jest taki sam w większości typów kodowania
+>>> S.encode('latin-1')
+b'mielonka'
+>>> S.encode('utf-8')
+b'mielonka'
+>>> S.encode('cp500')                #Ale nie w cp500: IBM EBCDIC!
+b'\x94\x89\x85\x93\x96\x95\x92\x81'
+>>> S.encode('cp850')
+b'mielonka'
+
+
+
+>>> S = 'A' + chr(0xC4) + 'B' + chr(0xE8) + 'C'
+>>> S
+'AÄBèC'
+
+
+
+
+>>> S = 'A\xC4B\xE8C'                  # str rozpoznaje sekwencje ucieczki Unicode i szesnastkowe
+>>> S
+'AÄBèC'
+
+>>> S = 'A\u00C4B\U000000E8C'
+>>> S
+'AÄBèC'
+
+>>> B = b'A\xC4B\xE8C'                # bytes rozpoznaje szesnastkowe sekwencje ucieczki, Unicode nie
+>>> B
+b'A\xc4B\xe8C'
+
+>>> B = b'A\u00C4B\U000000E8C'        # Sekwencje ucieczki potraktowane dosłownie!
+>>> B
+b'A\\u00C4B\\U000000E8C'
+
+>>> B = b'A\xC4B\xE8C'                # W przypadku bytes trzeba użyć szesnastkowych sekwencji ucieczki
+>>> B                                 # Wyświetla znaki spoza ASCII jako szesnastkowe
+b'A\xc4B\xe8C'
+>>> print(B)
+b'A\xc4B\xe8C'
+>>> B.decode('latin-1')               # Dekoduje jako latin-1, by zinterpretować jako tekst
+'AÄBèC'
+
+
+
+
+>>> S = 'AÄBèC'                   # Znaki z UTF-8, jeśli nie ma deklaracji kodowania
+>>> S
+'AÄBèC'
+
+>>> B = b'AÄBèC'
+SyntaxError: bytes can only contain ASCII literal characters.
+
+>>> B = b'A\xC4B\xE8C'            # Znaki muszą być ASCII lub z sekwencjami ucieczki
+>>> B
+b'A\xc4B\xe8C'
+>>> B.decode('latin-1')
+'AÄBèC'
+
+>>> S.encode()                    # Kod źródłowy domyślnie zakodowany jako UTF-8
+b'A\xc3\x84B\xc3\xa8C'            # Wykorzystuje ustawienie domyślne systemu do zdekodowania, o ile nie przekazano kodowania
+>>> S.encode('utf-8')
+b'A\xc3\x84B\xc3\xa8C'
+
+>>> B.decode()                     # Surowe bajty nie odpowiadają utf-8
+UnicodeDecodeError: 'utf8' codec can't decode bytes in position 1-2: ...
+
+
+
+
+>>> S = 'AÄBèC'
+>>> S
+'AÄBèC'
+>>> S.encode()                    # Domyślne kodowanie utf-8
+b'A\xc3\x84B\xc3\xa8C'
+
+>>> T = S.encode('cp500')         # Konwersja na EBCDIC
+>>> T
+b'\xc1c\xc2T\xc3'
+
+>>> U = T.decode('cp500')         # Konwersja z powrotem na Unicode
+>>> U
+'AÄBèC'
+
+>>> U.encode()                    # Znowu domyślne kodowanie utf-8
+b'A\xc3\x84B\xc3\xa8C'
+
+
+
+
+C:\misc> c:\python26\python
+>>> import sys
+>>> sys.version
+'2.6 (r26:66721, Oct 2 2008, 11:35:03) [MSC v.1500 32 bit (Intel)]'
+
+>>> S = 'A\xC4B\xE8C'              # Łańcuch 8-bitowych bajtów
+>>> print S                        # Niektóre z nich są spoza ASCII
+AÄBèC
+
+>>> S.decode('latin-1')            # Zdekodowanie bajta do Unicode w latin-1
+u'A\xc4B\xe8C'
+
+>>> S.decode('utf-8')              # Nie jest sformatowane jak utf-8
+UnicodeDecodeError: 'utf8' codec can't decode bytes in position 1-2: invalid data
+
+>>> S.decode('ascii')              # Poza zakresem ASCII
+UnicodeDecodeError: 'ascii' codec can't decode byte 0xc4 in position 1: ordinal not in range(128)
+
+
+
+
+>>> U = u'A\xC4B\xE8C'       # Utworzenie łańcucha Unicode, szesnastkowe sekwencje ucieczki
+>>> U
+u'A\xc4B\xe8C'
+>>> print U
+AÄBèC
+
+
+
+
+>>> U.encode('latin-1')              # Kodowanie latin-1: 8-bitowe bajty
+'A\xc4B\xe8C'
+>>> U.encode('utf-8')                # Kodowanie utf-8: wielobajtowe
+'A\xc3\x84B\xc3\xa8C'
+
+
+
+
+C:\misc> c:\python26\python
+>>> U = u'A\xC4B\xE8C'               # Szesnastkowe sekwencje ucieczki dla znaków spoza ASCII
+>>> U
+u'A\xc4B\xe8C'
+>>> print U
+AÄBèC
+
+>>> U = u'A\u00C4B\U000000E8C'       # Sekwencje ucieczki Unicode dla znaków spoza ASCII
+>>> U                                # u'' = 16 bitów, U'' = 32 bity
+u'A\xc4B\xe8C'
+>>> print U
+AÄBèC
+
+>>> S = 'A\xC4B\xE8C'                # Szesnastkowe sekwencje ucieczki działają
+>>> S
+'A\xc4B\xe8C'
+>>> print S                          # Niektóre są dziwnie wyświetlane, jeśli się ich nie zdekoduje
+A-BFC
+>>> print S.decode('latin-1')
+AÄBèC
+
+>>> S = 'A\u00C4B\U000000E8C'        # Nie sekwencje ucieczki Unicode — traktowane są dosłownie!
+>>> S
+'A\\u00C4B\\U000000E8C'
+>>> print S
+A\u00C4B\U000000E8C
+>>> len(S)
+19
+
+
+
+
+>>> u'ab' + 'cd'                   # Mogą się w 2.6 mieszać, jeśli są zgodne
+u'abcd'                            # 'ab' + b'cd' nie jest dozwolone w wersji 3.0
+
+
+
+
+>>> str(u'mielonka')                # Z Unicode na normalny łańcuch znaków
+'mielonka'
+>>> unicode('mielonka')             # Z normalnego łańcucha znaków na Unicode
+u'mielonka'
+
+
+
+
+>>> S = 'A\xC4B\xE8C'                # Nie można mieszać, jeśli są niezgodne
+>>> U = u'A\xC4B\xE8C'
+>>> S + U
+UnicodeDecodeError: 'ascii' codec can't decode byte 0xc4 in position 1: ordinal not in range(128)
+
+>>> S.decode('latin-1') + U          # Nadal wymagana ręczna konwersja
+u'A\xc4B\xe8CA\xc4B\xe8C'
+
+>>> print S.decode('latin-1') + U
+AÄBèCAÄBèC
+
+
+
+
+# -*- coding: latin-1 -*-
+
+
+### Plik: text.py
+
+# -*- coding: latin-1 -*-
+
+# Każda z poniższych form literału łańcucha znaków działa w latin-1.
+# Zmiana kodowania wyżej na ASCII albo utf-8 nie powiedzie się, ponieważ znaki 0xc4 i 0xe8 z myStr1 nie są w nich poprawne.
+
+myStr1 = 'aÄBèC'
+
+myStr2 = 'A\u00c4B\U000000e8C'
+
+myStr3 = 'A' + chr(0xC4) + 'B' + chr(0xE8) + 'C'
+
+import sys
+print('Kodowanie systemowe:', sys.getdefaultencoding())
+
+for aStr in myStr1, myStr2, myStr3:
+   print('{0}, strlen={1}, '.format(aStr, len(aStr)), end='')
+
+   bytes1 = aStr.encode()             # Zgodnie z domyślnym utf-8: 2 bajty dla znaków spoza ASCII
+   bytes2 = aStr.encode('latin-1')    # Jeden bajt na znak
+   #bytes3 = aStr.encode('ascii')     # ASCII nie działa: poza zakresem 0..127
+
+   print('byteslen1={0}, byteslen2={1}'.format(len(bytes1), len(bytes2)))
+
+
+
+
+C:\misc> c:\python30\python text.py
+Kodowanie domyślne: utf-8
+aÄBèC, strlen=5, byteslen1=7, byteslen2=5
+AÄBèC, strlen=5, byteslen1=7, byteslen2=5
+AÄBèC, strlen=5, byteslen1=7, byteslen2=5
+
+
+
+
+C:\misc> c:\python30\python
+
+# Atrybuty unikalne dla typu str
+
+>>> set(dir('abc')) - set(dir(b'abc'))
+{'isprintable', 'format', '__mod__', 'encode', 'isidentifier', '_formatter_field_name_split', 'isnumeric', '__rmod__', 'isdecimal', '_formatter_parser', 'maketrans'}
+
+# Atrybuty unikalne dla typu bytes
+
+>>> set(dir(b'abc')) - set(dir('abc'))
+{'decode', 'fromhex'}
+
+
+
+
+>>> B = b'mielonka'                # Literał obiektu bytes b'...'
+>>> B.find(b'ie')
+1
+
+>>> B.replace(b'ie', b'XY')        # Metody bytes oczekują argumentów bytes
+b'mXYlonka'
+
+>>> B.split(b'ie')
+[b'm', b'lonka']
+
+>>> B
+b'mielonka'
+
+>>> B[0] = 'x'
+TypeError: 'bytes' object does not support item assignment
+
+
+
+
+>>> b'%s' % 99
+TypeError: unsupported operand type(s) for %: 'bytes' and 'int'
+
+>>> '%s' % 99
+'99'
+
+>>> b'{0}'.format(99)
+AttributeError: 'bytes' object has no attribute 'format'
+
+>>> '{0}'.format(99)
+'99'
+
+
+
+
+>>> B = b'mielonka'              # Sekwencja niewielkich liczb całkowitych
+>>> B                            # Wyświetlana jako znaki ASCII
+b'mielonka'
+
+>>> B[0]                         # Indeksowanie zwraca liczbę całkowitą
+109
+>>> B[-1]
+97
+
+>>> chr(B[0])                    # Pokazanie znaku dla liczby całkowitej
+'m'
+>>> list(B)                      # Pokazanie wszystkich wartość liczb całkowitych obiektu bytes
+[109, 105, 101, 108, 111, 110, 107, 97]
+
+>>> B[1:], B[:-1]
+(b'ielonka', b'mielonk')
+
+>>> len(B)
+8
+
+>>> B + b'lmn'
+b'mielonkalmn'
+>>> B * 4
+b'mielonkamielonkamielonkamielonka'
+
+
+
+
+>>> B = b'abc'
+>>> B
+b'abc'
+
+>>> B = bytes('abc', 'ascii')
+>>> B
+b'abc'
+
+>>> ord('a')
+97
+>>> B = bytes([97, 98, 99])
+>>> B
+b'abc'
+
+>>> B = 'mielonka'.encode()                    # Lub bytes()
+>>> B
+b'mielonka'
+>>>
+>>> S = B.decode()                             # Lub str()
+>>> S
+'mielonka'
+
+
+
+
+# Musi przekazywać oczekiwane typy do wywołań funkcji oraz metod
+
+>>> B = b'mielonka'
+
+>>> B.replace('ie', 'XY')
+TypeError: expected an object with the buffer interface
+
+>>> B.replace(b'ie', b'XY')
+b'mXYlonka'
+
+>>> B = B'mielonka'
+>>> B.replace(bytes('ie'), bytes('xy'))
+TypeError: string argument without an encoding
+
+>>> B.replace(bytes('ie', 'ascii'), bytes('xy', 'utf-8'))
+b'mxylonka'
+
+# Musi dokonywać ręcznej konwersji w wyrażeniach z mieszanymi typami
+
+>>> b'ab' + 'cd'
+TypeError: can't concat bytes to str
+
+>>> b'ab'.decode() + 'cd'                   # Z bytes na str
+'abcd'
+
+>>> b'ab' + 'cd'.encode()                   # Ze str na bytes
+b'abcd'
+
+>>> b'ab' + bytes('cd', 'ascii')            # Ze str na bytes
+b'abcd'
+
+
+
+# Utworzenie w Pythonie 2.6: zmienna sekwencja małych (0..255) liczb całkowitych
+
+>>> S = 'mielonka'
+>>> C = bytearray(S)                    # Przeniesienie z wersji 3.0 do 2.6
+>>> C                                   # b'..' == '..' w wersji 2.6 (str)
+bytearray(b'mielonka')
+
+
+
+
+# Utworzenie w Pythonie 2.6: tekst i dane binarne nie mieszają się ze sobą
+
+>>> S = 'mielonka'
+>>> C = bytearray(S)
+TypeError: string argument without an encoding
+
+>>> C = bytearray(S, 'utf-8')            # Typ odpowiedni dla zawartości w wersji 3.0
+>>> C
+bytearray(b'mielonka')
+
+>>> B = b'mielonka'                      # b'..' != '..' w wersji 3.0 (bytes/str)
+>>> C = bytearray(B)
+>>> C
+bytearray(b'mielonka')
+
+
+
+# Obiekt zmienny, jednak musi przypisywać liczby całkowite, a nie łańcuchy znaków
+
+>>> C[0]
+109
+
+>>> C[0] = 'x'                             # Ta i poniższa operacja działają w wersji 2.6
+TypeError: an integer is required
+
+>>> C[0] = b'x'
+TypeError: an integer is required
+
+>>> C[0] = ord('x')
+>>> C
+bytearray(b'xielonka')
+
+>>> C[1] = b'Y'[0]
+>>> C
+bytearray(b'xYelonka')
+
+
+
+
+# Metody pokrywają się z działaniami dla typów str oraz bytes, jednak bytearray obsługuje także metody zmienne list
+
+>>> set(dir(b'abc')) - set(dir(bytearray(b'abc')))
+{'__getnewargs__'}
+
+>>> set(dir(bytearray(b'abc'))) - set(dir(b'abc'))
+{'insert', '__alloc__', 'reverse', 'extend', '__delitem__', 'pop', '__setitem__', '__iadd__', 'remove', 'append', '__imul__'}
+
+
+
+
+# Wywołania zmiennych metod
+
+>>> C
+bytearray(b'xYelonka')
+
+>>> C.append(b'LMN')                   # Python 2.6 wymaga łańcucha znaków o wielkości 1
+TypeError: an integer is required
+
+>>> C.append(ord('L'))
+>>> C
+bytearray(b'xYelonkaL')
+
+>>> C.extend(b'MNO')
+>>> C
+bytearray(b'xYelonkaLMNO')
+
+
+
+
+# Operacje na sekwencjach i metody łańcuchów znaków
+
+>>> C + b'!#'
+bytearray(b'xYelonkaLMNO!#')
+
+>>> C[0]
+120
+
+>>> C[1:]
+bytearray(b'YelonkaLMNO')
+
+>>> len(C)
+12
+
+>>> C
+bytearray(b'xYelonkaLMNO')
+
+>>> C.replace('xY', 'mi')                      # Ten kod działa w wersji 2.6
+TypeError: Type str doesn't support the buffer API
+
+>>> C.replace(b'xY', b'mi')
+bytearray(b'mielonkaLMNO')
+
+>>> C
+bytearray(b'xYelonkaLMNO')
+
+>>> C * 4
+bytearray(b'xYelonkaLMNOxYelonkaLMNOxYelonkaLMNOxYelonkaLMNO')
+
+
+
+
+# Dane binarne a dane tekstowe
+
+>>> B                  # B jest takie samo jak S w wersji 2.6
+b'mielonka'
+>>> list(B)
+[109, 105, 101, 108, 111, 110, 107, 97]
+
+>>> C
+bytearray(b'xYelonkaLMNO')
+>>> list(C)
+[120, 89, 101, 108, 111, 110, 107, 97, 76, 77, 78, 79]
+
+>>> S
+'mielonka'
+>>> list(S)
+['m', 'i', 'e', 'l', 'o', 'n', 'k', 'a']
+
+
+
+
+C:\misc> c:\python30\python
+
+# Proste pliki tekstowe (i łańcuchy znaków) działają tak samo jak w wersji 2.X
+
+>>> file = open('temp', 'w')
+>>> size = file.write('abc\n')            # Zwraca liczbę zapisanych bajtów
+>>> file.close()                          # Ręczne zamknięcie w celu wyczyszczenia bufora wyjścia
+
+>>> file = open('temp')                   # Domyślnym trybem jest "r" (== "rt"): tekstowe dane wejściowe
+>>> text = file.read()
+>>> text
+'abc\n'
+>>> print(text)
+abc
+
+
+
+
+C:\misc> c:\python26\python
+>>> open('temp', 'w').write('abd\n')            # Zapis w trybie tekstowym — dodaje \r
+>>> open('temp', 'r').read()                    # Wczytanie w trybie tekstowym — opuszcza \r
+'abd\n'
+>>> open('temp', 'rb').read()                   # Wczytanie w trybie binarnym — dosłowne
+'abd\r\n'
+
+>>> open('temp', 'wb').write('abc\n')           # Zapis w trybie binarnym
+>>> open('temp', 'r').read()                    # \n nie jest rozszerzane do \r\n
+'abc\n'
+>>> open('temp', 'rb').read()
+'abc\n'
+
+
+
+
+C:\misc> c:\python30\python
+
+# Zapisanie i wczytanie pliku tekstowego
+
+>>> open('temp', 'w').write('abc\n')          # Dane wyjściowe trybu tekstowego, przekazanie obiektu str
+4
+
+>>> open('temp', 'r').read()                  # Dane wejściowe trybu tekstowego, zwrócenie obiektu str
+'abc\n'
+
+>>> open('temp', 'rb').read()                 # Dane wejściowe trybu binarnego, zwrócenie obiektu bytes
+b'abc\r\n'
+
+
+
+
+# Zapisanie i wczytanie pliku binarnego
+>>> open('temp', 'wb').write(b'abc\n')      #Dane wejściowe trybu binarnego, przekazanie obiektu bytes
+4
+>>> open('temp', 'r').read()                # Dane wejściowe trybu tekstowego, zwrócenie obiektu str
+'abc\n'
+>>> open('temp', 'rb').read()               # Dane wejściowe trybu binarnego, zwrócenie obiektu bytes
+b'abc\n'
+
+
+
+
+# Zapisanie i wczytanie prawdziwie binarnych danych
+
+>>> open('temp', 'wb').write(b'a\x00c')     # Przekazanie obiektu bytes
+3
+
+>>> open('temp', 'r').read()                # Otrzymanie obiektu str
+'a\x00c'
+
+>>> open('temp', 'rb').read()               # Otrzymanie obiektu bytes
+b'a\x00c'
+
+
+
+
+# Obiekty bytearray także działają
+
+>>> BA = bytearray(b'\x01\x02\x03')
+
+>>> open('temp', 'wb').write(BA)
+3
+
+>>> open('temp', 'r').read()
+'\x01\x02\x03'
+
+>>> open('temp', 'rb').read()
+b'\x01\x02\x03'
+
+
+
+
+# W przypadku zawartości plików typy nie są elastyczne
+
+>>> open('temp', 'w').write('abc\n')           # Tryb tekstowy tworzy i wymaga obiektu str
+4
+>>> open('temp', 'w').write(b'abc\n')
+TypeError: can't write bytes to text stream
+
+>>> open('temp', 'wb').write(b'abc\n')         # Tryb binarny tworzy i wymaga obiektu bytes
+4
+>>> open('temp', 'wb').write('abc\n')
+TypeError: can't write str to binary stream
+
+
+
+
+# Nie da się wczytać prawdziwie binarnych danych w trybie tekstowym
+
+>>> chr(0xFF)                                    # FF jest poprawnym znakiem, FE nie
+'ÿ'
+>>> chr(0xFE)
+UnicodeEncodeError: 'charmap' codec can't encode character '\xfe' in position 1...
+
+>>> open('temp', 'w').write(b'\xFF\xFE\xFD')     # Nie można użyć dowolnych bajtów!
+TypeError: can't write bytes to text stream
+
+>>> open('temp', 'w').write('\xFF\xFE\xFD')      # Można zapisać, jeśli da się osadzić w obiekcie str
+3
+>>> open('temp', 'wb').write(b'\xFF\xFE\xFD')    # Można także zapisać w trybie binarnym
+3
+
+>>> open('temp', 'rb').read()                    # Zawsze można wczytać jako binarny obiekt bytes
+b'\xff\xfe\xfd'
+
+>>> open('temp', 'r').read()                     # Nie da się wczytać tekstu, jeśli nie da się go zdekodować!
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 2-3: ...
+
+
+
+
+C:\misc> c:\python30\python
+>>> S = 'A\xc4B\xe8C'               # Łańcuch pięcioznakowy spoza ASCII
+>>> S
+'AÄBèC'
+>>> len(S)
+5
+
+
+
+
+# Ręczne kodowanie za pomocą metod
+
+>>> L = S.encode('latin-1')          # 5 bajtów, jeśli zakodowany jako latin-1
+>>> L
+b'A\xc4B\xe8C'
+>>> len(L)
+5
+
+>>> U = S.encode('utf-8')            # 7 bajtów, jeśli zakodowany jako utf-8
+>>> U
+b'A\xc3\x84B\xc3\xa8C'
+>>> len(U)
+7
+
+
+
+
+# Automatycznie kodowanie przy zapisie
+
+>>> open('latindata', 'w', encoding='latin-1').write(S)    # Zapisane jako latin-1
+5
+>>> open('utf8data', 'w', encoding='utf-8').write(S)       # Zapisane jako utf-8
+5
+
+>>> open('latindata', 'rb').read()                         # Wczytanie surowych bajtów
+b'A\xc4B\xe8C'
+
+>>> open('utf8data', 'rb').read()                          # Różnice w plikach
+b'A\xc3\x84B\xc3\xa8C'
+
+
+
+
+# Automatycznie dekodowanie przy odczycie
+
+>>> open('latindata', 'r', encoding='latin-1').read()     # Dekodowane przy wczytaniu
+'AÄBèC'
+>>> open('utf8data', 'r', encoding='utf-8').read()        # Zgodnie z typem kodowania
+'AÄBèC'
+
+>>> X = open('latindata', 'rb').read()                    # Ręczne dekodowanie:
+>>> X.decode('latin-1')                                   # Nie jest konieczne
+'AÄBèC'
+>>> X = open('utf8data', 'rb').read()
+>>> X.decode()                                            # utf-8 to kodowanie domyślne
+'AÄBèC'
+
+
+
+
+>>> file = open('python.exe', 'r')
+>>> text = file.read()
+UnicodeDecodeError: 'charmap' codec can't decode byte 0x90 in position 2: ...
+
+>>> file = open('python.exe', 'rb')
+>>> data = file.read()
+>>> data[:20]
+b'MZ\x90\x00\x03\x00\x00\x00\x04\x00\x00\x00\xff\xff\x00\x00\xb8\x00\x00\x00'
+
+
+
+
+c:\misc> C:\Python30\python                  # Plik zapisany w Notatniku
+>>> import sys
+>>> sys.getdefaultencoding()
+'utf-8'
+>>> open('spam.txt', 'rb').read()            # Plik tekstowy ASCII (utf-8)
+b'mielonka\r\nMIELONKA\r\n'
+>>> open('spam.txt', 'r').read()             # Tryb tekstowy tłumaczy znaki końca wiersza
+'mielonka\nMIELONKA\n'
+>>> open('spam.txt', 'r', encoding='utf-8').read()
+'mielonka\nMIELONKA\n'
+
+
+
+
+>>> open('spam.txt', 'rb').read()           # utf-8 z 3-bajtowym znacznikiem BOM
+b'\xef\xbb\xbfmielonka\r\nMIELONKA'
+>>> open('spam.txt', 'r').read()
+'ď»żmielonka\nMIELONKA'
+>>> open('spam.txt', 'r', encoding='utf-8').read()
+'\ufeffmielonka\nMIELONKA'
+>>> open('spam.txt', 'r', encoding='utf-8-sig').read()
+'mielonka\nMIELONKA\n'
+
+
+
+
+>>> open('spam.txt', 'rb').read()
+b'\xfe\xff\x00m\x00i\x00e\x00l\x00o\x00n\x00k\x00a\x00\r\x00\n\x00M\x00I\x00E\x00L\x00O\x00N\x00K\x00A'
+>>> open('spam.txt', 'r').read()
+UnicodeEncodeError: 'charmap' codec can't encode character '\xfe' in position 1:...
+>>> open('spam.txt', 'r', encoding='utf-16').read()
+'mielonka\nMIELONKA\n'
+>>> open('spam.txt', 'r', encoding='utf-16-be').read()
+'\ufeffmielonka\nMIELONKA'
+
+
+
+
+>>> open('temp.txt', 'w', encoding='utf-8').write('mielonka\nMIELONKA\n')
+18
+>>> open('temp.txt', 'rb').read()                         # Brak BOM
+b'mielonka\r\nMIELONKA\r\n'
+
+>>> open('temp.txt', 'w', encoding='utf-8-sig').write('mielonka\nMIELONKA\n')
+18
+>>> open('temp.txt', 'rb').read()                         # Zapisanie BOM
+b'\xef\xbb\xbfmielonka\r\nMIELONKA\r\n'
+
+>>> open('temp.txt', 'r').read()
+'ď»żmielonka\nMIELONKA\n'
+>>> open('temp.txt', 'r', encoding='utf-8').read()        # Zachowanie BOM
+'\ufeffmielonka\nMIELONKA\n'
+>>> open('temp.txt', 'r', encoding='utf-8-sig').read()    # Pominięcie BOM
+'mielonka\nMIELONKA\n'
+
+
+
+
+>>> open('temp.txt', 'w').write('mielonka\nMIELONKA\n')
+18
+>>> open('temp.txt', 'rb').read()                         # Dane bez BOM
+b'mielonka\r\nMIELONKA\r\n'
+>>> open('temp.txt', 'r').read()                          # Działa dowolna nazwa kodowania utf-8
+'mielonka\nMIELONKA\n'
+>>> open('temp.txt', 'r', encoding='utf-8').read()
+'mielonka\nMIELONKA\n'
+>>> open('temp.txt', 'r', encoding='utf-8-sig').read()
+'mielonka\nMIELONKA\n'
+
+
+
+
+>>> sys.byteorder
+'little'
+>>> open('temp.txt', 'w', encoding='utf-16').write('mielonka\nMIELONKA\n')
+18
+>>> open('temp.txt', 'rb').read()
+b'\xff\xfem\x00i\x00e\x00l\x00o\x00n\x00k\x00a\x00\r\x00\n\x00M\x00I\x00E\x00L\x00O\x00N\x00K\x00A\x00\r\x00\n\x00'
+>>> open('temp.txt', 'r', encoding='utf-16').read()
+'mielonka\nMIELONKA\n'
+
+>>> open('temp.txt', 'w', encoding='utf-16-be').write('\ufeffmielonka\nMIELONKA\n')
+19
+>>> open('spam.txt', 'rb').read()
+b'\xfe\xff\x00m\x00i\x00e\x00l\x00o\x00n\x00k\x00a\x00\r\x00\n\x00M\x00I\x00E\x00L\x00O\x00N\x00K\x00A'
+>>> open('temp.txt', 'r', encoding='utf-16').read()
+'mielonka\nMIELONKA\n'
+>>> open('temp.txt', 'r', encoding='utf-16-be').read()
+'\ufeffmielonka\nMIELONKA\n'
+
+
+
+
+>>> open('temp.txt', 'w', encoding='utf-16-le').write('MIELONKA')
+8
+>>> open('temp.txt', 'rb').read()              # OK, jeśli BOM nie ma lub nie oczekiwano
+b'M\x00I\x00E\x00L\x00O\x00N\x00K\x00A\x00'
+>>> open('temp.txt', 'r', encoding='utf-16-le').read()
+'MIELONKA'
+>>> open('temp.txt', 'r', encoding='utf-16').read()
+UnicodeError: UTF-16 stream does not start with BOM
+
+
+
+
+C:\misc> c:\python26\python
+>>> S = u'A\xc4B\xe8C'
+>>> print S
+AÄBèC
+>>> len(S)
+5
+>>> S.encode('latin-1')
+'A\xc4B\xe8C'
+>>> S.encode('utf-8')
+'A\xc3\x84B\xc3\xa8C'
+
+>>> import codecs
+>>> codecs.open('latindata', 'w', encoding='latin-1').write(S)
+>>> codecs.open('utfdata', 'w', encoding='utf-8').write(S)
+
+>>> open('latindata', 'rb').read()
+'A\xc4B\xe8C'
+>>> open('utfdata', 'rb').read()
+'A\xc3\x84B\xc3\xa8C'
+
+
+# UWAGA: warto przypomnieć, że jak w poprzednich przykładach,
+# do wyświetlenia znaków spoza ASCII w formie innej od
+# szesnastkowej musimy użyć "print" (metoda repr pokazuje formę
+# szesnastkową, natomiast str wyświetla znaki).
+
+>>> codecs.open('latindata', 'r', encoding='latin-1').read()
+u'A\xc4B\xe8C'
+>>> codecs.open('utfdata', 'r', encoding='utf-8').read()
+u'A\xc4B\xe8C'
+
+
+
+
+C:\misc> c:\python30\python
+>>> import re
+>>> S = 'Dzielny sir Robin nawiewa raz po raz'             # Wiersz tekstu
+>>> B = b'Dzielny sir Robin nawiewa raz po raz'            # Zazwyczaj z pliku
+
+>>> re.match('(.*) sir (.*) nawiewa (.*)', S).groups()     # Dopasowanie wiersza do wzorca
+('Dzielny', 'Robin', 'raz po raz')                         # Dopasowane podłańcuchy znaków
+
+>>> re.match(b'(.*) sir (.*) nawiewa (.*)', B).groups()    # Podłańcuchy znaków bytes
+(b'Dzielny', b'Robin', b'raz po raz')
+
+
+
+C:\misc> c:\python26\python
+>>> import re
+>>> S = 'Dzielny sir Robin nawiewa raz po raz'              # Prosty tekst
+>>> U = u'Dzielny sir Robin nawiewa raz po raz'             # Binarny tekst Unicode
+
+>>> re.match('(.*) sir (.*) nawiewa (.*)', S).groups()
+('Dzielny', 'Robin', 'raz po raz')
+
+>>> re.match('(.*) sir (.*) nawiewa (.*)', U).groups()
+(u'Dzielny', u'Robin', u'raz po raz')
+
+
+
+
+C:\misc> c:\python30\python
+>>> import re
+>>> S = 'Dzielny sir Robin nawiewa raz po raz'
+>>> B = b'Dzielny sir Robin nawiewa raz po raz'
+
+>>> re.match('(.*) sir (.*) nawiewa (.*)', B).groups()
+TypeError: can't use a string pattern on a bytes-like object
+
+>>> re.match(b'(.*) sir (.*) nawiewa (.*)', S).groups()
+TypeError: can't use a bytes pattern on a string-like object
+
+>>> re.match(b'(.*) sir (.*) nawiewa (.*)', bytearray(B)).groups()
+(bytearray(b'Dzielny'), bytearray(b'Robin'), bytearray(b'raz po raz'))
+
+>>> re.match('(.*) sir (.*) nawiewa (.*)', bytearray(B)).groups()
+TypeError: can't use a string pattern on a bytes-like object
+
+
+
+C:\misc> c:\python30\python
+>>> from struct import pack
+>>> pack('>i4sh', 7, 'jajo', 8)            # Typ bytes w wersji 3.0 (8-bitowy łańcuch znaków)
+b'\x00\x00\x00\x07jajo\x00\x08'
+
+C:\misc> c:\python26\python
+>>> from struct import pack
+>>> pack('>i4sh', 7, 'jajo', 8)            # Typ str w wersji 2.6 (8-bitowy łańcuch znaków)
+'\x00\x00\x00\x07jajo\x00\x08'
+
+
+
+
+C:\misc> c:\python30\python
+>>> import struct
+>>> B = struct.pack('>i4sh', 7, 'jajo', 8)
+>>> B
+b'\x00\x00\x00\x07jajo\x00\x08'
+
+>>> vals = struct.unpack('>i4sh', B)
+>>> vals
+(7, b'jajo', 8)
+
+>>> vals = struct.unpack('>i4sh', B.decode())
+TypeError: 'str' does not have the buffer interface
+
+
+
+
+C:\misc> c:\python30\python
+
+# Zapisanie wartości do spakowanego pliku binarnego
+
+>>> F = open('data.bin', 'wb')                      # Otwarcie binarnego pliku wyjścia
+>>> import struct
+>>> data = struct.pack('>i4sh', 7, 'jajo', 8)       # Utworzenie spakowanych danych binarnych
+>>> data                                            # W wersji 3.0 typ bytes 3.0, nie str
+b'\x00\x00\x00\x07jajo\x00\x08'
+>>> F.write(data)                                   # Zapisanie do pliku
+10
+>>> F.close()
+
+# Wczytanie wartości ze spakowanego pliku binarnego
+
+>>> F = open('data.bin', 'rb')                       # Otwarcie binarnego pliku wejścia
+>>> data = F.read()                                  # Wczytanie obiektu bytes
+>>> data
+b'\x00\x00\x00\x07jajo\x00\x08'
+>>> values = struct.unpack('>i4sh', data)            # Ekstrakcja spakowanych danych binarnych
+>>> values                                           # Powrót do obiektów Pythona
+(7, b'jajo', 8)
+
+
+
+
+>>> values                                  # Wynik struct.unpack
+(7, b'jajo', 8)
+
+# Dostęp do bitów przeanalizowanych składniowo liczb całkowitych
+
+>>> bin(values[0])                          # Może dojść do bitów w liczbach całkowitych
+'0b111'
+>>> values[0] & 0x01                        # Sprawdzenie pierwszego (najniższego) bitu w liczbie całkowitej
+1
+>>> values[0] | 0b1010                      # Bitowe or: załączenie bitów
+15
+>>> bin(values[0] | 0b1010)                  # Dziesiętne 15 to binarne 1111
+'0b1111'
+>>> bin(values[0] ^ 0b1010)                  # Bitowe xor: wyłączenie, jeśli oba są prawdziwe
+'0b1101'
+>>> bool(values[0] & 0b100)                  # Sprawdzenie, czy bit 3 jest włączony
+True
+>>> bool(values[0] & 0b1000)                 # Sprawdzenie, czy bit 4 jest ustawiony
+False
+
+
+
+
+# Dostęp do bajtów łańcuchów znaków po analizie składniowej, a także do znajdujących się w nich bitów
+
+>>> values[1]
+b'jajo'
+>>> values[1][0]                           # Łańcuch znaków bytes: sekwencja liczba całkowitych
+106
+>>> values[1][1:]                          # Wyświetlane jako znaki ASCII
+b'ajo'
+>>> bin(values[1][0])                      # Może dostać się do bitów bajtów z łańcuchów znaków
+'0b1101010'
+>>> bin(values[1][0] | 0b1100)             # Załączenie bitów
+'0b1101110'
+>>> values[1][0] | 0b1100
+110
+
+
+
+
+C:\misc> C:\Python30\python
+>>> import pickle                        # dumps() zwraca łańcuch znaków pickle
+
+>>> pickle.dumps([1, 2, 3])              # Domyślny protokół Pythona 3.0: protocol=3, czyli binarny
+b'\x80\x03]q\x00(K\x01K\x02K\x03e.'
+
+>>> pickle.dumps([1, 2, 3], protocol=0)  # Protokół ASCII (0), ale nadal obiekt bytes!
+b'(lp0\nL1L\naL2L\naL3L\na.'
+
+
+
+
+>>> pickle.dump([1, 2, 3], open('temp', 'w'))     # Pliki tekstowe nie działają na obiektach bytes!
+TypeError: can't write bytes to text stream        # Pomimo wartości protokołu
+
+>>> pickle.dump([1, 2, 3], open('temp', 'w'), protocol=0)
+TypeError: can't write bytes to text stream
+
+>>> pickle.dump([1, 2, 3], open('temp', 'wb'))     # W wersji 3.0 zawsze wykorzystuje tryb binarny
+
+>>> open('temp', 'r').read()
+UnicodeEncodeError: 'charmap' codec can't encode character '\u20ac' in ...
+
+
+
+
+>>> pickle.dump([1, 2, 3], open('temp', 'wb'))
+>>> pickle.load(open('temp', 'rb'))
+[1, 2, 3]
+>>> open('temp', 'rb').read()
+b'\x80\x03]q\x00(K\x01K\x02K\x03e.'
+
+
+
+
+C:\misc> c:\python26\python
+>>> import pickle
+>>> pickle.dumps([1, 2, 3])                    # W Pythonie 2.6 domyślny protokół to 0, czyli ASCII
+'(lp0\nI1\naI2\naI3\na.'
+
+>>> pickle.dumps([1, 2, 3], protocol=1)
+']q\x00(K\x01K\x02K\x03e.'
+
+>>> pickle.dump([1, 2, 3], open('temp', 'w'))  # W Pythonie 2.6 działa tryb tekstowy
+>>> pickle.load(open('temp'))
+[1, 2, 3]
+>>> open('temp').read()
+'(lp0\nI1\naI2\naI3\na.'
+
+
+
+
+>>> import pickle
+>>> pickle.dump([1, 2, 3], open('temp', 'wb'))   # Neutralne względem wersji
+>>> pickle.load(open('temp', 'rb'))              # I wymagane w Pythonie 3.0
+[1, 2, 3]
+
+
+
+
+### Plik: mybooks.xml
+
+<books>
+   <date>2009</date>
+   <title>Learning Python</title>
+   <title>Programming Python</title>
+   <title>Python Pocket Reference</title>
+   <publisher>O'Reilly Media</publisher>
+</books>
+
+
+
+
+# Plik patternparse.py
+
+import re
+text = open('mybooks.xml').read()
+found = re.findall('<title>(.*)</title>', text)
+for title in found: print(title)
+
+
+
+
+# Plik domparse.py
+
+from xml.dom.minidom import parse, Node
+xmltree = parse('mybooks.xml')
+for node1 in xmltree.getElementsByTagName('title'):
+   for node2 in node1.childNodes:
+      if node2.nodeType == Node.TEXT_NODE:
+         print(node2.data)
+
+
+
+
+# Plik saxparse.py
+
+import xml.sax.handler
+class BookHandler(xml.sax.handler.ContentHandler):
+   def __init__(self):
+      self.inTitle = False
+   def startElement(self, name, attributes):
+      if name == 'title':
+      self.inTitle = True
+   def characters(self, data):
+      if self.inTitle:
+         print(data)
+   def endElement(self, name):
+      if name == 'title':
+         self.inTitle = False
+
+import xml.sax
+parser = xml.sax.make_parser()
+handler = BookHandler()
+parser.setContentHandler(handler)
+parser.parse('mybooks.xml')
+
+
+
+
+# Plik etreeparse.py
+
+from xml.etree.ElementTree import parse
+tree = parse('mybooks.xml')
+for E in tree.findall('title'):
+   print(E.text)
+
+
+
+
+C:\misc> c:\python26\python domparse.py
+Learning Python
+Programming Python
+Python Pocket Reference
+
+C:\misc> c:\python30\python domparse.py
+Learning Python
+Programming Python
+Python Pocket Reference
+
+
+
+C:\misc> c:\python30\python
+>>> from xml.dom.minidom import parse, Node
+>>> xmltree = parse('mybooks.xml')
+>>> for node in xmltree.getElementsByTagName('title'):
+...    for node2 in node.childNodes:
+...       if node2.nodeType == Node.TEXT_NODE:
+...          node2.data
+...
+'Learning Python'
+'Programming Python'
+'Python Pocket Reference'
+
+C:\misc> c:\python26\python
+>>> ...ten sam kod...
+...
+u'Learning Python'
+u'Programming Python'
+u'Python Pocket Reference'

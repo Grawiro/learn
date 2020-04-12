@@ -9,6 +9,7 @@ class Class_3: pass
 class Class_2:
     _private_variable = 'this is a private variable'
     # this can be use only in a method in class
+    # _Class_2__more_private this is a full name
     __more_private = 'this one is much more private'
     
     def ger_private(self):
@@ -137,6 +138,7 @@ class Sub_abstract_class(Abstract_class):
 object_abstract_class = Sub_abstract_class()
 
 class Number:
+    # when create object
     def __init__(self,num_1=1,num_2=3):
         self.num_1 = num_1
         self.num_2 = num_2
@@ -144,18 +146,48 @@ class Number:
 
         self.stop_iter = 5
         self.state_iter = 1-1
+        self.sms_text=''
 
-    # +
+    # when delete object
+    def __del__(self):
+        print('object die')
+
+    # obj + 2
     def __add__(self, tmp):
         self.num_1 += tmp
         return self.num_1
-    # -
+
+    # 2 + obj, or obj + obj
+    # all math operator have r and i version of operations
+    def __radd__(self, tmp):
+        self.num_2 += tmp
+        # better use
+        # self.num_2 = tmp + self.num_2
+        return self.num_2
+
+    # only in obj += 2
+    def __iadd__(self, tmp):
+        self.num_1+=int(tmp/2)
+        self.num_2+=int(tmp/2)
+        return self
+
+    # obj - 2
     def __sub__(self, tmp):
         self.num_1 -= tmp
         return self.num_1
 
+    # obj * 2
+    def __mul__(self, tmp):
+        pass
+
+    # this use in print and to convert to str
     def __str__(self):
-        return '{} {}'.format(self.num_1, self.num_2)
+        return 'str: {} {}'.format(self.num_1, self.num_2)
+
+    # this use to convert to str and show in interactive mode
+    # and if str not define show in print function
+    def __repr__(self):
+        return 'repr: {} {}'.format(self.num_1, self.num_2)
 
     # to use [0]/[1]/[-1]/[:]/[2:10:3]
     # to work on list/tuple/map/for/in...
@@ -189,15 +221,90 @@ class Number:
     def __contains__(self, tmp):
         return tmp in self.num_list
 
+    # to get attribute who never existed
+    def __getattr__(self, attrname):
+        if attrname == 'num_pi':
+            return 3.14
+        else:
+            return self.__dict__[attrname]
+            # can raise the error if this attribute is not in if above
+            # raise AttributeError 
+
+    # to set another method to set all attribute 
+    def __setattr__(self, attrname, value):
+        if attrname == 'sms':
+            self.sms_text = value
+        else:
+            self.__dict__[attrname] = value
+
+    # call object like function, can do everything
+    def __call__(self, *args, **kwargs):
+        print('call obj() with arguments: ', args, kwargs)
+
+    # operation obj>2/ obj<2/ obj==2/ obj!=2 /return True or False
+    def __gt__(self, tmp):
+        return self.num_1 > tmp
+
+    def __lt__(self, tmp):
+        return self.num_1 < tmp
+
+    def __eq__(self, tmp):
+        return self.num_1 == tmp
+
+    def __ne__(self, tmp):
+        return self.num_1 != tmp
+
+    # return True or False
+    def __bool__(self):
+        return bool(self.num_1)
+
+    # return len of object
+    def __len__(self):
+        return len(self.num_list)
+
+    # method to property
+    def getSMS(self):
+        return self.sms_text
+    
+    # property have (get,set,del,doc) if none are present, insert None
+    # if call sms run getSMS, if sms='hello' run for example setSMS or __setattr__
+    sms = property(getSMS, __setattr__, None, 'documentation')
+    
+    # this is a method can be use with object and class
+    def bound(self):
+        return self.num_1+self.num_2
+
+    # this is a function, which has no self argument
+    # this is a function decorator, look down to static_method
+    @staticmethod
+    def static_method():
+        return 10
+
+    # this is a method, with class name argument, this is some like self
+    # dont give it yourself
+    @classmethod
+    def class_method(class_name):
+        return class_name.__name__
+
+    # dont take class or object as argument
+    # static_method = staticmethod(static_method)
+    # takes class as argument
+    # class_method = classmethod(class_method)
 
 number = Number()
-# str
+# str/repr
 print(number)
+print(repr(number))
 print()
 
 # add/sub
 print(number - 1)
 print(number + 2)
+print(2 + number)
+print(number + number)
+print(number)
+number += 12
+print(number)
 print()
 
 # getitem/setitem
@@ -215,72 +322,127 @@ print(list(map(lambda x: x+1, number)))
 print()
 
 # index
+number.num_2 = 3
 print(bin(number))
 print([0,1,2,3,4,5][number])
 print()
 
 # contains
 print(2 in number)
+print()
 
+# getattr/setattr
+print(number.num_pi)
+number.temp = 3
+print(number.temp)
+print()
 
+# call
+number('this', 932, a='bob', b=99)
+print()
 
+# gt/lt/eq/ne/bool/len
+print(number>2)
+print(number<2)
+print(number==2)
+print(number!=2)
+print(bool(number))
+print(len(number))
+print()
 
+# use method and function
+method = number.bound
+print(method())
+# this is a function not method
+print(Number.bound(number))
+# this function dont take self argument
+print(Number.static_method())
+print(number.static_method())
+# only class can use this
+print(Number.class_method())
+print()
 
+# create object, they die when print function end
+print(Number(1,2))
+# show id class and object
+print(id(Number), id(number))
+print()
 
+# this work but __setattr__/__getattr__ must be undefined
+number.sms = 'this is a good text'
+print(number.sms)
+print()
 
+# show all attribute and function
+from list_tree import ListTree
+class Test_list_tree(ListTree, Number):pass
+test = Test_list_tree()
+print(test)
+print()
 
+# create a object factory 
+def factory_class_function(class_name, *args, **kwargs):
+    return class_name(*args, **kwargs)
 
+factory_obj_1 = factory_class_function(Number, num_2=2, num_1=3)
+print(factory_obj_1)
+factory_obj_2 = factory_class_function(Class_1, 'John')
+print(factory_obj_2)
+print()
 
+print(isinstance(factory_obj_1, object), isinstance(factory_obj_1, Number))
+print()
 
+class Slots_class():
+    # can use only this variable in class
+    # ['a', 'b'] -the same 
+    # if use '__dict__' in [] can normal add variables
+    # slots is faster than dict
+    __slots__ = ['a', 'b']
 
+some_slots_object = Slots_class()
+some_slots_object.a=3
+print(some_slots_object.a)
+# use setattr/getattr to set and get attribute of class
+# work with slots and dict
+setattr(some_slots_object, 'a', 2)
+print(getattr(some_slots_object, 'a'))
+print()
 
+# create my new unction decorator can be use in global function
+# and may have only init and call method
+class my_function_decorator:
+    def __init__(self, func):
+        self.calls = 0
+        self.func = func
+    def __call__(self, *args):
+        self.calls += 1
+        print('call {} to {}'.format(self.calls, self.func.__name__))
+        self.func(*args)
 
+@my_function_decorator
+def some_function(a,b,c):
+    print(a, b, c)
 
+# realy call to my_function_decorator()/my_function_decorator.__call__
+some_function(1,2,3)
+some_function('a','b','c')
+some_function([1,2,3],(1,2,3),{'a':1,'b':2})
+print()
 
+# this is a class decorator work similar to function decorator
+def count(aClass):
+    aClass.numInstances = 0
+    return aClass
 
+@count
+class Spam:
+    pass
 
+# this is a meta class
+class Meta(type):
+    def __new__(meta, classname, supers, classdict):
+        pass
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# raise some error
-# assert False, 'działanie musi zostać zdefiniowane!
-# raise NotImplementedError
-#  
-#__setattr__ - ustawianie prywatnosci
-# __slots__
-# __repr__ -sposob wyswietlania w trybie interaktywnym????
-
-# __len__/__bool__/__lt__
+class C(metaclass=Meta):
+    pass

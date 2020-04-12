@@ -1,0 +1,78 @@
+if test:
+   def func():                              # Zdefiniowanie funkcji w taki sposób
+      ...
+else:
+   def func():                              # Albo w taki sposób
+      ...
+...
+func()                                      # Wywołanie wybranej i zbudowanej wersji
+                   
+
+
+
+othername = func                             # Przypisanie obiektu funkcji
+othername()                                  # Ponowne wywołanie funkcji func
+
+
+
+
+def func(): ...                              # Utworzenie obiektu funkcji
+func()                                       # Wywołanie obiektu
+func.attr = value                            # Dołączenie atrybutów
+
+
+
+
+>>> def times(x, y):                         # Utworzenie i przypisanie funkcji
+...    return x * y                          # Ciało funkcji wykonywane po wywołaniu
+...
+
+
+
+>>> times(2, 4)                              # Argumenty w nawiasach
+8
+
+
+
+
+>>> x = times(3.14, 4)                       # Zapisanie obiektu wyniku
+>>> x
+12.56
+
+
+
+
+>>> times('Ni', 4)                           # Dla funkcji typ nie ma znaczenia
+'NiNiNiNi'
+
+
+
+
+def intersect(seq1, seq2):
+   res = []                                  # Na początek pusta lista
+   for x in seq1:                            # Przeszukanie pierwszej sekwencji
+      if x in seq2:                          # Powtarzający się element?
+         res.append(x)                       # Dodanie na końcu listy wyników
+   return res
+
+
+
+
+>>> s1 = "mielonka"
+>>> s2 = "biedronka"
+
+>>> intersect(s1, s2)                        # Łańcuchy znaków
+['i', 'e', 'o', 'n', 'k', 'a']
+
+
+
+
+>>> [x for x in s1 if x in s2]
+['i', 'e', 'o', 'n', 'k', 'a']
+
+
+
+
+>>> x = intersect([1, 2, 3], (1, 4))         # Typy mieszane
+>>> x                                        # Zapisany obiekt wyniku
+[1]

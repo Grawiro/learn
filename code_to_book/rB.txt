@@ -1,0 +1,1896 @@
+# Ten plik podzielony jest na części i pytania
+
+
+
+
+### Część I Wprowadzenie
+
+
+
+### 1
+
+% python
+...wiersze z informacjami o prawach autorskich...
+>>> "Witaj, sir Robinie!"
+'Witaj, sir Robinie!'
+>>>                          # By wyjść z sesji interaktywnej, należy użyć Ctrl+D lub Ctrl+Z bądź zamknąć okno.
+
+
+
+
+### 2
+
+# Plik module1.py
+print('Witaj, module!')
+
+% python module1.py
+Witaj, module!
+
+
+
+
+### 3
+
+% python
+>>> import module1
+Witaj, module!
+>>>
+
+
+
+
+### 4
+
+#!/usr/local/bin/python                      (lub #!/usr/bin/env python)
+print('Witaj, module!')
+% chmod +x module1.py
+
+% module1.py
+Witaj, module!
+
+
+
+
+### 5
+
+% python
+>>> 2 ** 500
+3273390607896141870013189696827599152216642046043064789483291368096133796404674554883270092325904157150886684127560071009217256545885393053328527589376
+>>>
+>>> 1 / 0
+Traceback (most recent call last):
+   File "<stdin>", line 1, in <module>
+ZeroDivisionError: int division or modulo by zero
+>>>
+>>> spam
+Traceback (most recent call last):
+   File "<stdin>", line 1, in <module>
+NameError: name 'spam' is not defined
+
+
+
+### 6
+
+L = [1, 2]
+L.append(L)
+
+
+
+
+
+### Część II Typy i operacje
+
+
+
+### 1
+
+# Liczby
+
+>>> 2 ** 16                                  # 2 do potęgi 16
+65536
+>>> 2 / 5, 2 / 5.0                           # Liczba całkowita — odcięcie w Pythonie 2.6, jednak w wersji 3.0 już nie
+(0.40000000000000002, 0.40000000000000002)
+
+# Łańcuchy znaków
+
+>>> "mielonka" + "jajka"                     # Konkatenacja
+'mielonkajajka'
+>>> S = "szynka"
+>>> "jajka " + S
+'jajka szynka'
+>>> S * 5                                    # Powtórzenie
+'szynkaszynkaszynkaszynkaszynka'
+>>> S[:0]                                    # Pusty wycinek z przodu — [0:0]
+''                                           # Pusty wycinek tego samego typu co pocięty obiekt
+
+>>> "zielone %s i %s" % ("jajka", S)         # Formatowanie
+'zielone jajka i szynka'
+>>> 'zielone {0} i {1}'.format('jajka', S)
+'zielone jajka i szynka'
+
+# Krotki
+
+>>> ('x',)[0]                                # Indeksowanie krotki jednoelementowej
+'x'
+>>> ('x', 'y')[1]                            # Indeksowanie krotki dwuelementowej
+'y'
+
+# Listy
+
+>>> L = [1,2,3] + [4,5,6]                    # Operacje na listach
+>>> L, L[:], L[:0], L[-2], L[-2:]
+([1, 2, 3, 4, 5, 6], [1, 2, 3, 4, 5, 6], [], 5, [5, 6])
+>>> ([1,2,3]+[4,5,6])[2:4]
+[3, 4]
+>>> [L[2], L[3]]                             # Pobranie elementów o wartości przesunięcia; przechowanie w liście
+[3, 4]
+>>> L.reverse( ); L                          # Metoda: odwracanie listy w miejscu
+[6, 5, 4, 3, 2, 1]
+>>> L.sort( ); L                             # Metoda: sortowanie listy w miejscu
+[1, 2, 3, 4, 5, 6]
+>>> L.index(4)                               # Metoda: wartość przesunięcia pierwszego elementu 4 (wyszukiwanie)
+3
+
+# Słowniki
+
+>>> {'a':1, 'b':2}['b']                      # Indeksowanie słownika po kluczu
+2
+>>> D = {'x':1, 'y':2, 'z':3}
+>>> D['w'] = 0                               # Utworzenie nowego wpisu
+>>> D['x'] + D['w']
+1
+>>> D[(1,2,3)] = 4                           # Krotka użyta jako klucz (jest niezmienna)
+
+>>> D
+{'w': 0, 'z': 3, 'y': 2, (1, 2, 3): 4, 'x': 1}
+
+>>> list(D.keys()), list(D.values()), (1,2,3) in D    # Metody, sprawdzenie kluczy
+(['w', 'z', 'y', (1, 2, 3), 'x'], [0, 3, 2, 4, 1], True) 
+
+# Puste obiekty
+
+>>> [[]], ["",[],( ),{},None]                # Dużo niczego: puste obiekty
+([[]], ['', [], ( ), {}, None])
+
+
+
+### 2
+
+>>> L = [1, 2, 3, 4]
+>>> L[4]
+Traceback (innermost last):
+   File "<stdin>", line 1, in ?
+IndexError: list index out of range
+>>> L[-1000:100]
+[1, 2, 3, 4]
+>>> L[3:1]
+[]
+>>> L
+[1, 2, 3, 4]
+>>> L[3:1] = ['?']
+>>> L
+[1, 2, 3, '?', 4]
+
+
+
+
+### 3
+
+>>> L = [1,2,3,4]
+>>> L[2] = []
+>>> L
+[1, 2, [], 4]
+>>> L[2:3] = []
+>>> L
+[1, 2, 4]
+>>> del L[0]
+>>> L
+[2, 4]
+>>> del L[1:]
+>>> L
+[2]
+>>> L[1:2] = 1
+Traceback (innermost last):
+   File "<stdin>", line 1, in ?
+TypeError: illegal argument type for built-in operation
+
+
+
+
+### 4
+
+>>> X = 'mielonka'
+>>> Y = 'jajka'
+>>> X, Y = Y, X
+>>> X
+'jajka'
+>>> Y
+'mielonka'
+
+
+
+
+### 5
+
+>>> D = {}
+>>> D[1] = 'a'
+>>> D[2] = 'b'
+>>> D[(1, 2, 3)] = 'c'
+>>> D
+{1: 'a', 2: 'b', (1, 2, 3): 'c'}
+
+
+
+
+### 6
+
+>>> D = {'a':1, 'b':2, 'c':3}
+>>> D['a']
+1
+>>> D['d']
+Traceback (innermost last):
+   File "<stdin>", line 1, in ?
+KeyError: d
+>>> D['d'] = 4
+>>> D
+{'b': 2, 'd': 4, 'a': 1, 'c': 3}
+>>>
+>>> L = [0, 1]
+>>> L[2]
+Traceback (innermost last):
+   File "<stdin>", line 1, in ?
+IndexError: list index out of range
+>>> L[2] = 3
+Traceback (innermost last):
+   File "<stdin>", line 1, in ?
+IndexError: list assignment index out of range
+
+
+
+
+### 7
+
+>>> "x" + 1
+Traceback (innermost last):
+   File "<stdin>", line 1, in ?
+TypeError: cannot concatenate 'str' and 'int' objects
+>>>
+>>> {} + {}
+Traceback (innermost last):
+   File "<stdin>", line 1, in ?
+TypeError: unsupported operand type(s) for +: 'dict' and 'dict'
+>>>
+>>> [].append(9)
+>>> "".append('s')
+Traceback (innermost last):
+   File "<stdin>", line 1, in ?
+AttributeError: 'str' object has no attribute 'append'
+>>>
+>>> list({}.keys())                          # Wywołanie list() niezbędne jest w Pythonie 3.0, w 2.6 nie
+[]
+>>> [].keys( )
+Traceback (innermost last):
+   File "<stdin>", line 1, in ?
+AttributeError: 'list' object has no attribute 'keys'
+>>>
+>>> [][:]
+[]
+>>> ""[:]
+''
+
+
+
+
+### 8
+
+>>> S = "mielonka"
+>>> S[0][0][0][0][0]
+'m'
+>>> L = ['m', 'i']
+>>> L[0][0][0]
+'m'
+
+
+
+
+### 9
+
+>>> S = "jajo"
+>>> S = S[0:3] + 'a'
+>>> S
+'jaja'
+>>> S = S[0] + S[1] + S[2] + 'a'
+>>> S
+'jaja'
+
+
+
+### 10
+
+>>> me = {'name':('Robert', 'F', 'Zielony'), 'age':'?', 'job':'inżynier'}
+>>> me['job']
+'inżynier'
+>>> me['name'][2]
+'Zielony'
+
+
+
+
+### 11
+
+# Plik maker.py
+file = open('myfile.txt', 'w')
+file.write('Witaj, wspaniały świecie!\n')    # Lub: open( ).write( )
+file.close( )                                # close nie zawsze jest potrzebne
+
+# Plik reader.py
+file = open('myfile.txt')                    # 'r' to domyślny tryb otwierania pliku
+print(file.read())                           # Lub: print(open( ).read( ))
+
+% python maker.py
+% python reader.py
+Witaj, wspaniały świecie!
+
+% ls -l myfile.txt
+-rwxrwxrwa    1 0        0             19 Apr 13 16:33 myfile.txt
+
+
+
+
+
+### Część III Instrukcja i składnia
+
+
+
+
+### 1
+
+>>> S = 'mielonka'
+>>> for c in S:
+...     print(ord(c))
+...
+109
+105
+101
+108
+111
+110
+107
+97
+
+>>> x = 0
+>>> for c in S: x += ord(c)               # Lub: x = x + ord(c)
+...
+>>> x
+848
+
+>>> x = []
+>>> for c in S: x.append(ord(c))
+...
+>>> x
+[109, 105, 101, 108, 111, 110, 107, 97]
+
+>>> list(map(ord, S))                      # Wywołanie list() wymagane jest w Pythonie 3.0, jednak nie w 2.6
+[109, 105, 101, 108, 111, 110, 107, 97]
+
+
+
+
+### 2
+
+(patrz ćwiczenia)
+
+
+
+### 3
+
+>>> D = {'a':1, 'b':2, 'c':3, 'd':4, 'e':5, 'f':6, 'g':7}
+>>> D
+{'f': 6, 'c': 3, 'a': 1, 'g': 7, 'e': 5, 'd': 4, 'b': 2}
+>>>
+>>> keys = list(D.keys())                  # Wywołanie list() wymagane jest w Pythonie 3.0, jednak nie w 2.6
+>>> keys.sort( )
+>>> for key in keys:
+...     print(key, '=>', D[key])
+...
+a => 1
+b => 2
+c => 3
+d => 4
+e => 5
+f => 6
+g => 7
+
+>>> for key in sorted(D):                  # Lepsze rozwiązanie, w nowszych wersjach Pythona
+...    print(key, '=>', D[key])
+
+
+
+
+### 4
+
+# a
+
+L = [1, 2, 4, 8, 16, 32, 64]
+X = 5
+
+i = 0
+while i < len(L):
+   if 2 ** X == L[i]:
+      print('pod indeksem', i)
+      break
+   i = i+1
+else:
+   print(X, 'nie odnaleziono')
+
+# b
+
+L = [1, 2, 4, 8, 16, 32, 64]
+X = 5
+
+for p in L:
+   if (2 ** X) == p:
+      print((2 ** X), 'odnaleziono pod indeksem', L.index(p))
+      break
+else:
+   print(X, 'nie odnaleziono')
+
+# c
+
+L = [1, 2, 4, 8, 16, 32, 64]
+X = 5
+
+if (2 ** X) in L:
+   print((2 ** X), 'odnaleziono pod indeksem', L.index(2 ** X))
+else:
+   print(X, 'nie odnaleziono')
+
+# d
+
+X = 5
+L = []
+for i in range(7): L.append(2 ** i)
+print(L)
+
+if (2 ** X) in L:
+   print((2 ** X), 'odnaleziono pod indeksem', L.index(2 ** X))
+else:
+   print(X, 'nie odnaleziono')
+
+# e
+
+X = 5
+L = list(map(lambda x: 2**x, range(7)))    # Lub [2**x for x in range(7)]
+print(L)                                   # list() w celu wyświetlenia wszystkiego w Pythonie 3.0, w 2.6 nie
+
+if (2 ** X) in L:
+   print((2 ** X), 'odnaleziono pod indeksem', L.index(2 ** X))
+else:
+   print(X, 'nie odnaleziono')
+
+
+
+
+
+
+### Część IV Funkcje
+
+
+
+### 1
+
+% python
+>>> def func(x): print(x)
+...
+>>> func("mielonka")
+mielonka
+>>> func(42)
+42
+>>> func([1, 2, 3])
+[1, 2, 3]
+>>> func({'jedzenie': 'mielonka'})
+{'jedzenie': 'mielonka'}
+
+
+
+
+### 2
+
+def adder(x, y):
+   return x + y
+
+print(adder(2, 3))
+print(adder('mielonka', 'jajka'))
+print(adder(['a', 'b'], ['c', 'd']))
+
+% python mod.py
+5
+mielonkajajka
+['a', 'b', 'c', 'd']
+
+
+
+
+### 3
+
+def adder1(*args):
+   print('adder1', end=' ')
+   if type(args[0]) == type(0):              # Liczba całkowita?
+      sum = 0                                # Inicjalizacja do wartości zero
+   else:                                     # Inaczej sekwencja
+      sum = args[0][:0]                      # Wykorzystanie pustego wycinka arg1
+   for arg in args:
+      sum = sum + arg
+   return sum
+
+def adder2(*args):
+   print('adder2', end=' ')
+   sum = args[0]                             # Inicjalizacja do arg1
+   for next in args[1:]:
+      sum += next                            # Dodanie elementów 2..N
+   return sum
+
+for func in (adder1, adder2):
+   print(func(2, 3, 4))
+   print(func('mielonka', 'jajka', 'tost'))
+   print(func(['a', 'b'], ['c', 'd'], ['e', 'f']))
+
+% python adders.py
+adder1 9
+adder1 mielonkajajkatost
+adder1 ['a', 'b', 'c', 'd', 'e', 'f']
+adder2 9
+adder2 mielonkajajkatost
+adder2 ['a', 'b', 'c', 'd', 'e', 'f']
+
+
+
+
+### 4
+
+def adder(good=1, bad=2, ugly=3):
+   return good + bad + ugly
+
+print(adder( ))
+print(adder(5))
+print(adder(5, 6))
+print(adder(5, 6, 7))
+print(adder(ugly=7, good=6, bad=5))
+
+% python mod.py
+6
+10
+14
+18
+18
+
+# Rozwiązanie części drugiej
+
+def adder1(*args):                  # Suma dowolnej liczby argumentów pozycyjnych
+   tot = args[0]
+   for arg in args[1:]:
+      tot += arg
+   return tot
+
+def adder2(**args):                 # Suma dowolnej liczby argumentów ze słowami kluczowymi
+   argskeys = list(args.keys())     # W Pythonie 3.0 dodano wywołanie list()!
+   tot = args[argskeys[0]]
+   for key in argskeys[1:]:
+      tot += args[key]
+   return tot
+
+def adder3(**args):                 # To samo, ale przekształcenie na listę wartości
+   args = list(args.values())       # W Pythonie 3.0 do indeksowania dodano wywołanie list!
+   tot = args[0]
+   for arg in args[1:]:
+      tot += arg
+   return tot
+
+def adder4(**args):                 # To samo, ale z ponownym użyciem wersji z argumentami pozycyjnymi
+   return adder1(*args.values())
+
+print(adder1(1, 2, 3),       adder1('aa', 'bb', 'cc'))
+print(adder2(a=1, b=2, c=3), adder2(a='aa', b='bb', c='cc'))
+print(adder3(a=1, b=2, c=3), adder3(a='aa', b='bb', c='cc'))
+print(adder4(a=1, b=2, c=3), adder4(a='aa', b='bb', c='cc'))
+
+
+
+
+### 5 oraz 6
+
+def copyDict(old):
+   new = {}
+   for key in old.keys( ):
+      new[key] = old[key]
+   return new
+
+def addDict(d1, d2):
+   new = {}
+   for key in d1.keys( ):
+      new[key] = d1[key]
+   for key in d2.keys( ):
+      new[key] = d2[key]
+   return new
+
+% python
+>>> from dicts import *
+>>> d = {1: 1, 2: 2}
+>>> e = copyDict(d)
+>>> d[2] = '?'
+>>> d
+{1: 1, 2: '?'}
+>>> e
+{1: 1, 2: 2}
+
+>>> x = {1: 1}
+>>> y = {2: 2}
+>>> z = addDict(x, y)
+>>> z
+{1: 1, 2: 2}
+
+
+
+
+### 7
+
+def f1(a, b): print(a, b)                    # Normalne argumenty
+
+def f2(a, *b): print(a, b)                   # Zmienna liczba argumentów pozycyjnych
+
+def f3(a, **b): print(a, b)                  # Zmienna liczba słów kluczowych
+
+def f4(a, *b, **c): print(a, b, c)           # Tryby mieszane
+
+def f5(a, b=2, c=3): print(a, b, c)          # Wartości domyślne
+
+def f6(a, b=2, *c): print(a, b, c)           # Zmienna liczba argumentów pozycyjnych i wartości domyślnych
+
+% python
+>>> f1(1, 2)                                 # Dopasowanie po pozycji (kolejność ma znaczenie)
+1 2
+>>> f1(b=2, a=1)                             # Dopasowanie po nazwie (kolejność nie ma znaczenia)
+1 2
+
+>>> f2(1, 2, 3)                              # Dodatkowe argumenty pozycyjne zebrane w krotkę
+1 (2, 3)
+
+>>> f3(1, x=2, y=3)                          # Dodatkowe słowa kluczowe zebrane w słownik 
+1 {'x': 2, 'y': 3}
+
+>>> f4(1, 2, 3, x=2, y=3)                    # Dodatkowe argumenty obu typów
+1 (2, 3) {'x': 2, 'y': 3}
+
+>>> f5(1)                                    # Obie wartości domyślne użyte
+1 2 3
+>>> f5(1, 4)                                 # Jedna wartość domyślna użyta
+1 4 3
+
+>>> f6(1)                                    # Jeden argument: dopasowanie "a"
+1 2 ( )
+>>> f6(1, 3, 4)                              # Dodatkowe argumenty pozycyjne zebrane w krotkę
+1 3 (4,)
+
+
+
+
+### 8
+
+#from __future__ import division
+
+def prime(y):
+   if y <= 1:                                # Dla jakiegoś y > 1
+      print(y, 'nie jest liczbą pierwszą')
+   else:
+      x = y // 2                             # 3.0 / nie działa
+      while x > 1:
+         if y % x == 0:                      # Bez reszty?
+            print(y, 'ma czynnik', x)
+            break                            # Pominięcie else
+         x -= 1
+      else:
+         print(y, 'jest liczbą pierwszą')
+
+prime(13); prime(13.0)
+prime(15); prime(15.0)
+prime(3); prime(2)
+prime(1); prime(-3)
+
+
+
+% python primes.py
+13 jest liczbą pierwszą
+13.0 jest liczbą pierwszą
+15 ma czynnik 5
+15.0 ma czynnik 5.0
+3 jest liczbą pierwszą
+2 jest liczbą pierwszą
+1 nie jest liczbą pierwszą
+-3 nie jest liczbą pierwszą
+
+
+
+def timer(reps, func, *args):
+   import time
+   start = time.clock( )
+   for i in range(reps):
+      func(*args)
+   return time.clock( ) - start
+
+
+
+### 9
+
+>>> values = [2, 4, 9, 16, 25]
+>>> import math
+
+>>> res = []
+>>> for x in values: res.append(math.sqrt(x))
+...
+>>> res
+[1.4142135623730951, 2.0, 3.0, 4.0, 5.0]
+
+>>> list(map(math.sqrt, values))
+[1.4142135623730951, 2.0, 3.0, 4.0, 5.0]
+
+>>> [math.sqrt(x) for x in values]
+[1.4142135623730951, 2.0, 3.0, 4.0, 5.0]
+
+
+
+
+### 10
+
+# Plik mytimer.py (Python 2.6 oraz 3.0)
+
+...to samo co w rozdziale 20...
+
+# Plik timesqrt.py
+import sys, mytimer
+reps = 10000
+repslist = range(reps)               # Pobranie pełnego przedziału listy pomiarów dla Pythona 2.6
+
+from math import sqrt                # Nie math.sqrt: dodaje czas pobrania atrybutu
+def mathMod():
+   for i in repslist:
+      res = sqrt(i)
+   return res
+
+def powCall():
+   for i in repslist:
+      res = pow(i, .5)
+   return res
+
+def powExpr():
+   for i in repslist:
+      res = i ** .5
+   return res
+
+print(sys.version)
+for tester in (mytimer.timer, mytimer.best):
+   print('<%s>' % tester.__name__)
+   for test in (mathMod, powCall, powExpr):
+      elapsed, result = tester(test)
+      print ('-'*35)
+      print ('%s: %.5f => %s' %(test.__name__, elapsed, result))
+
+
+
+
+c:\misc> c:\python30\python timesqrt.py
+3.0.1 (r301:69561, Feb 13 2009, 20:04:18) [MSC v.1500 32 bit (Intel)]
+<timer>
+-----------------------------------
+mathMod: 5.33906 => 99.994999875
+-----------------------------------
+powCall: 7.29689 => 99.994999875
+-----------------------------------
+powExpr: 5.95770 => 99.994999875
+<best>
+-----------------------------------
+mathMod: 0.00497 => 99.994999875
+-----------------------------------
+powCall: 0.00671 => 99.994999875
+-----------------------------------
+powExpr: 0.00540 => 99.994999875
+
+c:\misc> c:\python26\python timesqrt.py
+2.6.1 (r261:67517, Dec 4 2008, 16:51:00) [MSC v.1500 32 bit (Intel)]
+<timer>
+-----------------------------------
+mathMod: 2.61226 => 99.994999875
+-----------------------------------
+powCall: 4.33705 => 99.994999875
+-----------------------------------
+powExpr: 3.12502 => 99.994999875
+<best>
+-----------------------------------
+mathMod: 0.00236 => 99.994999875
+-----------------------------------
+powCall: 0.00402 => 99.994999875
+-----------------------------------
+powExpr: 0.00287 => 99.994999875
+
+
+
+
+c:\misc> c:\python30\python
+>>>
+>>> def dictcomp(I):
+...    return {i: i for i in range(I)}
+...
+>>> def dictloop(I):
+...    new = {}
+...    for i in range(I): new[i] = i
+...    return new
+...
+>>> dictcomp(10)
+{0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8, 9: 9}
+>>> dictloop(10)
+{0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8, 9: 9}
+>>>
+>>> from mytimer import best, timer
+>>> best(dictcomp, 10000)[0]                # Słownik o 10 000 elementów
+0.0013519874732672577
+>>> best(dictloop, 10000)[0]
+0.001132965223233029
+>>>
+>>> best(dictcomp, 100000)[0]               # 100 000 elementów: 10 razy wolniejszy
+0.01816089754424155
+>>> best(dictloop, 100000)[0]
+0.01643484018219965
+>>>
+>>> best(dictcomp, 1000000)[0]              # 1 000 000 elementów: 10 razy tyle czasu
+0.18685105229855026
+>>> best(dictloop, 1000000)[0]              # Czas tworzenia jednego słownika
+0.1769041177020938
+>>>
+>>> timer(dictcomp, 1000000, _reps=50)[0]   # Słownik z 1 000 000 elementów
+10.692516087938543
+>>> timer(dictloop, 1000000, _reps=50)[0]   # Czas tworzenia 50
+10.197276050447755
+
+
+
+
+
+
+### Część V Moduły
+
+
+
+### 1
+
+# Plik mymod.py
+
+def countLines(name):
+   file = open(name)
+   return len(file.readlines( ))
+
+def countChars(name):
+   return len(open(name).read( ))
+
+def test(name):                              # Lub przekazanie obiektu pliku
+   return countLines(name), countChars(name) # Lub zwrócenie słownika
+
+% python
+>>> import mymod
+>>> mymod.test('mymod.py')
+(10, 306)
+
+
+
+
+def countLines(name):
+   tot = 0
+   for line in open(name): tot += 1
+   return tot
+
+def countChars(name):
+   tot = 0
+   for line in open(name): tot += len(line)
+   return tot
+
+
+
+
+# Plik mymod2.py
+
+def countLines(file):
+   file.seek(0)                              # Przewinięcie do początku pliku
+   return len(file.readlines( ))
+
+def countChars(file):
+   file.seek(0)                              # To samo (przewinięcie, jeśli jest konieczne)
+   return len(file.read( ))
+
+def test(name):
+   file = open(name)                         # Przekazanie obiektu pliku
+   return countLines(file), countChars(file) # Plik otwierany tylko raz
+
+>>> import mymod2
+>>> mymod2.test("mymod2.py")
+(12, 466)
+
+
+
+### 2
+
+% python
+>>> from mymod import *
+>>> countChars("mymod.py")
+306
+
+
+
+
+### 3
+
+# Plik mymod.py
+
+def countLines(name):
+   file = open(name)
+   return len(file.readlines( ))
+
+def countChars(name):
+   return len(open(name).read( ))
+
+def test(name):                              # Lub przekazanie obiektu pliku
+   return countLines(name), countChars(name) # Lub zwrócenie słownika
+
+if __name__ == '__main__':
+   print(test('mymod.py'))
+
+% python mymod.py
+(13, 360)
+
+
+
+
+if __name__ == '__main__':
+   print(test(input('Wprowadź nazwę pliku:'))
+
+if __name__ == '__main__':
+   import sys
+   print(test(sys.argv[1]))
+
+
+
+
+### 4
+
+# Plik myclient.py
+
+from mymod import countLines, countChars
+print(countLines('mymod.py'), countChars('mymod.py'))
+
+% python myclient.py
+13 360
+
+
+
+
+import myclient
+myclient.countLines(...)
+
+from myclient import countChars
+countChars(...)
+
+
+
+import myclient
+myclient.mymod.countLines(...)
+
+from myclient import mymod
+mymod.countChars(...)
+
+
+
+# Plik mod1.py
+somename = 42
+
+# Plik collector.py
+from mod1 import *                           # Zbiera wiele zmiennych
+from mod2 import *                           # from przypisuje do moich zmiennych
+from mod3 import *
+
+>>> from collector import somename
+
+
+ 
+### 5
+
+C:\python30> mkdir mypkg
+C:\Python30> move mymod.py mypkg\mymod.py
+C:\Python30> edit mypkg\__init__.py
+...zapisanie instrukcji print...
+C:\Python30> python
+>>> import mypkg.mymod
+inicjalizacja mypkg
+>>> mypkg.mymod.countLines('mypkg\mymod.py')
+13
+>>> from mypkg.mymod import countChars
+>>> countChars('mypkg\mymod.py')
+360
+
+
+
+
+### 6 oraz 7
+
+(nie ma nic do pokazania)
+
+
+
+
+
+### Część VI Klasy i programowanie zorientowane obiektowo
+
+
+
+### 1
+
+# Plik adder.py
+
+class Adder:
+   def add(self, x, y):
+      print('Nie zaimplementowano!')
+   def __init__(self, start=[]):
+      self.data = start
+   def __add__(self, other):                 # Czy w klasach podrzędnych?
+      return self.add(self.data, other)      # Czy zwrócić typ?
+
+class ListAdder(Adder):
+   def add(self, x, y):
+      return x + y
+
+class DictAdder(Adder):
+   def add(self, x, y):
+      new = {}
+      for k in x.keys( ): new[k] = x[k]
+      for k in y.keys( ): new[k] = y[k]
+      return new
+
+% python
+>>> from adder import *
+>>> x = Adder( )
+>>> x.add(1, 2)
+Nie zaimplementowano!
+>>> x = ListAdder( )
+>>> x.add([1], [2])
+[1, 2]
+>>> x = DictAdder( )
+>>> x.add({1:1}, {2:2})
+{1: 1, 2: 2}
+
+>>> x = Adder([1])
+>>> x + [2]
+Nie zaimplementowano!
+>>>
+>>> x = ListAdder([1])
+>>> x + [2]
+[1, 2]
+>>> [2] + x
+Traceback (innermost last):
+   File "<stdin>", line 1, in ?
+TypeError: __add__ nor __radd__ defined for these operands
+
+
+
+
+# Alternatywa pliku adder.py
+
+class Adder:
+   def __init__(self, start=[]):
+      self.data = start
+   def __add__(self, other):                 # Przekazanie pojedynczego argumentu
+      return self.add(other)                 # Lewa strona jest w self
+   def add(self, y):
+      print('Nie zaimplementowano!')
+
+class ListAdder(Adder):
+   def add(self, y):
+      return self.data + y
+
+class DictAdder(Adder):
+   def add(self, y):
+      pass                                   # Zmodyfikuj mnie, by użyć self.data zamiast x
+
+x = ListAdder([1, 2 ,3])
+y = x + [4, 5, 6]
+print(y)                                     # Wyświetla [1, 2, 3, 4, 5, 6]
+
+
+
+
+### 2
+
+# Plik mylist.py
+
+class MyList:
+   def __init__(self, start):
+      #self.wrapped = start[:]               # Skopiowanie start — brak efektów ubocznych
+      self.wrapped = []                      # Upewniamy się, że jest to lista
+      for x in start: self.wrapped.append(x)
+   def __add__(self, other):
+      return MyList(self.wrapped + other)
+   def __mul__(self, time):
+      return MyList(self.wrapped * time)
+   def __getitem__(self, offset):
+      return self.wrapped[offset]
+   def __len__(self):
+      return len(self.wrapped)
+   def __getslice__(self, low, high):
+      return MyList(self.wrapped[low:high])
+   def append(self, node):
+      self.wrapped.append(node)
+   def __getattr__(self, name):              # Inne składowe: sort, reverse itd.
+      return getattr(self.wrapped, name)
+   def __repr__(self):
+      return repr(self.wrapped)
+
+if __name__ == '__main__':
+   x = MyList('mielonka')
+   print(x)
+   print(x[2])
+   print(x[1:])
+   print(x + ['jajka'])
+   print(x * 3)
+   x.append('a')
+   x.sort( )
+   for c in x: print(c, end=' ')
+
+% python mylist.py
+['m', 'i', 'e', 'l', 'o', 'n', 'k', 'a']
+e
+['i', 'e', 'l', 'o', 'n', 'k', 'a']
+['m', 'i', 'e', 'l', 'o', 'n', 'k', 'a', 'jajka']
+['m', 'i', 'e', 'l', 'o', 'n', 'k', 'a', 'm', 'i', 'e', 'l', 'o', 'n', 'k', 'a', 'm', 'i', 'e', 'l', 'o', 'n', 'k', 'a']
+a a e i k l m n o
+
+
+
+
+### 3
+
+# Plik mysub.py
+
+from mylist import MyList
+
+class MyListSub(MyList):
+   calls = 0                                 # Współdzielona przez instancje
+
+   def __init__(self, start):
+      self.adds = 0                          # Różni się w każdej instancji
+      MyList.__init__(self, start)
+
+   def __add__(self, other):
+      MyListSub.calls += 1                   # Licznik dla całej klasy
+      self.adds += 1                         # Liczniki dla instancji
+      return MyList.__add__(self, other)
+
+   def stats(self):
+      return self.calls, self.adds           # Wszystkie dodawania, moje dodawania
+
+if __name__ == '__main__':
+   x = MyListSub('mielonka')
+   y = MyListSub('szynka')
+   print(x[2])
+   print(x[1:])
+   print(x + ['jajka'])
+   print(x + ['tost'])
+   print(y + ['bar'])
+   print(x.stats( ))
+
+% python mysub.py
+e
+['i', 'e', 'l', 'o', 'n', 'k', 'a']
+['m', 'i', 'e', 'l', 'o', 'n', 'k', 'a', 'jajka']
+['m', 'i', 'e', 'l', 'o', 'n', 'k', 'a', 'tost']
+['s', 'z', 'y', 'n', 'k', 'a', 'bar']
+(3, 2)
+
+
+
+
+### 4
+
+# Uwaga: nie jest to to, co obecnie nazywamy metaklasą (patrz rozdział 39.)!
+
+>>> class Meta:
+...    def __getattr__(self, name):
+...       print('pobierz', name)
+...    def __setattr__(self, name, value):
+...       print('ustaw', name, value)
+...
+>>> x = Meta( )
+>>> x.append
+pobierz append
+>>> x.spam = "wieprzowina"
+ustaw spam wieprzowina
+>>>
+>>> x + 2
+pobierz __coerce__
+Traceback (innermost last):
+   File "<stdin>", line 1, in ?
+TypeError: 'NoneType' object is not callable
+>>>
+>>> x[1]
+pobierz __getitem__
+Traceback (innermost last):
+   File "<stdin>", line 1, in ?
+TypeError: 'NoneType' object is not callable
+
+>>> x[1:5]
+pobierz __len__
+Traceback (innermost last):
+   File "<stdin>", line 1, in ?
+TypeError: 'NoneType' object is not callable
+
+
+
+
+### 5
+
+% python
+>>> from setwrapper import Set
+>>> x = Set([1, 2, 3, 4])                    # Wykonuje __init__
+>>> y = Set([3, 4, 5])
+
+>>> x & y                                    # __and__, intersect, następnie __repr__
+Zbiór:[3, 4]
+>>> x | y                                    # __or__, union, następnie __repr__
+Zbiór:[1, 2, 3, 4, 5]
+
+>>> z = Set("hallo")                         # __init__ usuwa duplikaty
+>>> z[0], z[-1]                              # __getitem__
+('h', 'o')
+
+>>> for c in z: print(c, end=' ')            # __getitem__
+...
+h a l o
+>>> len(z), z                                # __len__, __repr__
+(4, Zbiór:['h', 'a', 'l', 'o'])
+
+>>> z & "mallo", z | "mallo"
+(Zbiór:['a', 'l', 'o'], Zbiór:['h', 'a', 'l', 'o', 'm'])
+
+
+
+# Plik multiset.py
+
+from setwrapper import Set
+
+class MultiSet(Set):
+   """
+   Dziedziczy wszystkie zmienne klasy Set, jednak
+   rozszerza intersect oraz union w taki sposób, by
+   obsługiwały większą liczbę argumentów. Warto
+   zauważyć, że "self" nadal jest pierwszym
+   argumentem (przechowanym teraz w argumencie *args).
+   Odziedziczone operatory & oraz | wywołują nowe
+   metody z dwoma argumentami, jednak przetworzenie
+   więcej niż dwóch wymaga wywołania metody, a nie
+   wyrażenia.
+   """
+   
+   def intersect(self, *others):
+      res = []
+      for x in self:                         # Przeszukanie pierwszej sekwencji
+         for other in others:                # Dla wszystkich pozostałych argumentów
+            if x not in other: break         # Element w każdym z nich?
+         else:                               # Nie — wyjście z pętli
+            res.append(x)                    # Tak — dodanie elementu na końcu
+      return Set(res)
+
+   def union(*args):                         # self to args[0]
+      res = []
+      for seq in args:                       # Dla wszystkich argumentów
+         for x in seq:                       # Dla wszystkich węzłów
+            if not x in res:
+               res.append(x)                 # Dodanie nowych elementów do wyniku
+      return Set(res)
+
+
+
+
+>>> from multiset import *
+>>> x = MultiSet([1,2,3,4])
+>>> y = MultiSet([3,4,5])
+>>> z = MultiSet([0,1,2])
+
+>>> x & y, x | y                             # Dwa argumenty
+(Zbiór:[3, 4], Zbiór:[1, 2, 3, 4, 5])
+
+>>> x.intersect(y, z)                        # Trzy argumenty
+Zbiór:[]
+>>> x.union(y, z)
+Zbiór:[1, 2, 3, 4, 5, 0]
+>>> x.intersect([1,2,3], [2,3,4], [1,2,3])   # Cztery argumenty
+Zbiór:[2, 3]
+>>> x.union(range(10))                       # Działa również na innych zbiorach
+Zbiór:[1, 2, 3, 4, 0, 5, 6, 7, 8, 9]
+
+
+
+
+### 6
+
+class ListInstance:
+   def __str__(self):
+      return '<Instancja klasy %s(%s), adres %s:\n%s>' % (
+                self.__class__.__name__,     # Nazwa mojej klasy
+                self.__supers( ),            # Moje klasy nadrzędne
+                id(self),                    # Mój adres
+                self.__attrnames( )) )       # Lista nazwa=wartość
+   def __attrnames(self):
+      ...bez zmian...
+   def __supers(self):
+      names = []
+      for super in self.__class__.__bases__: # Jeden poziom w górę od klasy
+         names.append(super.__name__)        # name, nie str(super)
+      return ', '.join(names)
+
+C:\misc> python testmixin.py
+<Instancja klasy Sub(Super, ListInstance), adres 7841200:
+      zmienna data1=mielonka
+      zmienna data2=jajka
+      zmienna data3=42
+>
+
+
+
+
+### 7
+
+# Plik lunch.py
+
+class Lunch:
+   def __init__(self):                       # Utworzenie/osadzenie klas Customer oraz Employee
+      self.cust = Customer( )
+      self.empl = Employee( )
+   def order(self, foodName):                # Rozpoczęcie symulacji zamówienia klienta Customer
+      self.cust.placeOrder(foodName, self.empl)
+   def result(self):                         # Zapytanie klienta Customer o jego jedzenie Food
+      self.cust.printFood( )
+
+class Customer:
+   def __init__(self):                       # Inicjalizacja mojego jedzenia na None
+      self.food = None
+   def placeOrder(self, foodName, employee): # Złożenie zamówienia pracownikowi Employee
+      self.food = employee.takeOrder(foodName)
+   def printFood(self):                      # Wyświetlenie nazwy mojego jedzenia
+      print(self.food.name)
+
+class Employee:
+   def takeOrder(self, foodName):            # Zwrócenie jedzenia Food o żądanej nazwie
+      return Food(foodName)
+
+class Food:
+   def __init__(self, name):                 # Przechowanie nazwy jedzenia
+      self.name = name
+
+if __name__ == '__main__':
+   x = Lunch( )                              # Kod samosprawdzający
+   x.order('burrito')                        # Jeśli plik jest wykonywany, nie importowany
+   x.result( )
+   x.order('pizza')
+   x.result( )
+
+% python lunch.py
+burrito
+pizza
+
+
+
+
+### 8
+
+# Plik zoo.py
+
+class Animal:
+   def reply(self): self.speak( )            # Z powrotem do klasy podrzędnej
+   def speak(self): print('mielonka')        # Własny komunikat
+
+class Mammal(Animal):
+   def speak(self): print('hę?')
+
+class Cat(Mammal):
+   def speak(self): print('miau')
+
+class Dog(Mammal):
+   def speak(self): print('hau')
+
+class Primate(Mammal):
+   def speak(self): print('Witaj, świecie!')
+
+class Hacker(Primate): pass                  # Dziedziczy po klasie Primate
+
+
+
+
+### 9
+
+# Plik parrot.py
+
+class Actor:
+   def line(self): print(self.name + ':', repr(self.says( )))
+
+class Customer(Actor):
+   name = 'klient'
+   def says(self): return "To już ekspapuga!"
+
+class Clerk(Actor):
+   name = 'sprzedawca'
+   def says(self): return "nie, wcale nie..."
+
+class Parrot(Actor):
+   name = 'papuga'
+   def says(self): return None
+
+class Scene:
+   def __init__(self):
+      self.clerk = Clerk( )                  # Osadzenie instancji
+      self.customer = Customer( )            # Scene to kompozyt
+      self.subject = Parrot( )
+
+   def action(self):
+      self.customer.line( )                  # Delegacja do osadzonych
+      self.clerk.line( )
+      self.subject.line( )
+
+
+
+
+
+
+### Część VII Wyjątki oraz narzędzia
+
+
+
+### 1
+
+# Plik oops.py
+
+def oops( ):
+   raise IndexError
+
+def doomed( ):
+   try:
+      oops( )
+   except IndexError:
+      print('przechwycono błąd indeksu!')
+   else:
+      print('nie przechwycono żadnego błędu...')
+
+if __name__ == '__main__': doomed( )
+
+% python oops.py
+przechwycono błąd indeksu!
+
+
+
+### 2
+
+class MyError(Exception): pass
+
+def oops( ):
+   raise MyError('Mielonka!')
+
+def doomed( ):
+   try:
+      oops( )
+   except IndexError:
+      print('przechwycono błąd indeksu!')
+   except MyError as data:
+      print('przechwycono błąd:', MyError, data)
+   else:
+      print('nie przechwycono żadnego błędu...')
+
+if __name__ == '__main__':
+   doomed( )
+
+% python oops.py
+przechwycono błąd: <class '__main__.MyError'> Mielonka!
+
+
+
+
+### 3
+
+# Plik safe2.py
+
+import sys, traceback
+
+def safe(entry, *args):
+   try:
+      entry(*args)                      # Przechwycenie wszystkiego innego
+   except:
+      traceback.print_exc( )
+      print('Mam', sys.exc_info()[0], sys.exc_info()[1])
+
+import oops
+safe(oops.oops)
+
+% python safe2.py
+Traceback (most recent call last):
+   File "safe2.py", line 6, in safe
+      entry(*args)                     # Przechwycenie wszystkiego innego
+   File "oops.py", line 5, in oops
+      raise MyError, 'świecie'
+witaj,: świecie
+Mam witaj, świecie
+
+
+
+
+### 4
+
+
+
+
+# Odnalezienie największego pliku źródłowego Pythona w jednym katalogu
+
+import os, glob
+dirname = r'C:\Python30\Lib'
+
+allsizes = []
+allpy = glob.glob(dirname + os.sep + '*.py')
+for filename in allpy:
+   filesize = os.path.getsize(filename)
+   allsizes.append((filesize, filename))
+
+allsizes.sort()
+print(allsizes[:2])
+print(allsizes[-2:])
+
+
+
+
+
+# Odnalezienie największego pliku źródłowego Pythona w całym drzewie katalogów
+
+import sys, os, pprint
+if sys.platform[:3] == 'win':
+   dirname = r'C:\Python30\Lib'
+else:
+   dirname = '/usr/lib/python'
+
+allsizes = []
+for (thisDir, subsHere, filesHere) in os.walk(dirname):
+   for filename in filesHere:
+      if filename.endswith('.py'):
+         fullname = os.path.join(thisDir, filename)
+         fullsize = os.path.getsize(fullname)
+         allsizes.append((fullsize, fullname))
+
+allsizes.sort()
+pprint.pprint(allsizes[:2])
+pprint.pprint(allsizes[-2:])
+
+
+
+
+
+# Odnalezienie największego pliku źródłowego Pythona w ścieżce wyszukiwania importowanych modułów
+
+import sys, os, pprint
+visited = {}
+allsizes = []
+for srcdir in sys.path:
+   for (thisDir, subsHere, filesHere) in os.walk(srcdir):
+      thisDir = os.path.normpath(thisDir)
+      if thisDir.upper( ) in visited:
+         continue
+      else:
+         visited[thisDir.upper( )] = True
+      for filename in filesHere:
+         if filename.endswith('.py'):
+            pypath = os.path.join(thisDir, filename)
+            try:
+               pysize = os.path.getsize(pypath)
+            except:
+               print('pomijam', pypath)
+            allsizes.append((pysize, pypath))
+
+allsizes.sort( )
+pprint.pprint(allsizes[:3])
+pprint.pprint(allsizes[-3:])
+
+
+
+
+
+# Sumowanie rozdzielonych przecinkami kolumn w pliku tekstowym
+
+filename = 'data.txt'
+sums = {}
+
+for line in open(filename):
+   cols = line.split(',')
+   nums = [int(col) for col in cols]
+   for (ix, num) in enumerate(nums):
+      sums[ix] = sums.get(ix, 0) + num
+
+for key in sorted(sums):
+   print(key, '=', sums[key])
+
+
+
+
+
+# Podobnie do poprzedniego przykładu, jednak dla sum wykorzystuje listy, a nie słowniki
+
+import sys
+filename = sys.argv[1]
+numcols = int(sys.argv[2])
+totals = [0] * numcols
+
+for line in open(filename):
+   cols = line.split(',')
+   nums = [int(x) for x in cols]
+   totals = [(x + y) for (x, y) in zip(totals, nums)]
+
+print(totals)
+
+
+
+
+
+# Testowanie regresji w danych wyjściowych zbioru skryptów
+
+import os
+testscripts = [dict(script='test1.py', args=''),
+               dict(script='test2.py', args='spam')]
+
+for testcase in testscripts:
+   commandline = '%(script)s %(args)s' % testcase
+   output = os.popen(commandline).read( )
+   result = testcase['script'] + '.result'
+   if not os.path.exists(result):
+      open(result, 'w').write(output)
+      print('Utworzony:', result)
+   else:
+      priorresult = open(result).read( )
+      if output != priorresult:
+         print('NIEPOWODZENIE:', testcase['script'])
+         print(output)
+      else:
+         print('Przeszedł:', testcase['script'])
+
+
+
+
+
+# Utworzenie graficznego interfejsu użytkownika za pomocą tkinter (w Pythonie 2.6 Tkinter) z przyciskami zmieniającymi kolor oraz wielkość
+
+from tkinter import *                              # W Pythonie 2.6 należy użyć Tkinter
+import random
+fontsize = 25
+colors = ['red', 'green', 'blue', 'yellow', 'orange', 'white', 'cyan', 'purple']
+
+def reply(text):
+   print(text)
+   popup = Toplevel( )
+   color = random.choice(colors)
+   Label(popup, text='Okno wyskakujące', bg='black', fg=color).pack( )
+   L.config(fg=color)
+
+def timer( ):
+   L.config(fg=random.choice(colors))
+   win.after(250, timer)
+
+def grow( ):
+   global fontsize
+   fontsize += 5
+   L.config(font=('arial', fontsize, 'italic'))
+   win.after(100, grow)
+
+win = Tk( )
+L = Label(win, text='Mielonka', font=('arial', fontsize, 'italic'), fg='yellow', bg='navy', relief=RAISED)
+L.pack(side=TOP, expand=YES, fill=BOTH)
+Button(win, text='Naciśnij', command=(lambda: reply('red'))).pack(side=BOTTOM, fill=X)
+Button(win, text='Licznik', command=timer).pack(side=BOTTOM, fill=X)
+Button(win, text='Powiększ' , command=grow).pack(side=BOTTOM, fill=X)
+win.mainloop( )
+
+
+
+
+
+
+# Podobnie do poprzedniego przykładu, ale wykorzystuje klasy, tak by każde okno miało własne informacje o stanie
+
+from tkinter import *
+import random
+
+class MyGui:
+   """
+   Graficzny interfejs użytkownika z przyciskami zmieniającymi kolor i powiększającymi napis
+   """
+   colors = ['blue', 'green', 'orange', 'red', 'brown', 'yellow']
+
+   def __init__(self, parent, title='Okno wyskakujące'):
+      parent.title(title)
+      self.growing = False
+      self.fontsize = 10
+      self.lab = Label(parent, text='Gui1', fg='white', bg='navy')
+      self.lab.pack(expand=YES, fill=BOTH)
+      Button(parent, text='Mielonka', command=self.reply).pack(side=LEFT)
+      Button(parent, text='Powiększ', command=self.grow).pack(side=LEFT)
+      Button(parent, text='Zatrzymaj', command=self.stop).pack(side=LEFT)
+
+   def reply(self):
+      "losowa modyfikacja koloru przycisku po naciśnięciu przycisku Mielonka"
+      self.fontsize += 5
+      color = random.choice(self.colors)
+      self.lab.config(bg=color, font=('courier', self.fontsize, 'bold italic'))
+
+   def grow(self):
+      "po naciśnięciu przycisku Powiększ podpis zaczyna rosnąć"
+      self.growing = True
+      self.grower( )
+   
+   def grower(self):
+      if self.growing:
+         self.fontsize += 5
+         self.lab.config(font=('courier', self.fontsize, 'bold'))
+         self.lab.after(500, self.grower)
+
+   def stop(self):
+      "po naciśnięciu przycisku Zatrzymaj przycisk przestaje rosnąć"
+      self.growing = False
+
+class MySubGui(MyGui):
+   colors = ['black', 'purple']              # Można dostosować w celu modyfikacji kolorów do wyboru
+
+MyGui(Tk( ), 'main')
+MyGui(Toplevel( ))
+MySubGui(Toplevel( ))
+mainloop( ) 
+
+
+
+
+
+# Narzędzie do przeglądania folderu poczty przychodzącej oraz utrzymywania jej
+
+"""
+przegląda skrzynkę e-mailową POP, pobierając tylko
+nagłówki i pozwalając na usuwanie bez pobierania pełnej wiadomości
+"""
+
+import poplib, getpass, sys
+
+mailserver = 'nazwa serwera POP naszej poczty'               # pop.rmi.net
+mailuser = 'identyfikator użytkownika poczty'                # brian
+mailpasswd = getpass.getpass('Hasło dla %s?' % mailserver)
+
+print('Łączenie...')
+server = poplib.POP3(mailserver)
+server.user(mailuser)
+server.pass_(mailpasswd)
+
+try:
+   print(server.getwelcome( ))
+   msgCount, mboxSize = server.stat( )
+   print('W skrzynce jest', msgCount, 'wiadomości e-mail, rozmiar ', mboxSize)
+   msginfo = server.list( )
+   print(msginfo)
+   for i in range(msgCount):
+      msgnum = i+1
+      msgsize = msginfo[1][i].split( )[1]
+      resp, hdrlines, octets = server.top(msgnum, 0)         # Pobranie tylko nagłówków
+      print('-'*80)
+      print('[%d: octets=%d, size=%s]' % (msgnum, octets, msgsize))
+      for line in hdrlines: print(line)
+
+      if input('Wyświetlić?') in ['y', 'Y']:
+         for line in server.retr(msgnum)[1]: print(line)     # Pobranie całej wiadomości
+      if input('Usunąć?') in ['y', 'Y']:
+         print('usuwanie')
+         server.dele(msgnum)                                 # Usunięcie z serwera
+      else:
+         print('pomijanie')
+finally:
+   server.quit( )                              # Należy odblokować skrzynkę mbox
+input('Żegnaj.')                               # Zachowanie okna
+
+
+
+
+
+# Skrypt CGI po stronie klienta wchodzący w interakcję z przeglądarką
+
+#!/usr/bin/python
+import cgi
+form = cgi.FieldStorage( )                     # Przetworzenie danych formularza
+print("Content-type: text/html\n")             # Nagłówek i pusty wiersz
+print("<HTML>")
+print("<title>Strona odpowiedzi</title>")      # Strona html z odpowiedzią
+print("<BODY>")
+if not 'user' in form:
+   print("<h1>Kim jesteś?</h1>")
+else:
+   print("<h1>Witaj, <i>%s</i>!</h1>" % cgi.escape(form['user'].value))
+print("</BODY></HTML>")
+
+
+
+
+
+# Skrypt bazy danych zapełniający bazę MySQL i wykonujący do niej zapytania
+# UWAGA: w listopadzie 2009 baza danych MySQL nie obsługiwała jeszcze Pythona 3.X.
+# Zamiast tego można użyć bazy PostgreSQL lub obsługi SQLite z biblioteki standardowej.
+
+from MySQLdb import Connect
+conn = Connect(host='localhost', user='root', passwd='darling')
+curs = conn.cursor( )
+try:
+   curs.execute('drop database testpeopledb')
+except:
+   pass                                            # Nie istniała
+
+curs.execute('create database testpeopledb')
+curs.execute('use testpeopledb')
+curs.execute('create table people (name char(30), job char(10), pay int(4))')
+
+curs.execute('insert people values (%s, %s, %s)', ('Robert', 'programista', 50000))
+curs.execute('insert people values (%s, %s, %s)', ('Zuzanna', 'programista', 60000))
+curs.execute('insert people values (%s, %s, %s)', ('Anna', 'menedżer', 40000))
+
+curs.execute('select * from people')
+for row in curs.fetchall( ):
+   print(row)
+
+curs.execute('select * from people where name = %s', ('Robert',))
+print(curs.description)
+colnames = [desc[0] for desc in curs.description]
+while True:
+   print('-' * 30)
+   row = curs.fetchone( )
+   if not row: break
+   for (name, value) in zip(colnames, row):
+      print('%s => %s' % (name, value))
+
+conn.commit( )                                     # Zapisanie wstawionych rekordów
+
+
+
+
+
+# Skrypt bazy danych wypełniający obiekt shelve obiektami Pythona
+
+# Zachęcam do zajrzenia również do przykładów z rozdziału 27. (shelve) oraz z rozdziału 30. (pickle)
+
+rec1 = {'name': {'first': 'Robert', 'last': 'Kowalski'},
+        'job': ['programista', 'menedżer'],
+        'age': 40.5}
+
+rec2 = {'name': {'first': 'Zuzanna', 'last': 'Zielona'},
+        'job': ['menedżer'],
+        'age': 35.0}
+
+import shelve
+db = shelve.open('dbfile')
+db['bob'] = rec1
+db['sue'] = rec2
+db.close( )
+
+
+
+
+
+# Skrypt bazy danych wyświetlający i uaktualniający obiekt shelve utworzony w poprzednim skrypcie
+
+import shelve
+db = shelve.open('dbfile')
+for key in db:
+   print(key, '=>', db[key])
+
+bob = db['bob']
+bob['age'] += 1
+db['bob'] = bob
+db.close( )
+
+

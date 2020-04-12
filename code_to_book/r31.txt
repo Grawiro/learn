@@ -1,0 +1,1035 @@
+﻿### plik: setwrapper.py
+
+class Set:
+    def __init__(self, value = []):         # Konstruktor
+        self.data = []                      # Zarządza listą
+        self.concat(value)
+
+    def intersect(self, other):             # other to dowolna sekwencja
+        res = []                            # self to podmiot
+        for x in self.data:
+        if x in other:                      # Wybór wspólnych elementów
+            res.append(x)
+            return Set(res)                 # Zwrócenie nowej instancji Set
+
+    def union(self, other):                 # other to dowolna sekwencja
+        res = self.data[:]                  # Kopia mojej listy
+        for x in other:                     # Dodanie elementów w other
+            if not x in res:
+                res.append(x)
+                return Set(res)
+
+    def concat(self, value):                # value: lista, Set…
+        for x in value:                     # Usuwa duplikaty
+        if not x in self.data:
+            self.data.append(x)
+
+    def __len__(self):
+        return len(self.data)               # len(self)
+    def __getitem__(self, key):
+        return self.data[key]               # self[i]
+    def __and__(self, other):
+        return self.intersect(other)        # self & other
+    def __or__(self, other):
+        return self.union(other)            # self | other
+    def __repr__(self):
+        return 'Zbiór:' + repr(self.data)   # Wyświetlenie za pomocą print
+
+
+x = Set([1, 3, 5, 7])
+print(x.union(Set([1, 4, 7])))           # Wypisuje Set:[1, 3, 5, 7, 4]
+print(x | Set([1, 4, 6]))                # Wypisuje Set:[1, 3, 5, 7, 4, 6]
+
+
+### plik: typesubclass.py
+
+# Klasa podrzędna wbudowanego typu (klasy) listy
+# Odwzorowanie 1..N na 0..N-1; wywołanie z powrotem wbudowanej wersji
+
+class MyList(list):
+    def __getitem__(self, offset):
+        print('(indeksowanie %s w pozycji %s)' % (self, offset))
+        return list.__getitem__(self, offset - 1)
+
+if __name__ == '__main__':
+    print(list('abc'))
+    x = MyList('abc')               # Metoda __init__ odziedziczona po liście
+    print(x)                        # Metoda __repr__ odziedziczona po liście
+
+    print(x[1])                     # MyList.__getitem__
+    print(x[3])                     # Dostosowuje metodę klasy nadrzędnej listy
+
+    x.append('mielonka'); print x   # Atrybuty z klasy nadrzędnej listy
+    x.reverse(); print x
+
+
+% python typesubclass.py
+
+
+### plik: setsubclass.py
+
+class Set(list):
+    def __init__(self, value = []):     # Konstruktor
+        list.__init__([])               # Dostosowuje listę do własnych potrzeb
+        self.concat(value)              # Kopiuje zmienne wartości domyślne
+
+    def intersect(self, other):         # other to dowolna sekwencja
+        res = []                        # self to podmiot
+        for x in self:
+            if x in other:              # Wybór wspólnych elementów
+                res.append(x)
+        return Set(res)                 # Zwrócenie nowej instancji Set
+
+    def union(self, other):             # other to dowolna sekwencja
+        res = Set(self)                 # Kopia mojej listy
+        res.concat(other)
+        return res
+
+    def concat(self, value):            # value: lista, Set…
+        for x in value:                 # Usuwa duplikaty
+            if not x in self:
+                self.append(x)
+
+    def __and__(self, other): return self.intersect(other)
+    def __or__(self, other):  return self.union(other)
+    def __repr__(self):       return 'Zbiór:' + list.__repr__(self)
+
+if __name__ == '__main__':
+    x = Set([1,3,5,7])
+    y = Set([2,1,4,5,6])
+    print(x, y, len(x))
+    print(x.intersect(y), y.union(x))
+    print(x & y, x | y)
+    x.reverse(); print(x)
+
+
+% python setsubclass.py
+
+
+
+C:\misc> c:\python26\python
+>>> class C(object): pass               # Klasyczne klasy Pythona 2.6
+...
+>>> I = C()
+>>> type(I)                             # Typ instancji
+<class '__main__.C'>
+>>> I.__class__
+<class '__main__.C'>
+
+>>> type(C)                             # Klasy są typami tworzonymi przez użytkownika
+<type 'type'>
+>>> C.__class__
+<type 'type'>
+
+>>> type([1, 2, 3])                     # Klasy wbudowane działają tak samo
+<type 'list'>
+>>> type(list)
+<type 'type'>
+>>> list.__class__
+<type 'type'>
+
+
+C:\misc> c:\python26\python
+>>> class C(object): pass               # Klasy w nowym stylu w 2.6
+...
+>>> I = C()
+>>> type(I)                             # Typem instancji jest jej klasa
+<class '__main__.C'>
+>>> I.__class__
+<class '__main__.C'>
+
+>>> type(C)                             # Klasa jest typem, a typ jest klasą
+<type 'type'>
+>>> C.__class__
+<type 'type'>
+
+>>> type([1, 2, 3])                     # Klasy i typy wbudowane działają tak samo
+<type 'list'>
+>>> type(list)
+<type 'type'>
+>>> list.__class__
+<type 'type'>
+
+
+C:\misc> c:\python30\python
+>>> class C: pass                       # W 3.0 wszystkie klasy są w nowym stylu
+...
+>>> I = C()
+>>> type(I)                             # Typem instancji jest jej klasa
+<class '__main__.C'>
+>>> I.__class__
+<class '__main__.C'>
+
+>>> type(C)                             # Klasa jest typem, a typ jest klasą
+<class 'type'>
+>>> C.__class__
+<class 'type'>
+
+>>> type([1, 2, 3])                     # Klasy i typy wbudowane działają tak samo
+<class 'list'>
+>>> type(list)
+<class 'type'>
+>>> list.__class__
+<class 'type'>
+
+
+C:\misc> c:\python30\python
+>>> class C: pass
+...
+>>> class D: pass
+...
+>>> c = C()
+>>> d = D()
+>>> type(c) == type(d)                       # 3.0: porównanie klas instancji
+False
+
+>>> type(c), type(d)
+(<class '__main__.C'>, <class '__main__.D'>)
+>>> c.__class__, d.__class__
+(<class '__main__.C'>, <class '__main__.D'>)
+
+>>> c1, c2 = C(), C()
+>>> type(c1) == type(c2)
+True
+
+
+C:\misc> c:\python26\python
+>>> class C: pass
+...
+>>> class D: pass
+...
+>>> c = C()
+>>> d = D()
+>>> type(c) == type(d)                 # 2.6: wszystkie klasyczne instancje są tego samego typu
+True
+>>> c.__class__ == d.__class__         # Należy jawnie porównywać klasy
+False
+
+>>> type(c), type(d)
+(<type 'instance'>, <type 'instance'>) 
+>>> c.__class__, d.__class__
+(<class __main__.C at 0x024585A0>, <class __main__.D at 0x024588D0>)
+
+
+C:\misc> c:\python26\python
+>>> class C(object): pass
+...
+>>> class D(object): pass
+...
+>>> c = C()
+>>> d = D()
+>>> type(c) == type(d)                 # 2.6 w nowym stylu: działają tak samo jak w 3.0
+False
+>>> type(c), type(d)
+(<class '__main__.C'>, <class '__main__.D'>)
+>>> c.__class__, d.__class__
+(<class '__main__.C'>, <class '__main__.D'>)
+
+
+>>> class C: pass
+...
+>>> X = C()
+
+>>> type(X)                           # Typ jest klasą instancji
+<class '__main__.C'>
+>>> type(C)
+<class 'type'>
+
+
+>>> isinstance(X, object)
+True
+>>> isinstance(C, object)             # Klasy zawsze dziedziczą po object
+True
+
+
+>>> type('spam')
+<class 'str'>
+>>> type(str)
+<class 'type'>
+
+>>> isinstance('spam', object)        # To samo dotyczy klas wbudowanych
+True
+>>> isinstance(str, object)
+True
+
+
+>>> type(type)                        # Wszystkie klasy są typami, a typy są klasami
+<class 'type'>
+>>> type(object)
+<class 'type'>
+
+>>> isinstance(type, object)          # Wszystkie klasy dziedziczą po object, nawet klasa type
+True
+>>> isinstance(object, type)          # Typy tworzą klasy, a type jest klasą
+True
+>>> type is object
+False
+
+
+>>> class A:
+        attr = 1         # Klasyczne klasy (Python 2.6)
+
+>>> class B(A):          # B i C dziedziczą po A
+        pass
+
+>>> class C(A):
+        attr = 2
+
+>>> class D(B, C):
+        pass             # Sprawdza w A, a następnie w C
+
+>>> x = D()
+>>> x.attr               # Kolejność przeszukiwania: x, D, B, A
+1
+
+
+>>> class A(object):
+        attr = 1         # Nowy styl (dziedziczenie po "object" niewymagane w 3.0)
+
+>>> class B(A):
+        pass
+
+>>> class C(A):
+        attr = 2
+
+>>> class D(B, C):
+        pass             # Sprawdza w C, a następnie w A
+
+>>> x = D()
+>>> x.attr               # Kolejność przeszukiwania: x, D, B, C
+2
+
+
+>>> class A:
+        attr = 1                              # Model klasyczny
+
+>>> class B(A):
+        pass
+
+>>> class C(A):
+        attr = 2
+
+>>> class D(B, C):
+        attr = C.attr                        # Wybór C, na prawo
+
+>>> x = D()
+>>> x.attr                                   # Działa jak klasy w nowy stylu (wszystkie klasy w 3.0)
+2
+
+
+>>> class A(object):
+        attr = 1                # Nowy styl
+
+>>> class B(A): 
+        pass
+
+>>> class C(A): 
+        attr = 2
+
+>>> class D(B,C): 
+        attr = B.attr           # Wybór A.attr, z góry
+
+>>> x = D( )
+>>> x.attr                      # Działa jak model klasyczny
+1
+
+
+>>> class A:
+...     def meth(s): print ('A.meth')
+
+>>> class C(A):
+...     def meth(s): print ('C.meth')
+
+>>> class B(A):
+...     pass
+
+>>> class D(B,C): pass                       # Wykorzystanie domyślnej kolejności wyszukiwania
+>>> x = D( )                                 # Różni się dla typów klas
+>>> x.meth( )                                # Domyślnie kolejność klasyczna
+A.meth
+
+>>> class D(B,C): meth = C.meth              # Wybór metody klasy C: nowy styl
+>>> x = D( )
+>>> x.meth( )
+C.meth
+
+>>> class D(B,C): meth = B.meth              # Wybór metody klasy B: model klasyczny
+>>> x = D( )
+>>> x.meth( )
+A.meth
+
+
+class D(B,C):
+    def meth(self):                          # Redefiniowanie niżej
+        ...
+        C.meth(self)                         # Wybór metody klasy C przez wywołanie
+
+
+>>> class limiter(object):
+...    __slots__ = ['age', 'name', 'job']
+...
+>>> x = limiter()
+>>> x.age                                  # Przed użyciem należy przypisać wartość
+AttributeError: age
+
+>>> x.age = 40
+>>> x.age
+40
+>>> x.ape = 1000                           # Nielegalne wywołanie: nazwa niezdefiniowana w __slots__
+AttributeError: 'limiter' object has no attribute 'ape'
+
+
+>>> class C:
+...     ['a', 'b']                          # __slots__ oznacza, że nie ma __dict__
+...
+>>> X = C()
+>>> X.a = 1
+>>> X.a
+1
+>>> X.__dict__
+AttributeError: 'C' object has no attribute '__dict__'
+>>> getattr(X, 'a')
+1
+>>> setattr(X, 'b', 2)                     # Ale getattr() i setattr() będą działać
+>>> X.b
+2
+>>> 'a' in dir(X)                          # dir() również znajduje atrybuty w slotach
+True
+>>> 'b' in dir(X)
+True
+
+
+>>> class D:
+...     __slots__ = ['a', 'b']
+...     def __init__(self): self.d = 4      # Nie można dodawać nazw niezdefiniowanych w __dict__
+...
+>>> X = D()
+AttributeError: 'D' object has no attribute 'd'
+
+
+>>> class D:
+...    __slots__ = ['a ', 'b', '__dict__'] # Deklarujemy __dict__ jako jeden ze slotów
+...    c = 3                               # Atrybuty klasy działają bez zmian
+...    def __init__(self): self.d = 4      # d zostaje zapisane w __dict__, a w __slots__
+...
+>>> X = D()
+>>> X.d
+4
+>>> X.__dict__                             # Niektóre obiekty posiadają __dict__ oraz __slots__
+{'d': 4}                                   # getattr() odczyta wartość atrybutu dowolnego rodzaju
+>>> X.__slots__
+['a', 'b', '__dict__']
+>>> X.c
+3
+>>> X.a                                    # Atrybutów nie można odczytać, jeśli nie zostały przypisane
+AttributeError: a
+>>> X.a = 1
+>>> getattr(X, 'a',), getattr(X, 'c'), getattr(X, 'd')
+(1, 3, 4)
+
+
+>>> for attr in list(X.__dict__) + X.__slots__:
+...    print(attr, '=>', getattr(X, attr))
+
+d => 4
+a => 1
+b => 2
+__dict__ => {'d': 4}
+
+
+>>> for attr in list(getattr(X, '__dict__', [])) + getattr(X, '__slots__', []):
+...    print(attr, '=>', getattr(X, attr))
+
+d => 4
+a => 1
+b => 2
+__dict__ => {'d': 4}
+
+
+>>> class E:
+...     __slots__ = ['c', 'd']              # Klasa nadrzędna posiada sloty
+...
+>>> class D(E):
+...     __slots__ = ['a', '__dict__']       # Podobnie jej klasa potomna
+...
+>>> X = D()
+>>> X.a = 1; X.b = 2; X.c = 3               # Instancja jest połączeniem tych klas
+>>> X.a, X.c
+(1, 3)
+
+>>> E.__slots__                             # Ale sloty nie są dziedziczone z klas nadrzędnych
+['c', 'd']
+>>> D.__slots__
+['a', '__dict__']
+>>> X.__slots__                             # Instancja dziedziczy sloty wyłącznie z jej klasy
+['a', '__dict__']
+>>> X.__dict__                              # I posiada własny słownik __attr__
+{'b': 2}
+
+>>> for attr in list(getattr(X, '__dict__', [])) + getattr(X, '__slots__', []):
+...    print(attr, '=>', getattr(X, attr))
+...
+b => 2                                      # Brakuje slotów z klasy nadrzędnej!
+a => 1
+__dict__ => {'b': 2}
+
+>>> dir(X)                                  # dir() wyświetla wszystkie nazwy
+[...pominięta część wyniku... 'a', 'b', 'c', 'd']
+
+
+>>> class classic:
+...     def __getattr__(self, name):
+...         if name == 'age':
+...            return 40
+...        else:
+...            raise AttributeError
+...
+>>> x = classic()
+>>> x.age                                    # Wykonuje __getattr__
+40
+>>> x.name                                   # Wykonuje __getattr__
+AttributeError
+
+
+>>> class newprops(object):
+...     def getage(self):
+...         return 40
+...     age = property(getage, None, None, None) # Operacje get, set, del, dokumentacja
+...
+>>> x = newprops()
+>>> x.age                                        # Wykonuje getage
+40
+>>> x.name                                       # Normalne pobranie
+AttributeError: newprops instance has no attribute 'name'
+
+
+>>> class newprops(object):
+...     def getage(self):
+...         return 40
+...     def setage(self, value):
+...         print('ustawienie wieku:', value)
+...         self._age = value
+...     age = property(getage, setage, None, None)
+...
+>>> x = newprops( )
+>>> x.age                                    # Wykonuje getage
+40
+>>> x.age = 42                               # Wykonuje setage
+ustawienie wieku: 42
+>>> x._age                                   # Normalne pobranie; nie ma wywołania getage
+42
+>>> x.job = 'instruktor'                     # Normalne przypisanie; nie ma wywołania setage
+>>> x.job                                    # Normalne pobranie; nie ma wywołania getage
+'instruktor'
+
+
+>>> class classic:
+...     def __getattr__(self, name):          # Przy niezdefiniowanej referencji
+...         if name == 'age':
+...             return 40
+...         else:
+...             raise AttributeError
+...     def __setattr__(self, name, value):   # Przy wszystkich przypisaniach
+...         print('ustawienie: ', name, value)
+...         if name == 'age':
+...             self.__dict__['_age'] = value
+...         else:
+...             self.__dict__[name] = value
+...
+>>> x = classic()
+>>> x.age                                    # Wykonuje __getattr__
+40
+>>> x.age = 41                               # Wykonuje __setattr__
+ustawienie: age 41
+>>> x._age                                   # Zdefiniowane: nie ma wywołania __getattr__
+41
+>>> x.job = 'instruktor'                     # Wykonuje znowu __setattr__
+>>> x.job                                    # Zdefiniowane: nie ma wywołania __getattr__
+
+
+### plik: spam.py
+
+class Spam:
+    numInstances = 0
+    def __init__(self):
+        Spam.numInstances = Spam.numInstances + 1
+    def printNumInstances():
+        print("Liczba utworzonych instancji: ", Spam.numInstances)
+
+
+C:\misc> c:\python26\python
+>>> from spam import Spam
+>>> a = Spam()                             # W 2.6 metod niezwiązanych nie można wywoływać z klasy
+>>> b = Spam()                             # Metody oczekują obiektu self
+>>> c = Spam()
+
+>>> Spam.printNumInstances()
+TypeError: unbound method printNumInstances() must be called with Spam instance as first argument (got nothing instead)
+>>> a.printNumInstances()
+TypeError: printNumInstances() takes no arguments (1 given)
+
+
+C:\misc> c:\python30\python
+>>> from spam import Spam
+>>> a = Spam()                              # W 3.0 można wywoływać metody z klas
+>>> b = Spam()                              # Jednak wywołania metod z instancji przekazują self
+>>> c = Spam()
+
+>>> Spam.printNumInstances()                # Różnica w 3.0
+Liczba utworzonych instancji: 3
+>>> a.printNumInstances()
+TypeError: printNumInstances() takes no arguments (1 given)
+
+
+Spam.printNumInstances()                    # Nie działa w 2.6, działa w 3.0
+instance.printNumInstances()                # Nie działa w 2.6 i 3.0
+
+
+### plik spam.py (modyfikacja)
+
+def printNumInstances():
+    print("Liczba utworzonych instancji: ", Spam.numInstances)
+
+class Spam:
+    numInstances = 0
+    def __init__(self):
+        Spam.numInstances = Spam.numInstances + 1
+
+>>> import spam
+>>> a = spam.Spam()
+>>> b = spam.Spam()
+>>> c = spam.Spam()
+>>> spam.printNumInstances()           # Funkcja jest poderwana od klasy i nie można
+Liczba utworzonych instancji:  3       # nią manipulować w ramach dziedziczenia
+>>> spam.Spam.numInstances
+3
+
+
+class Spam:
+    numInstances = 0
+    def __init__(self):
+        Spam.numInstances = Spam.numInstances + 1
+    def printNumInstances(self):
+        print("Liczba utworzonych instancji: ", Spam.numInstances)
+
+>>> from spam import Spam
+>>> a, b, c = Spam(), Spam(), Spam()
+>>> a.printNumInstances()
+Number of instances created:  3
+>>> Spam.printNumInstances(a)
+Number of instances created:  3
+>>> Spam().printNumInstances()         # odczyt licznika modyfikuje ten licznik!
+Liczba utworzonych instancji:  4
+
+
+class Methods:
+    def imeth(self, x):            # Zwykła metoda instancji: otrzymuje self
+        print(self, x)
+
+    def smeth(x):                  # Metoda statyczna: instancja nie jest przekazywana
+        print(x)
+
+    def cmeth(cls, x):             # Metoda klasy: otrzymuje klasę, nie instancję
+        print(cls, x)
+
+    smeth = staticmethod(smeth)    # Przekształcenie smeth w metodę statyczną
+    cmeth = classmethod(cmeth)     # Przekształcenie cmeth w metodę klasy
+
+
+>>> obj = Methods()                # Utworzenie instancji
+
+>>> obj.imeth(1)                   # Zwykła metoda, wywoływana z instancji
+<__main__.Methods object...> 1     # Wywoływana jako imeth(obj, 1)
+
+>>> Methods.imeth(obj, 2)          # Zwykła metoda, wywoływana z klasy
+<__main__.Methods object...> 2     # Instancja przekazywana bezpośrednio
+
+
+>>> Methods.smeth(3)               # Metoda statyczna, wywoływana z klasy
+3                                  # Instancja nie jest przekazywana ani oczekiwana
+
+>>> obj.smeth(4)                   # Metoda statyczna, wywoływana z instancji
+4                                  # Instancja nie jest przekazywana
+
+
+>>> Methods.cmeth(5)               # Metoda klasy, wywoływana z klasy
+<class '__main__.Methods'> 5       # Wywoływana jako cmeth(Methods, 5)
+
+>>> obj.cmeth(6)                   # Metoda klasy, wywoływana z instancji
+<class '__main__.Methods'> 6       # Wywoływana jako cmeth(Methods, 6)
+
+
+class Spam:
+    numInstances = 0                         # Użycie metod statycznych dla danych klasy
+    def __init__(self):
+        Spam.numInstances += 1
+    def printNumInstances():
+        print("Liczba instancji:", Spam.numInstances)
+    printNumInstances = staticmethod(printNumInstances)
+
+
+>>> a = Spam()
+>>> b = Spam()
+>>> c = Spam()
+>>> Spam.printNumInstances()                 # Wywoływana jak zwykła funkcja
+Number of instances: 3
+>>> a.printNumInstances()                    # Instancja nie jest przekazywana
+Number of instances: 3
+
+
+class Sub(Spam):
+    def printNumInstances():                # Przeciążenie metody statycznej
+        print("Coś ekstra...")              # Ale z wywołaniem oryginału
+        Spam.printNumInstances()
+    printNumInstances = staticmethod(printNumInstances)
+
+>>> a = Sub()
+>>> b = Sub()
+>>> a.printNumInstances()                   # Wywołanie z instancji klasy potomnej
+Coś ekstra...
+Liczba instancji: 2
+>>> Sub.printNumInstances()                 # Wywołanie z samej klasy potomnej
+Coś ekstra...
+Liczba instancji: 2
+>>> Spam.printNumInstances()
+Liczba instancji: 2
+
+
+>>> class Other(Spam): pass                  # Dziedziczenie metody statycznej
+
+>>> c = Other()
+>>> c.printNumInstances()
+Liczba instancji: 3
+
+
+class Spam:
+    numInstances = 0                         # Użycie metody klasy
+    def __init__(self):
+        Spam.numInstances += 1
+    def printNumInstances(cls):
+        print("Liczba instancji:", cls.numInstances)
+    printNumInstances = classmethod(printNumInstances)
+
+
+>>> a, b = Spam(), Spam()
+>>> a.printNumInstances()                    # Klasa przekazana w pierwszym argumencie
+Liczba instancji: 2
+>>> Spam.printNumInstances()                 # Klasa przekazana w pierwszym argumencie
+Liczba instancji: 2
+
+
+class Spam:
+    numInstances = 0                         # Śledzenie liczby instancji
+    def __init__(self):
+        Spam.numInstances += 1
+    def printNumInstances(cls):
+        print("Liczba instancji:", cls.numInstances, cls)
+    printNumInstances = classmethod(printNumInstances)
+
+class Sub(Spam):
+    def printNumInstances(cls):              # Przeciążenie metody klasy
+        print("Coś ekstra...", cls)          # Ale z wywołaniem oryginału
+        Spam.printNumInstances()
+    printNumInstances = classmethod(printNumInstances)
+
+class Other(Spam): pass                      # Dziedziczenie metody klasy
+
+
+>>> x, y = Sub(), Spam()
+>>> x.printNumInstances()                    # Wywołanie z instancji klasy potomnej
+Extra stuff... <class 'test.Sub'>
+Number of instances: 2 <class 'test.Spam'>
+>>> Sub.printNumInstances()                  # Wywołanie z samej klasy potomnej
+Coś ekstra... <class 'test.Sub'>
+Liczba instancji: 2 <class 'test.Spam'>
+>>> y.printNumInstances()
+Liczba instancji: 2 <class 'test.Spam'>
+
+
+>>> z = Other()
+>>> z.printNumInstances()
+Liczba instancji: 3 <class 'test.Other'>
+
+
+class Spam:
+    numInstances = 0
+    def count(cls):                    # Licznik instancji zapisany w klasie
+        cls.numInstances += 1          # cls jest obiektem klasy najniższego poziomu
+    def __init__(self):
+        self.count()                   # Przekazuje self.__class__
+    count = classmethod(count)
+
+class Sub(Spam):
+    numInstances = 0
+    def __init__(self):                # Przeciążenie metody __init__
+        Spam.__init__(self)
+
+class Other(Spam):                     # Odziedziczenie metody __init__
+    numInstances = 0
+>>> x = Spam()
+>>> y1, y2 = Sub(), Sub()
+>>> z1, z2, z3 = Other(), Other(), Other()
+>>> x.numInstances, y1.numInstances, z1.numInstances
+(1, 2, 3)
+>>> Spam.numInstances, Sub.numInstances, Other.numInstances
+(1, 2, 3)
+
+
+class C:
+@staticmethod                               # składnia dekoratora
+def meth():
+    ...
+
+
+class C:
+def meth():
+    ...
+meth = staticmethod(meth)                 # Ponowne wiązanie nazwy
+
+
+class Spam:
+    numInstances = 0
+    def __init__(self):
+        Spam.numInstances = Spam.numInstances + 1
+
+    @staticmethod
+    def printNumInstances():
+        print("Liczba utworzonych instancji: ", Spam.numInstances)
+
+a = Spam()
+b = Spam()
+c = Spam()
+Spam.printNumInstances()      # Tera działają wywołania z klas i z instancji!
+a.printNumInstances()         # Obydwa wypiszą " Liczba utworzonych instancji: 3"
+
+
+class tracer:
+    def __init__(self, func):
+        self.calls = 0
+        self.func  = func
+    def __call__(self, *args):
+        self.calls += 1
+        print('call %s to %s' % (self.calls, self.func.__name__))
+        self.func(*args)
+
+@tracer                       # Równoważne wywołaniu spam = tracer(spam)
+def spam(a, b, c):            # Opakowanie funkcji spam w obiekt dekoratora
+    print(a, b, c)
+
+spam(1, 2, 3)                 # Naprawdę wywołuje obiekt opakowujący tracer
+spam('a', 'b', 'c')           # Wywołuje __call__ w klasie
+spam(4, 5, 6)                 # __call__ dodaje logikę i wykonuje oryginalny obiekt
+
+
+def decorator(aClass):
+    ...
+@decorator
+class C:
+    ...
+
+
+def decorator(aClass):
+    ...
+class C:
+    ...
+C = decorator(C)
+
+
+def count(aClass):
+    aClass.numInstances = 0
+    return aClass                  # Zwracamy samą klasę, nieobiekt opakowujący
+
+@count
+class Spam: ...                    # Równoważne wywołaniu Spam = count(Spam)
+
+@count
+class Sub(Spam): ...               # numInstances = 0 nie jest potrzebne
+
+@count
+class Other(Spam): ...
+
+
+class Meta(type):
+    def __new__(meta, classname, supers, classdict):
+        ...
+class C(metaclass=Meta):
+    ...
+
+
+class C:
+    __metaclass__ = Meta
+    ...
+
+
+>>> class X:
+...    a = 1                                 # Atrybut klasy
+...
+>>> I = X()
+>>> I.a                                      # Odziedziczony przez instancję
+1
+>>> X.a
+1
+
+
+>>> X.a = 2                                  # Może zmienić coś więcej niż tylko X
+>>> I.a                                      # I również się zmienia
+2
+>>> J = X( )                                 # J dziedziczy po X wartości w czasie wykonywania
+>>> J.a                                      # (przypisanie do J.a zmienia a w J, a nie w X lub I)
+2
+
+
+class X: pass                                # Utworzenie kilku przestrzeni nazw atrybutów
+class Y: pass
+
+X.a = 1                                      # Wykorzystanie atrybutów klas jako zmiennych
+X.b = 2                                      # Nigdzie nie ma instancji
+X.c = 3
+Y.a = X.a + X.b + X.c
+
+for X.i in range(Y.a): print X.i             # Wyświetla 0..5
+
+
+class Record: pass
+X = Record( )
+X.name = 'robert'
+X.job = 'Twórca pizzy'
+
+
+>>> class C:
+...     shared = []                 # Atrybut klasy
+...     def __init__(self):
+...         self.perobj = []        # Atrybut instancji
+...
+>>> x = C()                         # Dwie instancje
+>>> y = C()                         # Atrybuty klasy są współdzielone
+>>> y.shared, y.perobj
+([], [])
+
+>>> x.shared.append('spam')         # Również modyfikuje zachowanie instancji y!
+>>> x.perobj.append('spam')         # Modyfikuje zachowanie instancji x
+>>> x.shared, x.perobj
+(['spam'], ['spam'])
+
+>>> y.shared, y.perobj              # y widzi zmiany wprowadzone w x
+(['spam'], [])
+>>> C.shared                        # Zapisane w klasie i współdzielone
+['spam']
+
+
+x.shared.append('spam')  # Modyfikuje współdzielony obiekt przypisany atrybutowi klasy
+x.shared = 'spam'        # Modyfikuje lub tworzy nowy atrybut instancji przez przypisanie
+
+
+class ListTree:
+    def __str__(self): ...
+
+class Super:
+    def __str__(self): ...
+
+class Sub(ListTree, Super):    # Wymuszamy użycie metody __str__ z klasy ListTree
+
+x = Sub()                      # Mechanizm dziedziczenia znajdzie metodę w ListTree zanim przeszuka Super
+
+
+class ListTree:
+    def __str__(self): ...
+    def other(self): ...
+
+class Super:
+    def __str__(self): ...
+    def other(self): ...
+
+class Sub(ListTree, Super):    # Wymuszamy użycie metody __str__ z klasy ListTree
+    other = Super.other        # ale metodę other wybieramy z klasy Super
+    def __init__(self):
+        ...
+
+x = Sub()                      # Mechanizm dziedziczenia przeszuka klasę Sub przed ListTree/Super
+
+
+class Sub(Super, Lister):                    # Pobranie other z klasy Super dzięki kolejności
+   __repr__ = Lister.__repr__                # Jawny wybór Lister.__repr__
+
+
+def generate():                  # Nie zadziała w wersjach wcześniejszych od 2.2
+    class Spam:
+        count = 1
+        def method(self):        # Nazwa Spam nie jest widoczna:
+            print(Spam.count)    # nie jest lokalna (def), globalna (moduł), ani wbudowana
+    return Spam()
+
+generate().method()
+
+C:\python\examples> python nester.py
+...pominięty fragment komunikatu o błędzie...
+
+    Print(Spam.count)            # nie jest lokalna (def), globalna (moduł), ani wbudowana
+NameError: Spam
+
+
+def generate():
+    global Spam                             # Zmuszenie Spam do istnienia w zakresie modułu
+    class Spam:
+        count = 1
+        def method(self):
+            print Spam.count                # Działa: w zakresie globalnym (modułu)
+    return Spam()
+
+generate().method()                         # Wyświetla 1
+
+
+def generate():
+    return Spam()
+
+class Spam:                                 # Zdefiniowana na najwyższym poziomie modułu
+    count = 1
+    def method(self):
+        print(Spam.count)                   # Działa: w zakresie globalnym (modułu)
+
+generate().method()
+
+
+def generate():
+    class Spam:
+        count = 1
+        def method(self):
+            print(self.__class__.count)     # Działa: kwalifikacja, by dotrzeć do klasy
+    return Spam()
+
+generate().method()
+
+
+class Lunch:
+    def __init__(self)                      # Tworzy/osadza klasy Customer oraz Employee
+    def order(self, foodName)               # Rozpoczęcie symulacji zamówienia klienta Customer
+    def result(self)                        # Zapytanie klienta Customer, jakie ma jedzenie Food 
+
+class Customer:
+    def __init__(self)                        # Inicjalizacja mojego jedzenia na None
+    def placeOrder(self, foodName, employee)  # Złożenie zamówienia pracownikowi Employee
+    def printFood(self)                       # Wyświetlenie nazwy mojego jedzenia
+
+class Employee:
+    def takeOrder(self, foodName)             # Zwraca jedzenie Food z żądaną nazwą
+
+class Food:
+    def __init__(self, name)                  # Przechowanie nazwy jedzenia
+
+
+% python
+>>> from zoo import Cat, Hacker
+>>> spot = Cat()
+>>> spot.reply()                            # Animal.reply; wywołuje Cat.speak
+miau
+>>> data = Hacker()                         # Animal.reply; wywołuje Primate.speak
+>>> data.reply()
+Witaj, świecie!
+
+
+% python
+>>> import parrot
+>>> parrot.Scene().action()                # Aktywacja zagnieżdżonych obiektów
+customer: "To już ekspapuga!"
+clerk: "nie, wcale nie..."
+parrot: None

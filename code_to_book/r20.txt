@@ -1,0 +1,956 @@
+﻿>>> ord('s')
+115
+
+
+>>> res = []
+>>> for x in 'mielonka':
+...     res.append(ord(x))
+...
+>>> res
+[115, 112, 97, 109]
+
+
+>>> res = list(map(ord, 'mielonka'))          # Wywołanie funkcji na sekwencji
+>>> res
+[115, 112, 97, 109]
+
+
+>>> res = [ord(x) for x in 'mielonka']        # Wywołanie wyrażenia na sekwencji
+>>> res
+[115, 112, 97, 109]
+
+
+>>> [x ** 2 for x in range(10)]
+[0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
+
+
+>>> list(map((lambda x: x ** 2), range(10)))
+[0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
+
+
+>>> [x for x in range(5) if x % 2 == 0]
+[0, 2, 4]
+
+>>> filter((lambda x: x % 2 == 0), range(5))
+[0, 2, 4]
+
+>>> res = [ ]
+>>> for x in range(5):
+...    if x % 2 == 0:
+...       res.append(x)
+...
+>>> res
+[0, 2, 4]
+
+
+>>> [x ** 2 for x in range(10) if x % 2 == 0]
+[0, 4, 16, 36, 64]
+
+
+>>> list( map((lambda x: x**2), filter((lambda x: x % 2 == 0), range(10))) )
+[0, 4, 16, 36, 64]
+
+
+>>> res = [x + y for x in [0, 1, 2] for y in [100, 200, 300]]
+>>> res
+[100, 200, 300, 101, 201, 301, 102, 202, 302]
+
+
+>>> res = []
+>>> for x in [0, 1, 2]:
+...     for y in [100, 200, 300]:
+...         res.append(x + y)
+...
+>>> res
+[100, 200, 300, 101, 201, 301, 102, 202, 302]
+
+
+>>> [x + y for x in 'jajko' for y in 'JAJKO']
+['jJ', 'jA', 'jJ', 'jK', 'jO', 'aJ', 'aA', 'aJ', 'aK', 'aO', 'jJ', 'jA', 'jJ', 'jK', 'jO', 'kJ', 'kA', 'kJ', 'kK', 'kO', 'oJ', 'oA', 'oJ', 'oK', 'oO']
+
+
+>>> [(x, y) for x in range(5) if x % 2 == 0 for y in range(5) if y % 2 == 1]
+[(0, 1), (0, 3), (2, 1), (2, 3), (4, 1), (4, 3)]
+
+
+>>> res = []
+>>> for x in range(5):
+...     if x % 2 == 0:
+...         for y in range(5):
+...             if y % 2 == 1:
+...                 res.append((x, y))
+...
+>>> res
+[(0, 1), (0, 3), (2, 1), (2, 3), (4, 1), (4, 3)]
+
+
+>>> M = [[1, 2, 3],
+...      [4, 5, 6],
+...      [7, 8, 9]]
+
+>>> N = [[2, 2, 2],
+...      [3, 3, 3],
+...      [4, 4, 4]]
+
+
+>>> M[1]
+[4, 5, 6]
+
+>>> M[1][2]
+6
+
+
+>>> [row[1] for row in M]
+[2, 5, 8]
+
+>>> [M[row][1] for row in (0, 1, 2)]
+[2, 5, 8]
+
+
+>>> [M[i][i] for i in range(len(M))]
+[1, 5, 9]
+
+
+>>> [M[row][col] * N[row][col] for row in range(3) for col in range(3)]
+[2, 4, 6, 12, 15, 18, 28, 32, 36]
+
+>>> [[M[row][col] * N[row][col] for col in range(3)] for row in range(3)]
+[[2, 4, 6], [12, 15, 18], [28, 32, 36]]
+
+
+>>> res = []
+>>> for row in range(3):
+...     tmp = []
+...     for col in range(3):
+...         tmp.append(M[row][col] * N[row][col])
+...     res.append(tmp)
+...
+>>> res
+[[2, 4, 6], [12, 15, 18], [28, 32, 36]]
+
+
+>>> open('myfile').readlines()
+['aaa\n', 'bbb\n', 'ccc\n']
+
+
+>>> [line.rstrip() for line in open('myfile').readlines()]
+['aaa', 'bbb', 'ccc']
+
+>>> [line.rstrip() for line in open('myfile')]
+['aaa', 'bbb', 'ccc']
+
+>>> list(map((lambda line: line.rstrip()), open('myfile')))
+['aaa', 'bbb', 'ccc']
+
+
+listoftuple = [('Teodor', 35, 'dyrektor'), ('Teofil', 40, 'prezes')]
+
+
+>>> [age for (name, age, job) in listoftuple]
+[35, 40]
+
+>>> list(map((lambda row: row[1]), listoftuple))
+[35, 40]
+
+
+# tylko dla 2.6
+>>> list(map((lambda (name, age, job): age), listoftuple))
+[35, 40]
+
+
+>>> def gensquares(N):
+...     for i in range(N):
+...         yield i ** 2        # Kolejne wywołanie wznowi wykonanie od tego miejsca
+...
+
+
+>>> for i in gensquares(5):     # Kolejne wznawianie generatora
+...     print(i, end=' : ')     # Wypisanie ostatniej zwróconej wartości
+...
+0 : 1 : 4 : 9 : 16 :
+>>>
+
+
+>>> x = gensquares(4)
+>>> x
+<generator object at 0x0086C378>
+
+
+>>> next(x)                     # W 3.0 równoważne z x.__next__()
+0
+>>> next(x)                     # W 2.6 można użyć x.next() lub next(x)
+1
+>>> next(x)
+4
+>>> next(x)
+9
+>>> next(x)
+Traceback (most recent call last):
+...pominięta część wyniku...
+StopIteration
+
+
+>>> def buildsquares(n):
+...     res = []
+...     for i in range(n): res.append(i ** 2)
+...     return res
+...
+>>> for x in buildsquares(5): print(x, end=' : ')
+...
+0 : 1 : 4 : 9 : 16 :
+
+
+>>> for x in [n ** 2 for n in range(5)]:
+...     print(x, end=' : ')
+...
+0 : 1 : 4 : 9 : 16 :
+
+>>> for x in map((lambda n: n ** 2), range(5)):
+...     print(x, end=' : ')
+...
+0 : 1 : 4 : 9 : 16 :
+
+
+>>> def gen():
+...    for i in range(10):
+...        X = yield i
+...        print(X)
+...
+>>> G = gen()
+>>> next(G)              # Jako pierwsze wywołanie musi wystąpić next(), co uruchamia generator
+0
+>>> G.send(77)           # Wznowienie generatora z przekazaniem wartości
+77
+1
+>>> G.send(88)
+88
+2
+>>> next(G)              # next() oraz X.__next__() przekazują None
+None
+3
+
+
+>>> [x ** 2 for x in range(4)]          # Lista składana: zwraca listę
+[0, 1, 4, 9]
+
+>>> (x ** 2 for x in range(4))          # Wyrażenie generatora: zwraca obiekt iterowany
+<generator object at 0x011DC648>
+
+
+>>> list(x ** 2 for x in range(4))      # Odpowiednik listy składanej
+[0, 1, 4, 9]
+
+
+>>> G = (x ** 2 for x in range(4))
+>>> next(G)
+0
+>>> next(G)
+1
+>>> next(G)
+4
+>>> next(G)
+9
+>>> next(G)
+
+Traceback (most recent call last):
+...pominięty fragment wyniku...
+StopIteration
+
+
+>>> for num in (x ** 2 for x in range(4)):
+...     print('%s, %s' % (num, num / 2.0))
+...
+0, 0.0
+1, 0.5
+4, 2.0
+9, 4.5
+
+
+>>> sum(x ** 2 for x in range(4))
+14
+
+>>> sorted(x ** 2 for x in range(4))
+[0, 1, 4, 9]
+
+>>> sorted((x ** 2 for x in range(4)), reverse=True)
+[9, 4, 1, 0]
+
+>>> import math
+>>> list(map(math.sqrt, (x ** 2 for x in range(4))))
+[0.0, 1.0, 2.0, 3.0]
+
+
+>>> G = (c * 4 for c in 'JAJKO')           # Wyrażenie generatora
+>>> list(G)                                # Wymuszenie wygenerowania wyników w całości
+['JJJJ', 'AAAA', 'JJJJ', 'KKKK', 'OOOO']
+
+
+>>> def timesfour(S):                     # Funkcja generatora
+...     for c in S:
+...         yield c * 4
+...
+>>> G = timesfour('jajko')
+>>> list(G)                               # Iteracja automatyczna
+['jjjj', 'aaaa', 'jjjj', 'kkkk', 'oooo']
+
+
+>>> G = (c * 4 for c in 'JAJKO')
+>>> I = iter(G)                           # Ręczna iteracja
+>>> next(I)
+'JJJJ'
+>>> next(I)
+'AAAA'
+>>> G = timesfour('jajko')
+>>> I = iter(G)
+>>> next(I)
+'jjjj'
+>>> next(I)
+'aaaa'
+
+
+>>> G = (c * 4 for c in 'JAJKO')
+>>> iter(G) is G                  # Iterator generatora jest tym samym generatorem: G obsługuje __next__
+True
+
+
+>>> G = (c * 4 for c in 'JAJKO')  # Utworzenie nowego generatora
+>>> I1 = iter(G)                  # Ręczna iteracja
+>>> next(I1)
+'JJJJ'
+>>> next(I1)
+'AAAA'
+>>> I2 = iter(G)                  # Drugi iterator znajduje się na tej samej pozycji!
+>>> next(I2)
+'JJJJ'
+
+
+>>> list(I1)                          # Odczyt pozostałych elementów z I1
+['KKKK', 'OOOO']
+>>> next(I2)                          # Pozostałe iteratory są również opróżnione
+StopIteration
+
+>>> I3 = iter(G)                      # Podobnie nowo tworzone iteratory
+>>> next(I3)
+StopIteration
+
+>>> I3 = iter(c * 4 for c in 'JAJKO') # Nowy generator zaczyna od początku
+>>> next(I3)
+'JJJJ'
+
+
+>>> def timesfour(S):
+...     for c in S:
+...         yield c * 4
+...
+>>> G = timesfour('jajko')        # Funkcje generatorów działają w ten sam sposób
+>>> iter(G) is G
+True
+>>> I1, I2 = iter(G), iter(G)
+>>> next(I1)
+'jjjj'
+>>> next(I1)
+'aaaa'
+>>> next(I2)                      # I2 znajduje się na tej samej pozycji co I1
+'jjjj'
+
+
+>>> L = [1, 2, 3, 4]
+>>> I1, I2 = iter(L), iter(L)
+>>> next(I1)
+1
+>>> next(I1)
+2
+>>> next(I2)                      # Listy obsługują wielokrotną iterację
+1
+>>> del L[2:]                     # Zmiany w liście są odzwierciedlane w iteratorach
+>>> next(I1)
+StopIteration
+
+
+>>> S1 = 'abc'
+>>> S2 = 'xyz123'
+>>> list(zip(S1, S2))                          # zip łączy w pary elementy iteratorów
+[('a', 'x'), ('b', 'y'), ('c', 'z')]
+
+# zip łączy elementy i przycina wynik do najkrótszej sekwencji
+>>> list(zip([-2, -1, 0, 1, 2]))               # Jedna sekwencja: zwraca krotki 1-elementowe
+[(-2,), (-1,), (0,), (1,), (2,)]
+>>> list(zip([1, 2, 3], [2, 3, 4, 5]))         # N sekwencji: zwraca krotki N-elementowe
+[(1, 2), (2, 3), (3, 4)]
+
+# map przekazuje połączone elementy do funkcji, przycina do najkrótszej sekwencji
+>>> list(map(abs, [-2, -1, 0, 1, 2]))          # Jedna sekwencja: wywołanie funkcji 1-argumentowej
+[2, 1, 0, 1, 2]
+>>> list(map(pow, [1, 2, 3], [2, 3, 4, 5]))    # N sekwencji: wywołanie funkcji N-argumentowej
+[1, 8, 81]
+
+
+# map(func, seqs...): emulacja z użyciem funkcji zip
+
+def mymap(func, *seqs):
+    res = []
+    for args in zip(*seqs):
+        res.append(func(*args))
+    return res
+
+print(mymap(abs, [-2, -1, 0, 1, 2]))
+print(mymap(pow, [1, 2, 3], [2, 3, 4, 5]))
+
+
+# Użycie listy składanej
+
+def mymap(func, *seqs):
+    return [func(*args) for args in zip(*seqs)]
+
+print(mymap(abs, [-2, -1, 0, 1, 2]))
+print(mymap(pow, [1, 2, 3], [2, 3, 4, 5]))
+
+
+# Użycie generatorów: yield i (...)
+
+def mymap(func, *seqs):
+    res = []
+    for args in zip(*seqs):
+        yield func(*args)
+
+def mymap(func, *seqs):
+    return (func(*args) for args in zip(*seqs))
+
+
+print(list(mymap(abs, [-2, -1, 0, 1, 2])))
+print(list(mymap(pow, [1, 2, 3], [2, 3, 4, 5])))
+
+
+C:\misc> c:\python26\python
+>>> map(None, [1, 2, 3], [2, 3, 4, 5])
+[(1, 2), (2, 3), (3, 4), (None, 5)]
+>>> map(None, 'abc', 'xyz123')
+[('a', 'x'), ('b', 'y'), ('c', 'z'), (None, '1'), (None, '2'), (None, '3')]
+
+
+# Własne implementacje funkcji zip(seqs...) oraz map(None, seqs...) w wersji 2.6
+
+def myzip(*seqs):
+    seqs = [list(S) for S in seqs]
+    res  = []
+    while all(seqs):
+        res.append(tuple(S.pop(0) for S in seqs))
+    return res
+
+def mymapPad(*seqs, pad=None):
+    seqs = [list(S) for S in seqs]
+    res  = []
+    while any(seqs):
+        res.append(tuple((S.pop(0) if S else pad) for S in seqs))
+    return res
+
+S1, S2 = 'abc', 'xyz123'
+print(myzip(S1, S2))
+print(mymapPad(S1, S2))
+print(mymapPad(S1, S2, pad=99))
+
+
+# Użycie generatorów: yield
+
+def myzip(*seqs):
+    seqs = [list(S) for S in seqs]
+    while all(seqs):
+        yield tuple(S.pop(0) for S in seqs)
+
+def mymapPad(*seqs, pad=None):
+    seqs = [list(S) for S in seqs]
+    while any(seqs):
+        yield tuple((S.pop(0) if S else pad) for S in seqs)
+
+S1, S2 = 'abc', 'xyz123'
+print(list(myzip(S1, S2)))
+print(list(mymapPad(S1, S2)))
+print(list(mymapPad(S1, S2, pad=99)))
+
+
+# Alternatywna implementacja wykorzystująca długości
+
+def myzip(*seqs):
+    minlen = min(len(S) for S in seqs)
+    return [tuple(S[i] for S in seqs) for i in range(minlen)]
+
+def mymapPad(*seqs, pad=None):
+    maxlen = max(len(S) for S in seqs)
+    index  = range(maxlen)
+    return [tuple((S[i] if len(S) > i else pad) for S in seqs) for i in index]
+
+S1, S2 = 'abc', 'xyz123'
+print(myzip(S1, S2))
+print(mymapPad(S1, S2))
+print(mymapPad(S1, S2, pad=99))
+
+
+# Użycie generatorów: (...)
+
+def myzip(*seqs):
+    minlen = min(len(S) for S in seqs)
+    return (tuple(S[i] for S in seqs) for i in range(minlen))
+
+print(list(myzip(S1, S2)))
+
+
+>>> D = {'a':1, 'b':2, 'c':3}
+>>> x = iter(D)
+>>> next(x)
+'a'
+>>> next(x)
+'c'
+
+
+def myzip(*args):
+    iters = map(iter, args)
+    while iters:
+        res = [next(i) for i in iters]
+        yield tuple(res)
+
+
+>>> list(myzip('abc', 'lmnop'))
+[('a', 'l'), ('b', 'm'), ('c', 'n')]
+
+
+def myzip(*args):
+    iters = list(map(iter, args))
+    ...dalszy ciąg taki sam...
+
+
+>>> for key in D:
+...     print(key, D[key])
+...
+a 1
+c 3
+b 2
+
+
+>>> for line in open('temp.txt'):
+...     print(line, end='')
+...
+To tylko
+rana powierzchowna.
+
+
+>>> [x * x for x in range(10)]        # Lista składana: zwraca listę
+[0, 1, 4, 9, 16, 25, 36, 49, 64, 81]  # odpowiednik list (wyrażenie generatora)
+
+>>> (x * x for x in range(10))        # Wyrażenie generatora: zwraca elementy na żądanie
+<generator object at 0x009E7328>      # W niektórych kontekstach nawiasy są opcjonalne
+
+>>> {x * x for x in range(10)}        # Zbiór składany, nowość w 3.0
+{0, 1, 4, 81, 64, 9, 16, 49, 25, 36}  # {x, y} to literał zbioru w 3.0
+
+>>> {x: x * x for x in range(10)}     # Słownik składany, nowość w 3.0
+{0: 0, 1: 1, 2: 4, 3: 9, 4: 16, 5: 25, 6: 36, 7: 49, 8: 64, 9: 81}
+
+
+>>> {x * x for x in range(10)}                # Zbiór składany
+{0, 1, 4, 81, 64, 9, 16, 49, 25, 36}
+>>> set(x * x for x in range(10))             # Generator przekształcony na zbiór
+{0, 1, 4, 81, 64, 9, 16, 49, 25, 36}
+
+>>> {x: x * x for x in range(10)}
+{0: 0, 1: 1, 2: 4, 3: 9, 4: 16, 5: 25, 6: 36, 7: 49, 8: 64, 9: 81}
+>>> dict((x, x * x) for x in range(10))
+{0: 0, 1: 1, 2: 4, 3: 9, 4: 16, 5: 25, 6: 36, 7: 49, 8: 64, 9: 81}
+
+
+>>> res = set()
+>>> for x in range(10):                        # Odpowiednik zbioru składanego
+...     res.add(x * x)
+...
+>>> res
+{0, 1, 4, 81, 64, 9, 16, 49, 25, 36}
+
+>>> res = {}
+>>> for x in range(10):                        # Odpowiednik słownika składanego
+...     res[x] = x * x
+...
+>>> res
+{0: 0, 1: 1, 2: 4, 3: 9, 4: 16, 5: 25, 6: 36, 7: 49, 8: 64, 9: 81}
+
+
+>>> G = ((x, x * x) for x in range(10))
+>>> next(G)
+(0, 0)
+>>> next(G)
+(1, 1)
+
+
+>>> [x * x for x in range(10) if x % 2 == 0]           # Listy zachowują kolejność elementów
+[0, 4, 16, 36, 64]
+>>> {x * x for x in range(10) if x % 2 == 0}           # Zbiory nie
+{0, 16, 4, 64, 36}
+>>> {x: x * x for x in range(10) if x % 2 == 0}        # Ani klucze słowników
+{0: 0, 8: 64, 2: 4, 4: 16, 6: 36}
+
+
+>>> [x + y for x in [1, 2, 3] for y in [4, 5, 6]]      # Listy zachowują duplikaty
+[5, 6, 7, 6, 7, 8, 7, 8, 9]
+>>> {x + y for x in [1, 2, 3] for y in [4, 5, 6]}      # Zbiory nie
+{8, 9, 5, 6, 7}
+>>> {x: y for x in [1, 2, 3] for y in [4, 5, 6]}       # Ani klucze słowników
+{1: 6, 2: 6, 3: 6}
+
+
+>>> {x + y for x in 'ab' for y in 'cd'}
+{'bd', 'ac', 'ad', 'bc'}
+
+>>> {x + y: (ord(x), ord(y)) for x in 'ab' for y in 'cd'}
+{'bd': (98, 100), 'ac': (97, 99), 'ad': (97, 100), 'bc': (98, 99)}
+
+>>> {k * 2 for k in ['mielonka', 'szynka', 'kiełbasa'] if k[1] == 'i'}
+{'mielonkamielonka', 'kiełbasakiełbasa'}
+
+>>> {k.upper(): k * 2 for k in ['mielonka', 'szynka', 'kiełbasa'] if k[1] == 'i'}
+{'KIEŁBASA': 'kiełbasakiełbasa', 'MIELONKA': 'mielonkamielonka'}
+
+
+# Plik mytimer.py
+
+import time
+reps = 1000
+repslist = range(reps)
+
+def timer(func, *pargs, **kargs):
+    start = time.clock()
+    for i in repslist:
+        ret = func(*pargs, **kargs)
+    elapsed = time.clock() - start
+    return (elapsed, ret)
+
+
+# Plik timeseqs.py
+
+import sys, mytimer                              # Import funkcji pomiaru czasu
+reps = 10000
+repslist = range(reps)                           # Zbudowanie listy powtórzeń w 2.6
+
+def forLoop():
+    res = []
+    for x in repslist:
+        res.append(abs(x))
+    return res
+
+def listComp():
+    return [abs(x) for x in repslist]
+
+def mapCall():
+    return list(map(abs, repslist))              # Przekształcenie na listę na potrzeby 3.0
+
+def genExpr():
+    return list(abs(x) for x in repslist)        # Funkcja list zwraca wszystkie wyniki
+
+def genFunc():
+    def gen():
+        for x in repslist:
+            yield abs(x)
+    return list(gen())
+
+print(sys.version)
+for test in (forLoop, listComp, mapCall, genExpr, genFunc):
+    elapsed, result = mytimer.timer(test)
+    print ('-' * 33)
+    print ('%-9s: %.5f => [%s...%s]' %
+           (test.__name__, elapsed, result[0], result[-1]))
+
+
+# Plik timeseqs.py
+...
+...
+def forLoop():
+    res = []
+    for x in repslist:
+        res.append(x + 10)
+    return res
+
+def listComp():
+    return [x + 10 for x in repslist]
+
+def mapCall():
+    return list(map((lambda x: x + 10), repslist))          # tylko dla 3.0
+
+def genExpr():
+    return list(x + 10 for x in repslist)                   # 2.6 + 3.0
+
+def genFunc():
+    def gen():
+        for x in repslist:
+            yield x + 10
+    return list(gen())
+...
+...
+
+
+C:\misc> c:\python30\python timeseqs.py
+
+
+# Plik mytimer.py (dla 2.6 i 3.0)
+
+"""
+timer(mielonka, 1, 2, a=3, b=4, _reps=1000) wywołuje i mierzy czas mielonka(1, 2, a=3),
+wywołując testy _reps razy, zwracany jest całkowity czas testu;
+
+best(mielonka, 1, 2, a=3, b=4, _reps=50) wywołuje _reps powtórzeń i zwraca najlepszy czas wykonania,
+co pozwala odfiltrować wariacje pomiaru czasu spowodowane obciążeniem systemu
+"""
+
+import time, sys
+if sys.platform[:3] == 'win':
+    timefunc = time.clock               # W Windows używamy time.clock
+else:
+    timefunc = time.time                # Lepsza dokładność w niektórych Uniksach
+
+def trace(*args): pass                  # Lub: print args
+
+def timer(func, *pargs, **kargs):
+    _reps = kargs.pop('_reps', 1000)    # Przekazany parametr lub wartość domyślna reps
+    trace(func, pargs, kargs, _reps)
+    repslist = range(_reps)             # Lista wartości z zakresu w 2.6
+    start = timefunc()
+    for i in repslist:
+        ret = func(*pargs, **kargs)
+    elapsed = timefunc() - start
+    return (elapsed, ret)
+
+def best(func, *pargs, **kargs):
+    _reps = kargs.pop('_reps', 50)
+    best = 2 ** 32
+    for i in range(_reps):
+        (time, ret) = timer(func, *pargs, _reps=1, **kargs)
+        if time < best: best = time
+    return (best, ret)
+
+
+# Plik timeseqs.py
+
+import sys, mytimer
+reps = 10000
+repslist = range(reps)
+
+def forLoop(): ...
+
+def listComp(): ...
+
+def mapCall(): ...
+
+def genExpr(): ...
+
+def genFunc(): ...
+
+print(sys.version)
+for tester in (mytimer.timer, mytimer.best):
+    print('<%s>' % tester.__name__)
+    for test in (forLoop, listComp, mapCall, genExpr, genFunc):
+        elapsed, result = tester(test)
+        print ('-' * 35)
+        print ('%-9s: %.5f => [%s...%s]' %
+               (test.__name__, elapsed, result[0], result[-1]))
+
+
+C:\misc> c:\python30\python timeseqs.py
+
+
+# Plik mytimer.py (wyłącznie 3.X)
+
+"""
+Wykorzystana składnia argumentów mogących być tylko słowami kluczowymi, specyficzna dla 3.0, zamiast argumentów **
+i wykonywania metody pop na słownikach.
+Nie ma konieczności wydobywania listy z wyniku funkcji range(): w 3.0 to jest generator, nie lista
+"""
+
+import time, sys
+trace = lambda *args: None  # or print
+timefunc = time.clock if sys.platform == 'win32' else time.time
+
+def timer(func, *pargs, _reps=1000, **kargs):
+    trace(func, pargs, kargs, _reps)
+    start = timefunc()
+    for i in range(_reps):
+        ret = func(*pargs, **kargs)
+    elapsed = timefunc() - start
+    return (elapsed, ret)
+
+def best(func, *pargs, _reps=50, **kargs):
+    best = 2 ** 32
+    for i in range(_reps):
+        (time, ret) = timer(func, *pargs, _reps=1, **kargs)
+        if time < best: best = time
+    return (best, ret)
+
+
+C:\misc> c:\python30\python timeseqs.py
+
+
+C:\misc> c:\python30\python
+>>> from mytimer import timer, best
+>>>
+>>> def power(X, Y): return X ** Y            # Funkcja testowana
+...
+>>> timer(power, 2, 32)                       # Czas całkowity
+(0.002625403507987747, 4294967296)
+>>> timer(power, 2, 32, _reps=1000000)        # Wymuszenie liczby powtórzeń
+(1.1822605247314932, 4294967296)
+>>> timer(power, 2, 100000)[0]                # 2 ** 100000, całkowity czas dla 1000 powtórzeń
+2.2496919999608878
+
+>>> best(power, 2, 32)                       # Najlepszy czas, ostatni wynik
+(5.58730229727189e-06, 4294967296)
+>>> best(power, 2, 100000)[0]                # 2 ** 100,000 best time
+0.0019937589833460834
+>>> best(power, 2, 100000, _reps=500)[0]     # Wymuszamy liczbę powtórzeń
+0.0019845399345541637
+
+
+>>> timer(power, 2, 1000000, _reps=1)[0]     # 2 ** 1000000: czas całkowity
+0.088112804839710179
+>>> timer(power, 2, 1000000, _reps=10)[0]
+0.40922470593329763
+
+>>> best(power, 2, 1000000, _reps=1)[0]      # 2 ** 1000000: najlepszy czas
+0.086550036387279761
+>>> best(power, 2, 1000000, _reps=10)[0]     # 10 powtórzeń czasem daje tak samo dobre wyniki jak 50
+0.029616752967200455
+>>> best(power, 2, 1000000, _reps=50)[0]     # Najlepszy czas dla 50 powtórzeń
+0.029486918030102061
+
+
+print('<%s>' % tester.__name__)            # Wyrażenie
+
+print('<{0}>'.format(tester.__name__))     # Metoda formatująca
+
+        print ('%-9s: %.5f => [%s...%s]' %
+               (test.__name__, elapsed, result[0], result[-1]))
+
+        print('{0:<9}: {1:.5f} => [{2}...{3}]'.format(
+                test.__name__, elapsed, result[0], result[-1]))
+
+
+>>> X = 99
+>>> def selector():       # Zmienna X jest użyta, ale nie jest przypisana
+...     print(X)          # X jest odczytana z zakresu globalnego...
+>>> selector()
+99
+
+
+>>> def selector():
+...     print(X)          # Z jeszcze nie istnieje!
+...     X = 88            # X jest zaklasyfikowana jako zmienna lokalna
+...                       # Analogiczna sytuacja może wystąpić dla "import X", "def X"...
+>>> selector()
+...pominięta treść błędu...
+UnboundLocalError: local variable 'X' referenced before assignment
+
+
+>>> def selector():
+...     global X                # Wymuszenie zmiennej X jako globalnej
+...     print(X)
+...     X = 88
+...
+>>> selector()
+99
+
+
+>>> X = 99
+>>> def selector():
+...     import __main__         # Zaimportowanie własnego modułu
+...     print(__main__.X)       # Kwalifikowane odwołanie w celu uzyskania globalnej wersji nazwy
+...     X = 88                  # Niekwalifikowane odwołanie użyje wersji lokalnej
+...     print(X)                # Wypisanie lokalnej wersji
+...
+>>> selector()
+99
+88
+
+
+>>> def saver(x=[]):               # Zapisuje pustą listę
+...     x.append(1)                # Powoduje modyfikację wartości domyślnej!
+...     print(x)
+...
+>>> saver([2])                     # Wartość domyślna nie jest użyta
+[2, 1]
+>>> saver()                        # Wartość domyślna jest użyta
+[1]
+>>> saver()                        # Rośnie przy każdym wywołaniu!
+[1, 1]
+>>> saver()
+[1, 1, 1]
+
+
+>>> def saver(x=None):
+...     if x is None:             # Nie został przekazany argument?
+...         x = []                # Tworzymy nową lokalną listę
+...     x.append(1)               # Modyfikujemy lokalną listę
+...     print(x)
+...
+>>> saver([2])
+[2, 1]
+>>> saver()                       # Teraz nie rośnie
+[1]
+>>> saver()
+[1]
+
+
+>>> def saver():
+...     saver.x.append(1)
+...     print(saver.x)
+...
+>>> saver.x = []
+>>> saver()
+[1]
+>>> saver()
+[1, 1]
+>>> saver()
+[1, 1, 1]
+
+
+>>> def proc(x):
+...     print(x)                 # Brak instrukcji return powoduje zwrócenie wartości None
+...
+>>> x = proc('testing 123...')
+testing 123...
+>>> print(x)
+None
+
+
+>>> list = [1, 2, 3]
+>>> list = list.append(4)        # append jest "procedurą"
+>>> print(list)                  # append modyfikuje listy w miejscu
+None
+
+
+def f1(a, b): print(a, b)            # Normalne argumenty
+def f2(a, *b): print(a, b)           # Zmienna liczba argumentów pozycyjnych
+
+def f3(a, **b): print(a, b)          # Zmienna liczba słów kluczowych
+
+def f4(a, *b, **c): print(a, b, c)   # Tryby mieszane
+
+def f5(a, b=2, c=3): print(a, b, c)  # Wartości domyślne
+
+def f6(a, b=2, *c): print(a, b, c)   # Zmienna liczba argumentów pozycyjnych i wartości domyślnych
+
+
+>>> f1(1, 2)
+>>> f1(b=2, a=1)
+
+>>> f2(1, 2, 3)
+>>> f3(1, x=2, y=3)
+>>> f4(1, 2, 3, x=2, y=3)
+>>> f5(1)
+>>> f5(1, 4)
+
+>>> f6(1)
+>>> f6(1, 3, 4)
+
+
+x = y // 2                           # Dla y > 1
+while x > 1:
+    if y % x == 0:                   # Reszta z dzielenia
+        print(y, 'dzieli się przez', x)
+        break                        # Pomijamy resztę
+    x -= 1
+else:                                # Normalne wyjście
+    print(y, 'jest liczbą pierwszą')

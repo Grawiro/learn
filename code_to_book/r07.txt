@@ -1,0 +1,731 @@
+>>> '¿ywop³ot', "¿ywop³ot"
+('¿ywop³ot', '¿ywop³ot')
+
+
+>>> 'ryce"rz', "ryce'rz"
+('ryce"rz', "ryce'rz")
+
+
+>>> title = "¯ywot " 'Briana'                # Niejawna konkatenacja
+>>> title
+'¯ywot Briana'
+
+
+>>> 'ryce\'rz', "ryce\"rz"
+("ryce'rz", 'ryce"rz')
+
+
+>>> s = 'a\nb\tc'
+
+
+>>> s
+'a\nb\tc'
+>>> print(s)
+a
+b       c
+
+
+>>> len(s)
+5
+
+
+>>> s = 'a\0b\0c'
+>>> s
+'a\x00b\x00c'
+>>> len(s)
+5
+
+
+>>> s = '\001\002\x03'
+>>> s
+'\x01\x02\x03'
+>>> len(s)
+3
+
+
+>>> S = "m\ti\ne\x00lonka"
+>>> S
+'m\ti\ne\x00lonka'
+>>> len(S)
+11
+>>> print(S)
+m         i
+e lonka
+
+
+
+>>> x = "C:\py\code"                         # Zachowuje dos³owny znak \
+>>> x
+'C:\\py\\code'
+>>> len(x)
+10
+
+
+myfile = open('C:\nowy\tekst.dat', 'w')
+
+myfile = open(r'C:\nowy\tekst.dat', 'w')
+
+myfile = open('C:\\nowy\\tekst.dat', 'w')
+
+
+>>> path = r'C:\nowy\tekst.dat'
+>>> path                                     # Wyœwietl jako kod Pythona
+'C:\\nowy\\tekst.dat'
+>>> print(path)                              # Format przyjazny dla u¿ytkownika
+C:\nowy\tekst.dat
+>>> len(path)                                # D³ugoœæ ³añcucha znaków
+17
+
+
+>>> mantra = """Zawsze patrz
+...  na ¿ycie
+... z humorem."""
+>>>
+>>> mantra
+'Zawsze patrz\n na ¿ycie\nz humorem.'
+
+
+>>> print(mantra)
+Zawsze patrz
+na ¿ycie
+z humorem.
+
+
+X = 1
+"""
+import os                  # Tymczasowo blokujemy wykonanie tego kodu
+print(os.getcwd())
+"""
+Y = 2
+
+
+% python
+>>> len('abc')                               # D³ugoœæ (len), czyli liczba elementów
+3
+>>> 'abc' + 'def'                            # Konkatenacja — nowy ³añcuch znaków
+'abcdef'
+>>> 'Ni!' * 4                                # Powtórzenie — jak "Ni!" + "Ni!" + …
+'Ni!Ni!Ni!Ni!'
+
+
+>>> print('------- ...wiêcej... ---')        # 80 myœlników, gorszy sposób
+>>> print('-'*80)                            # 80 myœlników, lepszy sposób
+
+
+>>> myjob = "haker"
+>>> for c in myjob: print(c, end=' ')      # Przejœcie przez elementy
+...
+h a k e r
+
+>>> "k" in myjob                           # Znaleziono
+True
+>>> "z" in myjob                           # Nie znaleziono
+False
+>>> 'jajko' in 'abcdejajkoxyz'             # Zawieranie pod³añcucha znaków, pozycja nie jest zwracana
+True
+
+
+
+>>> S = 'mielonka'
+>>> S[0], S[-2]                              # Indeksowanie od pocz¹tku lub od koñca
+('m', 'k')
+>>> S[1:3], S[1:], S[:-1]                    # Wycinek — ekstrakcja czêœci ³añcucha
+('ie', 'ielonka', 'mielonk')
+
+
+
+>>> S = 'abcdefghijklmnop'
+>>> S[1:10:2]
+'bdfhj'
+>>> S[::2]
+'acegikmo'
+
+
+>>> S = 'halo'
+>>> S[::-1]
+'olah'
+
+
+
+>>> S = 'abcedfg'
+>>> S[5:1:-1]
+'fdec'
+
+>>> 'mielonka'[1:3]                       # Sk³adnia wycinania
+'ie'
+>>> 'mielonka'[slice(1, 3)]               # Obiekty wycinków
+'ie'
+>>> 'mielonka'[::-1]
+'aknoleim'
+>>> 'mielonka'[slice(None, None, -1)]
+'aknoleim'
+
+
+
+# Plik echo.py
+import sys
+print(sys.argv)
+
+% python echo.py -a -b -c
+['echo.py', '-a', '-b', '-c']
+
+
+>>> "42" + 1
+TypeError: cannot concatenate 'str' and 'int' objects
+
+
+>>> int("42"), str(42)                       # Konwersja z ³añcucha i na ³añcuch
+(42, '42')
+>>> repr(42)                                 # Konwersja na ³añcuch w postaci kodu
+'42'
+
+
+>>> print(str('mielonka'), repr('mielonka'))
+('mielonka', "'mielonka'")
+
+
+>>> S = "42"
+>>> I = 1
+>>> S + I
+TypeError: cannot concatenate 'str' and 'int' objects
+
+>>> int(S) + I                               # Wymuszenie dodawania
+43
+
+>>> S + str(I)                               # Wymuszenie konkatenacji
+'421'
+
+
+>>> str(3.1415), float("1.5")
+('3.1415', 1.5)
+
+>>> text = "1.234E-10"
+>>> float(text)
+1.2340000000000001e-010
+
+
+>>> ord('s')
+115
+>>> chr(115)
+'s'
+
+
+>>> S = '5'
+>>> S = chr(ord(S) + 1)
+>>> S
+'6'
+>>> S = chr(ord(S) + 1)
+>>> S
+'7'
+
+
+>>> int('5')
+5
+>>> ord('5') - ord('0')
+5
+
+
+>>> B = '1101'         # Przekszta³cenie ³añcucha znaków w notacji dwójkowej na liczbê ca³kowit¹ z u¿yciem ord
+>>> I = 0
+>>> while B: != '':
+...    I = I * 2 + (ord(B[0]) - ord('0'))
+...    B = B[1:]
+...
+>>> I
+13
+
+
+>>> int('1101', 2)              # Przekszta³cenie ³añcucha znaków w notacji dwójkowej na liczbê ca³kowit¹
+13
+>>> bin(13)                     # Przekszta³cenie liczby ca³kowitej na ³añcuch znaków w notacji dwójkowej
+'0b1101'
+
+
+>>> S = 'mielonka'
+>>> S[0] = "x"
+Zwraca b³¹d!
+
+
+>>> S = S + 'MIELONKA!'                      # By zmieniæ ³añcuch, nale¿y utworzyæ nowy
+>>> S
+'mielonkaMIELONKA!'
+>>> S = S[:8] + 'Jajka' + S[-1]
+>>> S
+'mielonkaJajka!'
+
+
+>>> S = 'mielonka'
+>>> S = S.replace('lon', 'lonecz')
+>>> S
+'mieloneczka'
+
+
+>>> 'Ten %d %s jest martwy!' % (1, 'ptak')            # Wyra¿enie formatuj¹ce
+'Ten 1 ptak jest martwy!'
+>>> 'Ten {0} {1} jest martwy!'.format(1, 'ptak')      # Metoda formatuj¹ca w 2.6 i 3.0
+'Ten 1 ptak jest martwy!'
+
+
+
+>>> S = 'jajka'
+>>> S = S[:2] + 'b³' + S[3:]
+>>> S
+'jab³ka'
+
+
+>>> S = 'jajka'
+>>> S = S.replace('jk', 'b³k')
+>>> S
+'jab³ka'
+
+
+>>> 'aa$bb$cc$dd'.replace('$', 'JAJKA')
+'aaJAJKAbbJAJKAccJAJKAdd'
+
+
+>>> S = 'xxxxJAJKAxxxxJAJKAxxxx'
+>>> where = S.find('JAJKA')                  # Odszukanie pozycji
+>>> where                                    # Wystêpuje na pozycji przesuniêcia 4
+4
+>>> S = S[:where] + 'MIELONKA' + S[(where+4):]
+>>> S
+'xxxxMIELONKAxxxxJAJKAxxxx'
+
+
+>>> S = 'xxxxJAJKAxxxxJAJKAxxxx'
+>>> S.replace('JAJKA', 'MIELONKA')           # Zastêpuje wszystkie wyst¹pienia
+'xxxxMIELONKAxxxxMIELONKAxxxx'
+
+>>> S.replace('JAJKA', 'MIELONKA', 1)        # Zastêpuje jedno wyst¹pienie
+'xxxxMIELONKAxxxxJAJKAxxxx'
+
+
+>>> S = 'brama'
+>>> L = list(S)
+>>> L
+['b', 'r', 'a', 'm', 'a']
+
+
+>>> L[2] = 'e'                               # Dzia³a dla list, ale nie dla ³añcuchów znaków
+>>> L[3] = 'j'
+>>> L
+['b', 'r', 'e', 'j', 'a']
+
+
+>>> S = ''.join(L)
+>>> S
+'breja'
+
+
+>>> 'JAJKA'.join(['mielonka', 'ser', 'szynka', 'tost'])
+'mielonkaJAJKAserJAJKAszynkaJAJKAtost'
+
+
+>>> line = 'aaa bbb ccc'
+>>> col1 = line[0:3]
+>>> col3 = line[8:]
+>>> col1
+'aaa'
+>>> col3
+'ccc'
+
+
+>>> line = 'aaa bbb ccc'
+>>> cols = line.split( )
+>>> cols
+['aaa', 'bbb', 'ccc']
+
+
+>>> line = 'amadeusz,haker,40'
+>>> line.split(',')
+['amadeusz', 'haker', '40']
+
+
+>>> line = "jestemMIELONKAdrwalemMIELONKAiMIELONKAjestemMIELONKAOK"
+>>> line.split("MIELONKA")
+['jestem', 'drwalem', 'i', 'jestem', 'OK']
+
+
+
+>>> line = "Rycerze, którzy mówi¹ Ni!\n"
+>>> line.rstrip()
+'Rycerze, którzy mówi¹ Ni!'
+>>> line.upper()
+'RYCERZE, KTÓRZY MÓWI¥ NI!\n'
+>>> line.isalpha()
+False
+>>> line.endswith('Ni!\n')
+True
+>>> line.startswith('Rycerze')
+True
+
+
+>>> line
+'Rycerze, którzy mówi¹ Ni!\n'
+
+>>> line.find('Ni') != -1         # Szukanie za pomoc¹ wywo³ania metody lub wyra¿enia
+True
+>>> 'Ni' in line
+True
+
+>>> sub = 'Ni!\n'
+>>> line.endswith(sub)            # Sprawdzenie koñca ³añcucha za pomoc¹ wywo³ania metody lub wycinka
+True
+>>> line[-len(sub):] == sub
+True
+
+
+>>> S = 'a+b+c+'
+>>> x = S.replace('+', 'jajka')
+>>> x
+'ajajkabjajkacjajka'
+
+
+>>> import string
+>>> y = string.replace(S, '+', 'jajka')
+>>> y
+'ajajkabjajkacjajka'
+
+
+>>> 'Ten %d %s jest martwy!' % (1, 'ptak')           # Wyra¿enie formatuj¹ce
+Ten 1 ptak jest martwy!
+
+
+>>> exclamation = "Ni"
+>>> "Rycerze, którzy mówi¹ %s!" % exclamation
+'Rycerze, którzy mówi¹ Ni!'
+
+
+>>> "%d %s %d you" % (1, 'spam', 4)
+'1 spam 4 you'
+
+>>> "%s -- %s -- %s" % (42, 3.14159, [1, 2, 3])
+'42 -- 3.14159 -- [1, 2, 3]'
+
+
+>>> x = 1234
+>>> res = "integers: ...%d...%-6d...%06d" % (x, x, x)
+>>> res
+'integers: ...1234...1234 ...001234'
+
+
+>>> x = 1.23456789
+>>> x
+1.2345678899999999
+
+>>> '%e | %f | %g' % (x, x, x)
+'1.234568e+000 | 1.234568 | 1.23457'
+
+>>> '%E' % x
+'1.234568E+00'
+
+
+>>> '%-6.2f | %05.2f | %+06.1f' % (x, x, x)
+'1.23 | 01.23 | +001.2'
+
+>>> "%s" % x, str(x)
+('1.23456789', '1.23456789')
+
+
+>>> '%f, %.2f, %.*f' % (1/3.0, 1/3.0, 4, 1/3.0)
+'0.333333, 0.33, 0.3333'
+
+
+>>> "%(n)d %(x)s" % {"n":1, "x":"mielonka"}
+'1 mielonka'
+
+
+>>> reply = """                                 # Szablon dopasowania
+Witamy...
+Witaj %(name)s!
+Twój wiek to %(age)s lat.
+"""
+
+>>> values = {'name': 'Amadeusz', 'age': 40}    # S³ownik wartoœci do podstawienia
+>>> print reply % values                        # Operacja podstawienia
+
+Witamy...
+Witaj Amadeusz!
+Twój wiek to 40 lat.
+
+
+>>> food = 'mielonka'
+>>> age = 40
+>>> vars( )
+{'food': 'mielonka', 'age': 40, ...wiêcej... }
+
+
+>>> "%(age)d %(food)s" % vars( )
+'40 mielonka'
+
+
+>>> template = '{0}, {1} and {2}'                           # Podstawianie pozycyjne
+>>> template.format('spam', 'ham', 'eggs')
+'spam, ham and eggs'
+
+>>> template = '{motto}, {pork} and {food}'                 # Podstawianie po s³owie kluczowym
+>>> template.format(motto='spam', pork='ham', food='eggs')
+'spam, ham and eggs'
+
+>>> template = '{motto}, {0} and {food}'                    # Obydwie techniki
+>>> template.format('ham', motto='spam', food='eggs')
+'spam, ham and eggs'
+
+
+>>> '{motto}, {0} and {food}'.format(42, motto=3.14, food=[1, 2])
+'3.14, 42 and [1, 2]'
+
+
+>>> X = '{motto}, {0} i {food}'.format(42, motto=3.14, food=[1, 2])
+>>> X
+'3.14, 42 i [1, 2]'
+
+>>> X.split(' i ')
+['3.14, 42', '[1, 2]']
+
+>>> Y = X.replace('i', 'ale pod ¿adnym pozorem nie')
+>>> Y
+'3.14, 42 ale pod ¿adnym pozorem nie [1, 2]'
+
+
+>>> import sys
+
+>>> 'Mój {1[spam]} ma zainstalowany system {0.platform}'.format(sys, {'spam': 'laptop'})
+'Mój laptop ma zainstalowany system win32'
+
+>>> 'Mój {config[spam]} ma zainstalowany system {sys.platform}'.format(sys=sys, config={'spam': 'laptop'})
+'Mój laptop ma zainstalowany system win32'
+
+
+>>> somelist = list('JAJKO')
+>>> somelist
+['J', 'A', 'J', 'K', 'O']
+
+>>> 'pierwszy={0[0]}, trzeci={0[2]}'.format(somelist)
+'pierwszy=J, trzeci=J'
+
+>>> 'pierwszy={0}, ostatni={1}'.format(somelist[0], somelist[-1])  # [-1] w szablonie formatuj¹cym nie dzia³a
+'pierwszy=J, ostatni=O'
+
+>>> parts = somelist[0], somelist[-1], somelist[1:3]               # [1:3] w szablonie nie zadzia³a
+>>> 'pierwszy={0}, ostatni={1}, œrodkowy={2}'.format(*parts)
+"pierwszy=J, ostatni=O, œrodkowy=['A', 'J']"
+
+
+
+>>> '{0:10} = {1:10}'.format('jajo', 123.4567)
+'jajo = 123.457'
+
+>>> '{0:>10} = {1:<10}'.format('jajo', 123.4567)
+' jajo = 123.457 '
+
+>>> '{0.platform:>10} = {1[item]:<10}'.format(sys, dict(item='laptop'))
+' win32 = laptop '
+
+
+>>> '{0:e}, {1:.3e}, {2:g}'.format(3.14159, 3.14159, 3.14159)
+'3.141590e+00, 3.142e+00, 3.14159'
+
+>>> '{0:f}, {1:.2f}, {2:06.2f}'.format(3.14159, 3.14159, 3.14159)
+'3.141590, 3.14, 003.14'
+
+
+
+>>> '{0:X}, {1:o}, {2:b}'.format(255, 255, 255)    # Hex, octal, binary
+'FF, 377, 11111111'
+
+>>> bin(255), int('11111111', 2), 0b11111111       # Przekszta³cenie z/do notacji dwójkowej
+('0b11111111', 255, 255)
+
+>>> hex(255), int('FF', 16), 0xFF                  # Przekszta³cenie z/do notacji ósemkowej
+('0xff', 255, 255)
+
+>>> oct(255), int('377', 8), 0o377, 0377           # Przekszta³cenie z/do notacji szesnastkowej
+('0377', 255, 255, 255)                            # 0377 dzia³a w 2.6, ale nie w 3.0!
+
+
+>>> '{0:.2f}'.format(1 / 3.0)                      # Parametry zakodowane w szablonie
+'0.33'
+>>> '%.2f' % (1 / 3.0)
+'0.33'
+
+>>> '{0:.{1}f}'.format(1 / 3.0, 4)                 # Wartoœæ odczytywana z argumentów
+'0.3333'
+>>> '%.*f' % (4, 1 / 3.0)                          # Wyra¿enia maj¹ podobny mechanizm
+'0.3333'
+
+
+
+>>> '{0:.2f}'.format(1.2345)                       # Metoda ³añcucha znaków
+'1.23'
+>>> format(1.2345, '.2f')                          # Funkcja wbudowana
+'1.23'
+>>> '%.2f' % 1.2345                                # Wyra¿enie
+'1.23'
+
+
+print('%s=%s' % ('spam', 42))          # Wyra¿enie formatuj¹ce w 2.X+
+print('{0}={1}'.format('spam', 42))    # Metoda formatuj¹ca w 3.0 (i 2.6)
+
+
+
+
+# Podstawy: u¿ycie % zamiast format()
+
+>>> template = '%s, %s, %s'
+>>> template % ('mielonka', 'szynka', 'jajka')                     # Podstawienia pozycyjne
+'mielonka, szynka, jajka'
+
+>>> template = '%(motto)s, %(pork)s i %(food)s'
+>>> template % dict(motto='mielonka', pork='szynka', food='jajka') # Podstawianie s³ownikowe
+'mielonka, szynka i jajka'
+
+>>> '%s, %s and %s' % (3.14, 42, [1, 2])                           # Dowolne typy
+'3.14, 42 and [1, 2]'
+
+# U¿ycie kluczy, atrybutów i indeksów
+
+>>> 'Mój %(spam)s ma zainstalowany system %(platform)s' % {'spam': 'laptop', 'platform': sys.platform}
+'Mój laptop ma zainstalowany system win32'
+
+>>> 'Mój %(spam)s ma zainstalowany system %(platform)s' % dict(spam='laptop', platform=sys.platform)
+'Mój laptop ma zainstalowany system win32'
+
+>>> somelist = list('JAJKA')
+>>> parts = somelist[0], somelist[-1], somelist[1:3]
+>>> 'first=%s, last=%s, middle=%s' % parts
+"pierwsza=J, ostatnia=O, œrodkowe=['A', 'J']"
+
+
+# Zastosowanie specyficznego formatowania
+
+>>> '%-10s = %10s' % ('jajo', 123.4567)
+'jajo = 123.4567'
+
+>>> '%10s = %-10s' % ('jajo', 123.4567)
+' jajo = 123.4567 '
+
+>>> '%(plat)10s = %(item)-10s' % dict(plat=sys.platform, item='laptop')
+' win32 = laptop '
+
+# Liczby zmiennoprzecinkowe
+
+>>> '%e, %.3e, %g' % (3.14159, 3.14159, 3.14159)
+'3.141590e+00, 3.142e+00, 3.14159'
+
+>>> '%f, %.2f, %06.2f' % (3.14159, 3.14159, 3.14159)
+'3.141590, 3.14, 003.14'
+
+# Notacja szesnastkowa i ósemkowa, ale brak dwójkowej
+
+>>> '%x, %o' % (255, 255)
+'ff, 377'
+
+
+# Obie metody wykorzystuj¹ zakodowane odwo³ania
+
+>>> import sys
+
+>>> 'Mój {1[spam]:<8} ma zainstalowany system {0.platform:>8}'.format(sys, {'spam': 'laptop'})
+'Mój laptop ma zainstalowany system win32'
+
+>>> 'Mój %(spam)-8s ma zainstalowany system win32 %(plat)8s' % dict(spam='laptop', plat=sys.platform)
+'Mój laptop ma zainstalowany system win32'
+
+
+
+# Budowanie danych i dynamiczne formatowanie
+
+>>> data = dict(platform=sys.platform, spam='laptop')
+
+>>> 'Mój {spam:<8} ma zainstalowany system {platform:>8}'.format(**data)
+'Mój laptop ma zainstalowany system win32'
+
+>>> 'Mój %(spam)-8s ma zainstalowany system %(platform)8s' % data
+'Mój laptop ma zainstalowany system win32'
+
+
+
+# wersja 3.1 i póŸniejsze
+
+>>> '{0:d}'.format(999999999999)
+'999999999999'
+>>> '{0:,d}'.format(999999999999)
+'999,999,999,999'
+
+
+>>> '{:,d}'.format(999999999999)
+'999,999,999,999'
+
+>>> '{:,d} {:,d}'.format(9999999, 8888888)
+'9,999,999 8,888,888'
+
+>>> '{:,.2f}'.format(296999.2567)
+'296,999.26'
+
+
+
+>>> '{0:b}'.format((2 ** 16) -1)
+'1111111111111111'
+
+>>> '%b' % ((2 ** 16) -1)
+ValueError: unsupported format character 'b' (0x62) at index 1
+
+>>> bin((2 ** 16) -1)
+'0b1111111111111111'
+
+>>> '%s' % bin((2 ** 16) -1)[2:]
+'1111111111111111'
+
+
+
+
+'\n%s<Klasa %s, adres %s:\n%s%s%s>\n' % (...)             # Wyra¿enie
+'\n{0}<Klasa {1}, adres {2}:\n{3}{4}{5}>\n'.format(...)   # Metoda
+
+
+C:\misc> C:\Python31\python
+>>> 'Zawsze {0} na {1} z {2}'.format('patrz', '¿ycie', 'humorem')
+'Zawsze patrz na ¿ycie z humorem'
+>>>
+>>> 'Zawsze {} na {} z {}'.format('patrz', '¿ycie', 'humorem') # Python 3.1+
+'Zawsze patrz na ¿ycie z humorem'
+>>>
+>>> 'Zawsze %s na %s z %s' % ('patrz', '¿ycie', 'humorem')
+'Zawsze patrz na ¿ycie z humorem'
+
+
+
+C:\misc> C:\Python31\python
+>>> '{0:f}, {1:.2f}, {2:05.2f}'.format(3.14159, 3.14159, 3.14159)
+'3.141590, 3.14, 03.14'
+>>>
+>>> '{:f}, {:.2f}, {:06.2f}'.format(3.14159, 3.14159, 3.14159)
+'3.141590, 3.14, 003.14'
+>>>
+>>> '%f, %.2f, %06.2f' % (3.14159, 3.14159, 3.14159)
+'3.141590, 3.14, 003.14'
+
+
+>>> '%.2f' % 1.2345
+'1.23'
+>>> '%.2f %s' % (1.2345, 99)
+'1.23 99'
+
+>>> '%s' % 1.23
+'1.23'
+>>> '%s' % (1.23,)
+'1.23'
+>>> '%s' % ((1.23,),)
+'(1.23,)'
+
+
+>>> '{0:.2f}'.format(1.2345)
+'1.23'
+>>> '{0:.2f} {1}'.format(1.2345, 99)
+'1.23 99'
+>>> '{0}'.format(1.23)
+'1.23'
+>>> '{0}'.format((1.23,))
+'(1.23,)'
+

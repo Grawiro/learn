@@ -1,0 +1,612 @@
+>>> while True:
+...    print('Wpisz Ctrl+C, by mnie zatrzymać!')
+
+
+
+>>> x = 'mielonka'
+>>> while x:                                 # Póki x nie jest puste
+...    print(x, end=' ')
+...    x = x[1:]                             # Odcięcie pierwszego znaku z x
+...
+mielonka ielonka elonka lonka onka nka ka a
+
+
+
+>>> a=0; b=10
+>>> while a < b:                             # Jeden sposób tworzenia kodu pętli licznika
+...    print(a, end=' ')
+...    a += 1                                # Lub a = a + 1
+...
+0 1 2 3 4 5 6 7 8 9
+
+
+
+while True:
+   ...ciało pętli...
+   if exitTest(): break
+
+
+
+while True: pass                     # Użyj Ctrl+C, by mnie zatrzymać!
+
+
+def func1():
+    pass                             # Wstawić tu później prawdziwy kod!
+
+def func2():
+    pass
+
+
+def func1():
+   ...                                     # Alternatywa dla pass
+
+def func2():
+   ...
+
+func1()                                    # Po wywołaniu nic nie robi
+
+
+
+def func1(): ...                           # Działa także w tym samym wierszu
+def func2(): ...
+
+>>> X = ...                                # Alternatywa dla None
+>>> X
+Ellipsis
+
+
+
+
+x = 10
+while x:
+   x = x-1                                   # Lub x -= 1
+   if x % 2 != 0: continue                   # Nieparzyste? Pomijamy!
+   print(x, end=' ')
+
+
+
+x = 10
+while x:
+   x = x-1
+   if x % 2 == 0:                            # Parzyste? Wyświetlamy!
+      print(x, end=' ')
+
+
+
+>>> while True:
+...    name = input('Podaj imię:')
+...    if name == 'stop': break
+...    age = input('Podaj wiek: ')
+...    print('Witaj,', name, '=>', int(age) ** 2)
+...
+
+
+
+x = y // 2                                   # Dla jakiegoś y > 1
+while x > 1:
+   if y % x == 0:                            # Reszta
+      print(y, 'ma czynnik', x)
+      break                                  # Pominięcie reszty
+   x -= 1
+else:                                        # Normalne wyjście
+   print(y, 'jest liczbą pierwszą')
+
+
+
+found = False
+while x and not found:
+   if match(x[0]):                           # Wartość na początku?
+      print('Ni')
+      found = True
+   else:
+      x = x[1:]                              # Odcięcie początku i powtórzenie
+if not found:
+   print('Nie znaleziono')
+
+
+
+while x:                                     # Wyjście, gdy x jest puste
+   if match(x[0]):
+      print('Ni')
+      break                                  # Wyjście, ominięcie else
+   x = x[1:]
+else:
+   print('Nie znaleziono')                   # Tylko wtedy, gdy wyczerpano x
+
+
+
+while True:
+   x = next()
+   if not x: break
+   ...przetwarzanie x...
+
+
+x = True
+while x:
+   x = next()
+   if x:
+      ...przetwarzanie x...
+
+
+x = next()
+while x:
+   ...przetwarzanie x...
+   x = next()
+
+
+
+>>> for x in ["mielonka", "jajka", "szynka"]:
+...    print(x, end=' ')
+...
+mielonka jajka szynka
+
+
+
+>>> sum = 0
+>>> for x in [1, 2, 3, 4]:
+...    sum = sum + x
+...
+>>> sum
+10
+>>> prod = 1
+>>> for item in [1, 2, 3, 4]: prod *= item
+...
+>>> prod
+24
+
+
+
+>>> S = "drwal"
+>>> T = ("i", "jestem", "git")
+
+>>> for x in S: print(x, end=' ')            # Iteracja po łańcuchu znaków
+...
+d r w a l
+
+>>> for x in T: print(x, end=' ')            # Iteracja po krotce
+...
+i jestem git
+
+
+
+>>> T = [(1, 2), (3, 4), (5, 6)]
+>>> for (a, b) in T:                         # Przypisanie krotek
+...    print(a, b)
+...
+1 2
+3 4
+5 6
+
+
+
+>>> D = {'a': 1, 'b': 2, 'c': 3}
+>>> for key in D:
+...    print(key, '=>', D[key])                # Użycie iteratora po kluczach słownika i indeksowania
+...
+a => 1
+c => 3
+b => 2
+
+>>> list(D.items())
+[('a', 1), ('c', 3), ('b', 2)]
+
+>>> for (key, value) in D.items():
+...    print(key, '=>', value)                 # Iteracja po kluczach i wartościach
+...
+a => 1
+c => 3
+b => 2
+
+
+
+>>> T
+[(1, 2), (3, 4), (5, 6)]
+
+>>> for both in T:
+...    a, b = both                             # Odpowiednik z przypisaniem ręcznym
+...    print(a, b)
+...
+1 2
+3 4
+5 6
+
+
+
+>>> ((a, b), c) = ((1, 2), 3)                  # Sekwencje zagnieżdżone też działają
+>>> a, b, c
+(1, 2, 3)
+
+>>> for ((a, b), c) in [((1, 2), 3), ((4, 5), 6)]: print(a, b, c)
+...
+1 2 3
+4 5 6
+
+
+
+>>> for ((a, b), c) in [([1, 2], 3), ['XY', 6]]: print(a, b, c)
+...
+1 2 3
+X Y 6
+
+
+
+>>> a, b, c = (1, 2, 3)                                # Przypisanie krotki
+>>> a, b, c
+(1, 2, 3)
+
+>>> for (a, b, c) in [(1, 2, 3), (4, 5, 6)]:          # Wykorzystane w pętli for
+...    print(a, b, c)
+...
+1 2 3
+4 5 6
+
+
+
+>>> a, *b, c = (1, 2, 3, 4)                            # Rozszerzone przypisanie sekwencji
+>>> a, b, c
+(1, [2, 3], 4)
+
+>>> for (a, *b, c) in [(1, 2, 3, 4), (5, 6, 7, 8)]:
+...    print(a, b, c)
+...
+1 [2, 3] 4
+5 [6, 7] 8
+
+
+
+
+>>> for all in [(1, 2, 3, 4), (5, 6, 7, 8)]:            # Ręczne wycinki z Pythona 2.6
+...    a, b, c = all[0], all[1:3], all[3]
+...    print(a, b, c)
+...
+1 (2, 3) 4
+5 (6, 7) 8
+
+
+
+
+>>> items = ["aaa", 111, (4, 5), 2.01]       # Zbiór obiektów
+>>> tests = [(4, 5), 3.14]                   # Szukane klucze
+>>>
+>>> for key in tests:                        # Dla wszystkich kluczy
+...    for item in items:                    # Dla wszystkich elementów
+...       if item == key:                    # Sprawdzenie dopasowania
+...          print(key, "znaleziono")
+...          break
+...    else:
+...       print(key, "nie znaleziono!")
+...
+(4, 5) znaleziono
+3.14 nie znaleziono!
+
+
+
+
+>>> for key in tests:                        # Dla wszystkich kluczy
+...    if key in items:                      # Niech Python sam sprawdza dopasowanie
+...       print(key, "znaleziono")
+...    else:
+...       print(key, "nie znaleziono!")
+...
+(4, 5) znaleziono
+3.14 nie znaleziono!
+
+
+
+
+>>> seq1 = "mielonka"
+>>> seq2 = "biedronka"
+>>>
+>>> res = []                                 # Na początek pusta lista
+>>> for x in seq1:                           # Przeszukanie pierwszej sekwencji
+...    if x in seq2:                         # Powtarzający się element?
+...       res.append(x)                      # Dodanie na końcu listy wyników
+...
+>>> res
+['i', 'e', 'o', 'n', 'k', 'a']
+
+
+
+
+file = open('test.txt', 'r')                # Wczytanie zawartości do łańcucha znaków
+print(file.read())
+
+
+file = open('test.txt')
+while True:
+   char = file.read(1)                       # Wczytanie znak po znaku
+   if not char: break
+   print(char)
+
+for char in open('test.txt').read():
+   print(char)
+
+
+file = open('test.txt')
+while True:
+   line = file.readline()                    # Wczytanie wiersz po wierszu
+   if not line: break
+   print(line, end='')                       # Wiersz zawiera już \n
+
+file = open('test.txt', 'rb')
+while True:
+   chunk = file.read(10)                     # Wczytanie bajtowych fragmentów — do 10 bajtów
+   if not chunk: break
+   print(chunk)
+
+
+for line in open('test.txt').readlines():
+   print(line, end='')
+
+for line in open('test.txt'):       # Użycie iteratorów — najlepszego trybu dla tekstowych danych wejściowych
+   print(line, end='')
+
+
+
+
+>>> list(range(5)), list(range(2, 5)), list(range(0, 10, 2))
+([0, 1, 2, 3, 4], [2, 3, 4], [0, 2, 4, 6, 8])
+
+
+
+>>> list(range(-5, 5))
+[-5, -4, -3, -2, -1, 0, 1, 2, 3, 4]
+
+>>> list(range(5, -5, -1))
+[5, 4, 3, 2, 1, 0, -1, -2, -3, -4]
+
+
+
+>>> for i in range(3):
+...    print(i, 'Python')
+...
+0 Python
+1 Python
+2 Python
+
+
+
+
+>>> X = 'mielonka'
+>>> for item in X: print(item, end=' ')      # Prosta iteracja
+...
+m i e l o n k a
+
+
+
+>>> i = 0
+>>> while i < len(X):                        # Iteracja z pętlą while
+...    print(X[i], end=' ')
+...    i += 1
+...
+m i e l o n k a
+
+
+
+
+>>> X
+'mielonka'
+>>> len(X)                                        # Długość łańcucha znaków
+8
+>>> list(range(len(X)))                           # Wszystkie poprawne wartości przesunięcia dla X
+[0, 1, 2, 3, 4, 5, 6, 7]
+>>>
+>>> for i in range(len(X)): print(X[i], end=' ')  # Ręczne indeksowanie za pomocą pętli for
+...
+m i e l o n k a
+
+
+
+
+>>> for item in X: print(item)              # Prosta iteracja
+...
+
+
+
+>>> S = 'abcdefghijk'
+>>> list(range(0, len(S), 2))
+[0, 2, 4, 6, 8, 10]
+
+>>> for i in range(0, len(S), 2): print(S[i], end=' ')
+...
+a c e g i k
+
+
+
+>>> S = 'abcdefghijk'
+>>> for c in S[::2]: print(c, end=' ')
+...
+a c e g i k
+
+
+
+>>> L = [1, 2, 3, 4, 5]
+
+>>> for x in L:
+...    x += 1
+...
+>>> L
+[1, 2, 3, 4, 5]
+>>> x
+6
+
+
+
+
+>>> L = [1, 2, 3, 4, 5]
+
+>>> for i in range(len(L)):                  # Dodanie 1 do każdego elementu listy L
+...    L[i] += 1                             # Lub L[i] = L[i] + 1
+...
+>>> L
+[2, 3, 4, 5, 6]
+
+
+
+
+>>> i = 0
+>>> while i < len(L):
+...    L[i] += 1
+...    i += 1
+...
+>>> L
+[3, 4, 5, 6, 7]
+
+
+
+
+[x+1 for x in L]
+
+
+
+>>> L1 = [1,2,3,4]
+>>> L2 = [5,6,7,8]
+
+
+
+>>> zip(L1,L2)
+<zip object at 0x026523C8>
+>>> list(zip(L1, L2))                          # list() wymagane w Pythonie 3.0, w 2.6 nie
+[(1, 5), (2, 6), (3, 7), (4, 8)]
+
+
+
+
+>>> for (x, y) in zip(L1, L2):
+...    print(x, y, '--', x+y)
+...
+1 5 -- 6
+2 6 -- 8
+3 7 -- 10
+4 8 -- 12
+
+
+
+
+>>> T1, T2, T3 = (1,2,3), (4,5,6), (7,8,9)
+>>> T3
+(7, 8, 9)
+>>> list(zip(T1, T2, T3))
+[(1, 4, 7), (2, 5, 8), (3, 6, 9)]
+
+
+
+>>> S1 = 'abc'
+>>> S2 = 'xyz123'
+>>>
+>>> list(zip(S1, S2))
+[('a', 'x'), ('b', 'y'), ('c', 'z')]
+
+
+
+>>> S1 = 'abc'
+>>> S2 = 'xyz123'
+
+>>> map(None, S1, S2)                               # Tylko w Pythonie 2.X
+[('a', 'x'), ('b', 'y'), ('c', 'z'), (None, '1'), (None, '2'), (None,'3')]
+
+
+
+
+>>> list(map(ord, 'mielonka'))
+[109, 105, 101, 108, 111, 110, 107, 97]
+
+
+
+
+>>> res = []
+>>> for c in 'mielonka': res.append(ord(c))
+>>> res
+[109, 105, 101, 108, 111, 110, 107, 97]
+
+
+
+
+>>> D1 = {'mielonka':1, 'jajka':3, 'tost':5}
+>>> D1
+{'tost': 5, 'jajka': 3, 'mielonka': 1}
+
+>>> D1 = {}
+>>> D1['mielonka'] = 1
+>>> D1['jajka'] = 3
+>>> D1['tost'] = 5
+
+
+
+
+>>> keys = ['mielonka', 'jajka', 'tost']
+>>> vals = [1, 3, 5]
+
+
+
+
+>>> list(zip(keys, vals))
+[('mielonka', 1), ('jajka', 3), ('tost', 5)]
+
+>>> D2 = {}
+>>> for (k, v) in zip(keys, vals): D2[k] = v
+...
+>>> D2
+{'tost': 5, 'jajka': 3, 'mielonka': 1}
+
+
+
+
+>>> keys = ['mielonka', 'jajka', 'tost']
+>>> vals = [1, 3, 5]
+
+>>> D3 = dict(zip(keys, vals))
+>>> D3
+{'tost': 5, 'jajka': 3, 'mielonka': 1}
+
+
+
+>>> S = 'mielonka'
+>>> offset = 0
+>>> for item in S:
+...    print(item, 'występuje na pozycji przesunięcia', offset)
+...    offset += 1
+...
+m występuje na pozycji przesunięcia 0
+i występuje na pozycji przesunięcia 1
+e występuje na pozycji przesunięcia 2
+l występuje na pozycji przesunięcia 3
+o występuje na pozycji przesunięcia 4
+n występuje na pozycji przesunięcia 5
+k występuje na pozycji przesunięcia 6
+a występuje na pozycji przesunięcia 7
+
+
+
+
+>>> S = 'mielonka'
+>>> for (offset, item) in enumerate(S):
+...    print(item, 'występuje na pozycji przesunięcia', offset)
+...
+m występuje na pozycji przesunięcia 0
+i występuje na pozycji przesunięcia 1
+e występuje na pozycji przesunięcia 2
+l występuje na pozycji przesunięcia 3
+o występuje na pozycji przesunięcia 4
+n występuje na pozycji przesunięcia 5
+k występuje na pozycji przesunięcia 6
+a występuje na pozycji przesunięcia 7
+
+
+
+
+>>> E = enumerate(S)
+>>> E
+<enumerate object at 0x02765AA8>
+>>> next(E)
+(0, 'm')
+>>> next(E)
+(1, 'i')
+>>> next(E)
+(2, 'e')
+
+
+
+
+>>> [c * i for (i, c) in enumerate(S)]
+['', 'i', 'ee', 'lll', 'oooo', 'nnnnn', 'kkkkkk', 'aaaaaaa']

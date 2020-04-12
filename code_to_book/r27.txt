@@ -1,0 +1,621 @@
+# UWAGA: w niniejszym rozdziale ciągle modyfikujemy ten sam plik
+# o nazwie person.py. W tekście książki zmodyfikowane wiersze są
+# wyróżnione. Tutaj zebrane są wszystkie rozszerzenia tego pliku.
+
+
+# Plik person.py (start)
+
+class Person:
+
+
+
+# Dodanie inicjalizacji pola rekordu
+
+class Person:
+   def __init__(self, name, job, pay):           # Konstruktor przyjmuje 3 argumenty
+      self.name = name                           # Wypełnienie pól przy tworzeniu
+      self.job = job                             # self to obiekt nowej instancji
+      self.pay = pay
+
+
+
+
+# Dodanie wartości domyślnych do argumentów konstruktora
+
+class Person:
+   def __init__(self, name, job=None, pay=0):       # Normalne argumenty funkcji
+      self.name = name
+      self.job = job
+      self.pay = pay
+
+
+
+
+# Dodanie inkrementalnego kodu testów samosprawdzających
+
+class Person:
+   def __init__(self, name, job=None, pay=0):
+      self.name = name
+      self.job = job
+      self.pay = pay
+
+bob = Person('Robert Zielony')         # Test klasy
+anna = Person('Anna Czerwona', job='programista', pay=100000) # Automatycznie wykonuje __init__
+print(bob.name, bob.pay)               # Pobranie dołączonych atrybutów
+print(anna.name, anna.pay)             # Atrybuty dla obiektów „bob” i „anna” różnią się
+
+
+
+
+C:\misc> person.py
+Robert Zielony 0
+Anna Czerwona 100000
+
+
+
+
+# Pozwala na importowanie pliku oraz wykonywanie i testowanie go
+
+class Person:
+   def __init__(self, name, job=None, pay=0):
+      self.name = name
+      self.job = job
+      self.pay = pay
+
+if __name__ == '__main__':         # Przy wykonywaniu jedynie w celu przetestowania
+   # Kod testu samosprawdzającego
+   bob = Person('Robert Zielony')
+   anna = Person('Anna Czerwona', job='programista', pay=100000)
+   print(bob.name, bob.pay)
+   print(anna.name, anna.pay)  
+
+
+
+
+C:\misc> person.py
+Robert Zielony 0
+Anna Czerwona 100000
+
+c:\misc> python
+Python 3.0.1 (r301:69561, Feb 13 2009, 20:04:18) ...
+>>> import person
+>>>
+
+
+
+
+c:\misc> c:\python26\python person.py
+('Robert Zielony', 0)
+('Anna Czerwona', 100000)
+
+
+
+print('{0} {1}'.format(bob.name, bob.pay))      # Nowa metoda formatująca
+print('%s %s' % (bob.name, bob.pay))            # Wyrażenie formatujące
+
+
+
+
+>>> name = 'Robert Zielony'     # Prosty łańcuch znaków, poza klasą
+>>> name.split()                # Ekstrakcja nazwiska
+['Robert', 'Zielony']
+>>> name.split()[-1]            # Lub [1], jeśli zawsze składa się z 2 części
+'Zielony'
+
+
+
+
+>>> pay = 100000                # Prosta zmienna, poza klasą
+>>> pay *= 1.10                 # 10% podwyżki
+>>> print(pay)                  # Lub: pay = pay * 1.10, jeśli ktoś lubi pisać
+110000.0                        # Lub: pay = pay + (pay * .10), jeśli ktoś _naprawdę_ lubi pisać!
+
+
+
+
+# Przetworzenie osadzonych typów wbudowanych — łańcuchów znaków; zmienność
+
+class Person:
+   def __init__(self, name, job=None, pay=0):
+      self.name = name
+      self.job = job
+      self.pay = pay
+
+if __name__ == '__main__':
+   bob = Person('Robert Zielony')
+   anna = Person('Anna Czerwona', job='programista', pay=100000)
+   print(bob.name, bob.pay)
+   print(anna.name, anna.pay) 
+   print(bob.name.split()[-1])        # Pobranie nazwiska obiektu
+   anna.pay *= 1.10                   # Danie temu obiektowi podwyżki
+   print(anna.pay)
+
+
+
+
+# Dodanie metod w celu hermetyzacji operacji i łatwiejszego utrzymania kodu
+
+class Person:
+   def __init__(self, name, job=None, pay=0):
+      self.name = name
+      self.job = job
+      self.pay = pay
+   def lastName(self):                            # Metody zachowania
+      return self.name.split()[-1]                # self to sugerowany podmiot
+   def giveRaise(self, percent):
+      self.pay = int(self.pay * (1 + percent))    # Wystarczy zmienić tutaj
+
+if __name__ == '__main__':
+   bob = Person('Robert Zielony')
+   anna = Person('Anna Czerwona', job='programista', pay=100000)
+   print(bob.name, bob.pay)
+   print(anna.name, anna.pay) 
+   print(bob.lastName(), anna.lastName())         # Użycie nowych metod
+   anna.giveRaise(.10)                            # zamiast kodu zapisanego na stałe
+   print(anna.pay)
+
+
+
+
+# Dodanie metody przeciążania operatorów __str__ w celu wyświetlania obiektów
+
+class Person:
+   def __init__(self, name, job=None, pay=0):
+      self.name = name
+      self.job = job
+      self.pay = pay
+   def lastName(self):
+      return self.name.split()[-1]
+   def giveRaise(self, percent):
+      self.pay = int(self.pay * (1 + percent))
+   def __str__(self):                                      # Dodana metoda
+      return '[Person: %s, %s]' % (self.name, self.pay)    # Wyświetlany łańcuch znaków
+
+if __name__ == '__main__':
+   bob = Person('Robert Zielony')
+   anna = Person('Anna Czerwona', job='programista', pay=100000)
+   print(bob)
+   print(anna)
+   print(bob.lastName(), anna.lastName())
+   anna.giveRaise(.10)
+   print(anna)
+
+
+
+
+class Manager(Person):
+   def giveRaise(self, percent, bonus=.10):
+      self.pay = int(self.pay * (1 + percent + bonus))    # Źle — wytnij i wklej
+
+
+class Manager(Person):
+   def giveRaise(self, percent, bonus=.10):
+      Person.giveRaise(self, percent + bonus)     # Dobrze — rozszerzenie oryginału
+
+
+
+
+# Dodanie dostosowania jednego działania do naszych potrzeb w klasie podrzędnej
+
+class Person:
+   def __init__(self, name, job=None, pay=0):
+      self.name = name
+      self.job = job
+      self.pay = pay
+   def lastName(self):
+      return self.name.split()[-1]
+   def giveRaise(self, percent):
+      self.pay = int(self.pay * (1 + percent))
+   def __str__(self):
+      return '[Person: %s, %s]' % (self.name, self.pay)
+
+class Manager(Person):
+   def giveRaise(self, percent, bonus=.10):         # Redefiniowanie na tym poziomie
+      Person.giveRaise(self, percent + bonus)       # Wywołanie wersji klasy Person
+
+if __name__ == '__main__':
+   bob = Person('Robert Zielony')
+   anna = Person('Anna Czerwona', job='programista', pay=100000)
+   print(bob)
+   print(anna)
+   print(bob.lastName(), anna.lastName())
+   anna.giveRaise(.10)
+   print(anna)
+   tom = Manager('Tomasz Czarny', 'manager', 50000) # Utworzenie obiektu Manager: __init__
+   tom.giveRaise(.10)                               # Wykonanie własnej wersji
+   print(tom.lastName())                            # Wykonanie odziedziczonej metody
+   print(tom)                                       # Wykonanie odziedziczonej __str__
+
+
+
+
+if __name__ == '__main__':
+   ...
+   print('--Wszystkie trzy--')
+   for object in (bob, anna, tom):      # Ogólne przetwarzanie obiektów
+      object.giveRaise(.10)             # Wykonanie metody giveRaise tego obiektu
+      print(object)                     # Wykonanie wspólnej metody __str__
+
+
+
+
+class Person:
+   def lastName(self): ...
+   def giveRaise(self): ...
+   def __str__(self): ...
+
+class Manager(Person):                           # Dziedziczenie
+   def giveRaise(self, ...): ...                 # Dostosowanie do własnych potrzeb
+   def someThingElse(self, ...): ...             # Rozszerzenie
+
+tom = Manager()
+tom.lastName()                                   # Odziedziczona wprost
+tom.giveRaise()                                  # Wersja dostosowana do własnych potrzeb
+tom.someThingElse()                              # Tutaj rozszerzenie
+print(tom)                                       # Odziedziczona przeciążona metoda
+
+
+
+
+# Dodanie dostosowania konstruktora w klasie podrzędnej do własnych potrzeb
+
+class Person:
+   def __init__(self, name, job=None, pay=0):
+      self.name = name
+      self.job = job
+      self.pay = pay
+   def lastName(self):
+      return self.name.split()[-1]
+   def giveRaise(self, percent):
+      self.pay = int(self.pay * (1 + percent))
+   def __str__(self):
+      return '[Person: %s, %s]' % (self.name, self.pay)
+
+class Manager(Person):
+   def __init__(self, name, pay):                 # Zredefiniowanie konstruktora
+      Person.__init__(self, name, 'manager', pay) # Wykonanie oryginalnej metody z łańcuchem 'manager'
+   def giveRaise(self, percent, bonus=.10):
+      Person.giveRaise(self, percent + bonus)
+
+if __name__ == '__main__':
+   bob = Person('Robert Zielony')
+   anna = Person('Anna Czerwona', job='programista', pay=100000)
+   print(bob)
+   print(anna)
+   print(bob.lastName(), anna.lastName())
+   anna.giveRaise(.10)
+   print(anna)
+   tom = Manager('Tomasz Czarny', 50000)         # Nazwa stanowiska nie jest potrzebna:
+   tom.giveRaise(.10)                            #jest ona sugerowana (ustawiana) za pomocą klasy
+   print(tom.lastName())
+   print(tom)
+
+
+
+
+# Alternatywa klasy Manager z osadzaniem
+
+class Person:
+   ...to samo...
+
+class Manager:
+   def __init__(self, name, pay):
+      self.person = Person(name, 'manager', pay)    # Osadzenie obiektu Person
+   def giveRaise(self, percent, bonus=.10):
+      self.person.giveRaise(percent + bonus)        # Przechwycenie i delegowanie
+   def __getattr__(self, attr):
+      return getattr(self.person, attr)             # Delegowanie wszystkich pozostałych atrybutów
+   def __str__(self):
+      return str(self.person)                       # Musi znowu przeciążać operator (w 3.0)
+
+if __name__ == '__main__':
+...to samo...
+
+
+
+
+# Agregacja osadzonych obiektów w kompozyt
+
+...
+bob = Person(...)
+anna = Person(...)
+tom = Manager(...)
+
+class Department:
+   def __init__(self, *args):
+      self.members = list(args)
+   def addMember(self, person):
+      self.members.append(person)
+   def giveRaises(self, percent):
+      for person in self.members:
+         person.giveRaise(percent)
+   def showAll(self):
+      for person in self.members:
+         print(person)
+
+development = Department(bob, anna)    # Osadzenie obiektów w kompozycie
+development.addMember(tom)
+development.giveRaises(.10)            # Wykonuje metodę giveRaise osadzonych obiektów
+development.showAll()                  # Wykonuje metody __str__ osadzonych obiektów
+
+
+
+
+>>> from person import Person
+>>> bob = Person('Robert Zielony')
+>>> print(bob)                              # Pokazanie __str__ obiektu bob
+[Person: Robert Zielony, 0]
+
+>>> bob.__class__                           # Pokazanie klasy obiektu bob i jej nazwy
+<class 'person.Person'>
+>>> bob.__class__.__name__
+'Person'
+
+>>> list(bob.__dict__.keys())                # Atrybuty są tak naprawdę kluczami słownika
+['pay', 'job', 'name']                       # By wymusić listę w wersji 3.0, należy użyć list
+
+>>> for key in bob.__dict__:
+       print(key, '=>', bob.__dict__[key])   # Ręczne indeksowanie
+
+pay => 0
+job => None
+name => Robert Zielony
+
+>>> for key in bob.__dict__:
+       print(key, '=>', getattr(bob, key))   # obiekt.atrybut, ale atrybut jest zmienną
+
+pay => 0
+job => None
+name => Robert Zielony
+
+
+
+
+# Nowy plik classtools.py
+"Wybrane narzędzia do obsługi klas"
+
+class AttrDisplay:
+   """
+   Udostępnia dziedziczoną metodę przeciążania wyświetlania, która pokazuje instancje z ich nazwami klas, a także parę nazwa=wartość dla każdego atrybutu przechowanego w samej instancji (ale nie atrybutów odziedziczonych po klasach). Można ją wmieszać w dowolną klasę i będzie działała na dowolnej instancji.
+   """
+   def gatherAttrs(self):
+      attrs = []
+      for key in sorted(self.__dict__):
+         attrs.append('%s=%s' % (key, getattr(self, key)))
+      return ', '.join(attrs)
+   def __str__(self):
+      return '[%s: %s]' % (self.__class__.__name__, self.gatherAttrs())
+
+if __name__ == '__main__':
+   class TopTest(AttrDisplay):
+      count = 0
+      def __init__(self):
+         self.attr1 = TopTest.count
+         self.attr2 = TopTest.count+1
+         TopTest.count += 2
+   class SubTest(TopTest):
+      pass
+
+   X, Y = TopTest(), SubTest()
+   print(X)                          # Pokazanie wszystkich atrybutów instancji
+   print(Y)                          # Pokazanie najniższej nazwy klasy
+
+
+
+
+C:\misc> classtools.py
+[TopTest: attr1=0, attr2=1]
+[SubTest: attr1=2, attr2=3]
+
+
+
+>>> from person import Person
+>>> bob = Person('Robert Zielony')
+
+# W Pythonie 2.6:
+
+>>> bob.__dict__.keys()                    # Tylko atrybuty instancji
+['pay', 'job', 'name']
+
+>>> dir(bob)                               # + odziedziczone atrybuty z klas
+['__doc__', '__init__', '__module__', '__str__', 'giveRaise', 'job', 'lastName', 'name', 'pay']
+
+# W Pythonie 3.0:
+
+>>> list(bob.__dict__.keys())               # W 3.0 keys jest widokiem, a nie listą
+['pay', 'job', 'name']
+
+>>> dir(bob)                                # 3.0 obejmuje metody typu klas
+['__class__', '__delattr__', '__dict__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__gt__', '__hash__', '__init__', '__le__', ...pominięto kilka wierszy... '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__weakref__', 'giveRaise', 'job', 'lastName', 'name', 'pay']
+
+
+
+
+class TopTest(AttrDisplay):
+   ....
+   def gatherAttrs(self):              # Zastępuje metodę z klasy AttrDisplay!
+      return 'Mielonka'
+
+
+
+
+# Plik person.py (wersja ostateczna)
+
+from classtools import AttrDisplay               # Użycie uniwersalnego narzędzia do wyświetlania
+
+class Person(AttrDisplay):
+   """
+   Tworzy i przetwarza rekordy osób
+   """
+   def __init__(self, name, job=None, pay=0):
+      self.name = name
+      self.job = job
+      self.pay = pay
+   def lastName(self):                            # Zakłada, że nazwisko jest na końcu
+      return self.name.split()[-1]
+   def giveRaise(self, percent):                  # Procent musi się mieścić między 0 a 1
+      self.pay = int(self.pay * (1 + percent))
+
+class Manager(Person):
+   """
+   Dostosowana do własnych potrzeb klasa Person ze specjalnymi wymaganiami
+   """
+   def __init__(self, name, pay):
+      Person.__init__(self, name, 'manager', pay)
+   def giveRaise(self, percent, bonus=.10):
+      Person.giveRaise(self, percent + bonus)
+
+if __name__ == '__main__':
+   bob = Person('Robert Zielony')
+   anna = Person('Anna Czerwona', job='programista', pay=100000)
+   print(bob)
+   print(anna)
+   print(bob.lastName(), anna.lastName())
+   anna.giveRaise(.10)
+   print(anna)
+   tom = Manager('Tomasz Czarny', 50000)
+   tom.giveRaise(.10)
+   print(tom.lastName())
+   print(tom)
+
+
+
+
+C:\misc> person.py
+[Person: job=None, name=Robert Zielony, pay=0]
+[Person: job=programista, name=Anna Czerwona, pay=100000]
+Zielony Czerwona
+[Person: job=programista, name=Anna Czerwona, pay=110000]
+Czarny
+[Manager: job=manager, name=Tomasz Czarny, pay=60000]
+
+
+
+import person                        # Załadowanie klasy za pomocą instrukcji import
+bob = person.Person(...)             # Przejście nazwy modułu
+
+from person import Person            # Załadowanie klasy za pomocą instrukcji from
+bob = Person(...)                    # Bezpośrednie użycie zmiennej
+
+
+
+# Plik makedb.py: przechowanie obiektów klasy Person w bazie danych modułu shelve
+
+from person import Person, Manager             # Załadowanie naszych klas
+bob = Person('Robert Zielony')                 # Ponowne utworzenie obiektów do przechowania
+anna = Person('Anna Czerwona', job='programista', pay=100000)
+tom = Manager('Tomasz Czarny', 50000)
+
+import shelve
+db = shelve.open('persondb')                   # Nazwa pliku, w którym przechowywane są obiekty
+for object in (bob, anna, tom):                # Użycie atrybutu name obiektu jako klucza
+   db[object.name] = object                    # Przechowanie obiektu w pliku shelve po kluczu
+db.close()                                     # Zamknięcie po wprowadzeniu zmian
+
+
+
+
+C:\misc> makedb.py
+
+
+
+# Moduł wymieniający zawartość katalogu — sprawdzenie, czy pliki są obecne
+
+>>> import glob
+>>> glob.glob('person*')
+['person.py', 'person.pyc', 'persondb.bak', 'persondb.dat', 'persondb.dir']
+
+# Wpisanie pliku — tryb tekstowy dla łańcucha znaków, tryb binarny dla bajtów
+
+>>> print(open('persondb.dir').read())
+'Anna Czerwona', (512, 104)
+...reszta zawartości pominięta...
+
+>>> print(open('persondb.dat', 'rb').read())
+b'\x80\x03cperson\nPerson\nq\x00)\x81q\x01}q\x02(X\x03\x00\x00\x00payq\x03K...
+...reszta zawartości pominięta...
+
+
+
+
+>>> import shelve
+>>> db = shelve.open('persondb')                        # Ponowne otwarcie pliku shelve
+
+>>> len(db)                                             # Przechowano 3 „rekordy”
+3
+>>> list(db.keys())                                     # keys w celu zindeksowania
+['Anna Czerwona', 'Robert Zielony', 'Tomasz Czarny']    # list w celu uzyskania listy w 3.0
+
+>>> bob = db['Robert Zielony']                          # Pobranie obiektu bob po kluczu
+>>> print(bob)                                          # Wykonuje __str__ z klasy AttrDisplay
+[Person: job=None, name=Robert Zielony, pay=0]
+
+>>> bob.lastName()                                      # Wykonuje lastName z klasy Person
+'Zielony'
+
+>>> for key in db:                                      # Iteracja, pobranie, wyświetlenie
+       print(key, '=>', db[key])
+
+Anna Czerwona => [Person: job=programista, name=Anna Czerwona, pay=100000]
+Robert Zielony => [Person: job=None, name=Robert Zielony, pay=0]
+Tomasz Czarny => [Manager: job=manager, name=Tomasz Czarny, pay=50000]
+
+>>> for key in sorted(db):
+       print(key, '=>', db[key])                         # Iteracja po posortowanych kluczach
+
+Anna Czerwona => [Person: job=programista, name=Anna Czerwona, pay=100000]
+Robert Zielony => [Person: job=None, name=Robert Zielony, pay=0]
+Tomasz Czarny => [Manager: job=manager, name=Tomasz Czarny, pay=50000]
+
+
+
+
+# Plik updatedb.py: uaktualnienie obiektu klasy Person w bazie danych
+
+import shelve
+db = shelve.open('persondb')               # Ponowne otwarcie pliku shelve z tą samą nazwą pliku
+
+for key in sorted(db):                     # Iteracja w celu wyświetlenia obiektów bazy danych
+   print(key, '\t=>', db[key])             # Wyświetlenie za pomocą własnego formatu
+
+anna = db['Anna Czerwona']                 # Indeksowanie za pomocą klucza w celu pobrania
+anna.giveRaise(.10)                        # Uaktualnienie w pamięci za pomocą metody klasy
+db['Anna Czerwona'] = anna                 # Przypisanie do klucza w celu uaktualnienia w pliku shelve
+db.close()                                 # Zamknięcie po wprowadzeniu zmian
+
+
+
+
+c:\misc> updatedb.py
+Robert Zielony => [Person: job=None, name=Robert Zielony, pay=0]
+Anna Czerwona => [Person: job=programista, name=Anna Czerwona, pay=100000]
+Tomasz Czarny => [Manager: job=manager, name=Tomasz Czarny, pay=50000]
+
+c:\misc> updatedb.py
+Robert Zielony => [Person: job=None, name=Robert Zielony, pay=0]
+Anna Czerwona => [Person: job=programista, name=Anna Czerwona, pay=110000]
+Tomasz Czarny => [Manager: job=manager, name=Tomasz Czarny, pay=50000]
+
+c:\misc> updatedb.py
+Robert Zielony => [Person: job=None, name=Robert Zielony, pay=0]
+Anna Czerwona => [Person: job=programista, name=Anna Czerwona, pay=121000]
+Tomasz Czarny => [Manager: job=manager, name=Tomasz Czarny, pay=50000]
+
+c:\misc> updatedb.py
+Robert Zielony => [Person: job=None, name=Robert Zielony, pay=0]
+Anna Czerwona => [Person: job=programista, name=Anna Czerwona, pay=133100]
+Tomasz Czarny => [Manager: job=manager, name=Tomasz Czarny, pay=50000]
+
+
+
+
+c:\misc> python
+>>> import shelve
+>>> db = shelve.open('persondb')           # Ponowne otwarcie bazy danych
+>>> rec = db['Anna Czerwona']              # Pobranie obiektu po kluczu
+>>> print(rec)
+[Person: job=programista, name=Anna Czerwona, pay=146410]
+>>> rec.lastName()
+'Czerwona'
+>>> rec.pay
+146410

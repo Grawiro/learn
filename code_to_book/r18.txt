@@ -1,0 +1,587 @@
+>>> def f(a):                      # a przypisane zostaje (referencja) do przekazanego obiektu
+...    a = 99                      # Modyfikacja tylko zmiennej lokalnej a
+...
+>>> b = 88
+>>> f(b)                           # a i b oba początkowo odwołują się do tego samego obiektu 88
+>>> print(b)                       # b się nie zmienia
+88
+
+
+
+
+>>> def changer(a, b):                       # Do argumentów przypisano referencje do obiektów
+...    a = 2                                 # Zmiana wartości jedynie zmiennej lokalnej
+...    b[0] = 'mielonka'                     # Zmiana współdzielonego obiektu w miejscu
+...
+>>> X = 1
+>>> L = [1, 2]                               # Wywołujący
+>>> changer(X, L)                            # Przekazanie obiektów niezmiennych i zmiennych
+>>> X, L                                     # X bez zmian, L jest inne
+(1, ['mielonka', 2])
+
+
+
+
+>>> X = 1
+>>> a = X                                    # Współdzielą jeden obiekt
+>>> a = 2                                    # Przestawia tylko 'a', 'X' nadal jest równe 1
+>>> print(X)
+1
+
+
+
+
+>>> L = [1, 2]
+>>> b = L                                    # Współdzielą ten sam obiekt
+>>> b[0] = 'mielonka'                        # Modyfikacja w miejscu: 'L' także widzi zmianę
+>>> print(L)
+['mielonka', 2]
+
+
+
+
+L = [1, 2]
+changer(X, L[:])                             # Przekazanie kopii, tak by 'L' się nie zmieniło
+
+
+
+def changer(a, b):
+   b = b[:]                                  # Kopia listy w celu uniknięcia wpływu na wywołującego
+   a = 2
+   b[0] = 'mielonka'                         # Modyfikacja tylko kopii listy
+
+
+
+L = [1, 2]
+changer(X, tuple(L))                         # Przekazanie krotki — zmiany będą błędami
+
+
+
+
+>>> def multiple(x, y):
+...    x = 2                                 # Modyfikacja jedynie zmiennych lokalnych
+...    y = [3, 4]
+...    return x, y                           # Zwrócenie nowych wartości w krotce
+...
+>>> X = 1
+>>> L = [1, 2]
+>>> X, L = multiple(X, L)                    # Przypisanie wyników do zmiennych wywołującego
+>>> X, L
+(2, [3, 4])
+
+
+
+def f((a, (b, c))): 
+
+def f(T): (a, (b, c)) = T
+
+
+
+>>> def f(a, b, c): print(a, b, c)
+...
+
+
+>>> f(1, 2, 3)
+1 2 3
+
+
+>>> f(c=3, b=2, a=1)
+1 2 3
+
+
+>>> f(1, c=3, b=2)
+1 2 3
+
+
+func(name='Teofil', age=40, job='programista')
+
+
+
+>>> def f(a, b=2, c=3): print(a, b, c)
+...
+
+
+>>> f(1)
+1 2 3
+>>> f(a=1)
+1 2 3
+
+
+>>> f(1, 4)
+1 4 3
+>>> f(1, 4, 5)
+1 4 5
+
+
+>>> f(1, c=6)
+1 2 6
+
+
+
+def func(spam, eggs, toast=0, ham=0):        # Pierwsze dwa wymagane
+   print((spam, eggs, toast, ham))
+
+func(1, 2)                                   # Wynik: (1, 2, 0, 0)
+func(1, ham=1, eggs=0)                       # Wynik: (1, 0, 0, 1)
+func(spam=1, eggs=0)                         # Wynik: (1, 0, 0, 0)
+func(toast=1, eggs=2, spam=3)                # Wynik: (3, 2, 1, 0)
+func(1, 2, 3, 4)                             # Wynik: (1, 2, 3, 4)
+
+
+
+
+>>> def f(*args): print(args)
+...
+
+
+>>> f()
+()
+>>> f(1)
+(1,)
+>>> f(1, 2, 3, 4)
+(1, 2, 3, 4)
+
+
+>>> def f(**args): print(args)
+...
+>>> f()
+{}
+>>> f(a=1, b=2)
+{'a': 1, 'b': 2}
+
+
+>>> def f(a, *pargs, **kargs): print(a, pargs, kargs)
+...
+>>> f(1, 2, 3, x=1, y=2)
+1 (2, 3) {'y': 2, 'x': 1}
+
+
+
+>>> def func(a, b, c, d): print(a, b, c, d)
+...
+>>> args = (1, 2)
+>>> args += (3, 4)
+>>> func(*args)
+1 2 3 4
+
+>>> args = {'a': 1, 'b': 2, 'c': 3}
+>>> args['d'] = 4
+>>> func(**args)
+1 2 3 4
+
+
+
+>>> func(*(1, 2), **{'d': 4, 'c': 4})
+1 2 4 4
+
+>>> func(1, *(2, 3), **{'d': 4})
+1 2 3 4
+
+>>> func(1, c=3, *(2,), **{'d': 4})
+1 2 3 4
+
+>>> func(1, *(2, 3), d=4)
+1 2 3 4
+
+>>> f(1, *(2,), c=3, **{'d':4})
+1 2 3 4
+
+
+
+if <test>:
+   action, args = func1, (1,)               # W tym przypadku wywołanie func1 z 1 argumentem
+else:
+   action, args = func2, (1, 2, 3)          # Tutaj wywołanie func2 z 3 argumentami
+...
+action(*args)                               # Uniwersalne wywołanie
+
+
+
+>>> args = (2,3) 
+>>> args += (4,)
+>>> args
+(2, 3, 4)
+>>> func(*args)
+
+
+
+def tracer(func, *pargs, **kargs):           # Przyjmuje dowolne argumenty
+   print('wywoływanie:', func.__name__)
+   return func(*pargs, **kargs)              # Przekazuje dowolne argumenty
+
+def func(a, b, c, d):
+   return a + b + c + d
+
+print(tracer(func, 1, 2, c=3, d=4))
+
+
+
+
+func(*pargs, **kargs)              # Nowsza składnia wywołania: func(*sekwencja, **słownik)
+
+apply(func, pargs, kargs)          # Zlikwidowana funkcja wbudowana: apply(func, sekwencja, słownik)
+
+
+
+>>> def echo(*args, **kwargs): print(args, kwargs)
+...
+>>> echo(1, 2, a=3, b=4)
+(1, 2) {'a': 3, 'b': 4}
+
+
+
+>>> pargs = (1, 2)
+>>> kargs = {'a':3, 'b':4}
+
+>>> apply(echo, pargs, kargs)
+(1, 2) {'a': 3, 'b': 4}
+
+>>> echo(*pargs, **kargs)
+(1, 2) {'a': 3, 'b': 4}
+
+
+>>> echo(0, c=5, *pargs, **kargs)             # Normalny, słowo kluczowe, *sekwencja, **słownik
+(0, 1, 2) {'a': 3, 'c': 5, 'b': 4}
+
+
+
+
+>>> def kwonly(a, *b, c):
+...    print(a, b, c)
+...
+>>> kwonly(1, 2, c=3)
+1 (2,) 3
+>>> kwonly(a=1, c=3)
+1 () 3
+>>> kwonly(1, 2, 3)
+TypeError: kwonly() needs keyword-only argument c
+
+
+
+>>> def kwonly(a, *, b, c):
+...    print(a, b, c)
+...
+>>> kwonly(1, c=3, b=2)
+1 2 3
+>>> kwonly(c=3, b=2, a=1)
+1 2 3
+>>> kwonly(1, 2, 3)
+TypeError: kwonly() takes exactly 1 positional argument (3 given)
+>>> kwonly(1)
+TypeError: kwonly() needs keyword-only argument b
+
+
+
+>>> def kwonly(a, *, b='mielonka', c='szynka'):
+...    print(a, b, c)
+...
+>>> kwonly(1)
+1 mielonka szynka
+>>> kwonly(1, c=3)
+1 mielonka 3
+>>> kwonly(a=1)
+1 mielonka szynka
+>>> kwonly(c=3, b=2, a=1)
+1 2 3
+>>> kwonly(1, 2)
+TypeError: kwonly() takes exactly 1 positional argument (2 given)
+
+
+
+
+>>> def kwonly(a, *, b, c='mielonka'):
+...    print(a, b, c)
+...
+>>> kwonly(1, b='jajka')
+1 jajka mielonka 
+>>> kwonly(1, c='jajka')
+TypeError: kwonly() needs keyword-only argument b
+>>> kwonly(1, 2)
+TypeError: kwonly() takes exactly 1 positional argument (2 given)
+
+>>> def kwonly(a, *, b=1, c, d=2):
+...    print(a, b, c, d)
+...
+>>> kwonly(3, c=4)
+3 1 4 2
+>>> kwonly(3, c=4, b=5)
+3 5 4 2
+>>> kwonly(3)
+TypeError: kwonly() needs keyword-only argument c
+>>> kwonly(1, 2, 3)
+TypeError: kwonly() takes exactly 1 positional argument (3 given)
+
+
+
+
+>>> def kwonly(a, **pargs, b, c):
+SyntaxError: invalid syntax
+>>> def kwonly(a, **, b, c):
+SyntaxError: invalid syntax
+
+
+>>> def f(a, *b, **d, c=6): print(a, b, c, d)  # Przed ** argumenty mogące być tylko słowami kluczowymi!
+SyntaxError: invalid syntax
+
+>>> def f(a, *b, c=6, **d): print(a, b, c, d)  # Zebranie argumentów w nagłówku
+...
+>>> f(1, 2, 3, x=4, y=5)                       # Użyte wartości domyślne
+1 (2, 3) 6 {'y': 5, 'x': 4}
+
+>>> f(1, 2, 3, x=4, y=5, c=7)                  # Nadpisanie wartości domyślnych
+1 (2, 3) 7 {'y': 5, 'x': 4}
+
+>>> f(1, 2, 3, c=7, x=4, y=5)                  # W dowolnym miejscu w słowach kluczowych
+1 (2, 3) 7 {'y': 5, 'x': 4}
+
+>>> def f(a, c=6, *b, **d): print(a, b, c, d)  # c nie jest argumentem mogącym być tylko słowem kluczowym!
+...
+>>> f(1, 2, 3, x=4)
+1 (3,) 2 {'x': 4}
+
+
+
+
+>>> def f(a, *b, c=6, **d): print(a, b, c, d)   # Pomiędzy * a ** tylko słowa kluczowe
+...
+>>> f(1, *(2, 3), **dict(x=4, y=5))             # Rozpakowanie argumentów przy wywołaniu
+1 (2, 3) 6 {'y': 5, 'x': 4}
+
+>>> f(1, *(2, 3), **dict(x=4, y=5), c=7)        # Słowa kluczowe przed **argumenty!
+SyntaxError: invalid syntax
+
+>>> f(1, *(2, 3), c=7, **dict(x=4, y=5))        # Nadpisanie wartości domyślnych
+1 (2, 3) 7 {'y': 5, 'x': 4}
+
+>>> f(1, c=7, *(2, 3), **dict(x=4, y=5))        # Przed lub po *
+1 (2, 3) 7 {'y': 5, 'x': 4}
+
+>>> f(1, *(2, 3), **dict(x=4, y=5, c=7))        # Argument mogący być tylko słowem kluczowym w **
+1 (2, 3) 7 {'y': 5, 'x': 4}
+
+
+
+
+process(X, Y, Z)                                 # Wykorzystanie wartości domyślnej opcji
+process(X, Y, notify=True)                       # Nadpisanie wartości domyślnej opcji
+
+
+def process(*args, notify=False): ...
+
+
+
+### Plik: mins.py
+
+def min1(*args):
+   res = args[0]
+   for arg in args[1:]:
+      if arg < res:
+         res = arg
+   return res
+
+def min2(first, *rest):
+   for arg in rest:
+      if arg < first:
+         first = arg
+   return first
+
+def min3(*args):
+   tmp = list(args)                          # Lub w Pythonie 2.4+: return sorted(args)[0]
+   tmp.sort()
+   return tmp[0]
+
+print(min1(3,4,1,2))
+print(min2("bb", "aa"))
+print(min3([2,2], [1,1], [3,3]))
+
+
+
+
+### Plik: minmax.py
+
+def minmax(test, *args):
+   res = args[0]
+   for arg in args[1:]:
+      if test(arg, res):
+         res = arg
+   return res
+
+def lessthan(x, y): return x < y             # Zobacz również lambda
+def grtrthan(x, y): return x > y
+
+print(minmax(lessthan, 4, 2, 1, 5, 6, 3))    # Kod testu
+print(minmax(grtrthan, 4, 2, 1, 5, 6, 3))
+
+
+
+
+### Plik: inter2.py
+
+def intersect(*args):
+   res = []
+   for x in args[0]:                         # Przejrzenie pierwszej sekwencji
+      for other in args[1:]:                 # Dla wszystkich pozostałych argumentów
+         if x not in other: break            # Element w każdym z nich?
+      else:                                  # Nie — wyjście z pętli
+         res.append(x)                       # Tak — dodanie elementów na końcu
+   return res
+
+def union(*args):
+   res = []
+   for seq in args:                          # Dla wszystkich argumentów
+     for x in seq:                           # Dla wszystkich węzłów
+         if not x in res:
+            res.append(x)                    # Dodanie nowych elementów do wyniku
+   return res
+
+
+
+
+>>> from inter2 import intersect, union
+>>> s1, s2, s3 = "Teodor", "Teofil", "Troll"
+
+>>> intersect(s1, s2), union(s1, s2)         # Dwa argumenty
+(['T', 'e', 'o', 'o'], ['T', 'e', 'o', 'd', 'r', 'f', 'i', 'l'])
+
+>>> intersect([1,2,3], (1,4))                # Typy mieszane
+[1]
+
+>>> intersect(s1, s2, s3)                    # Trzy argumenty
+['T', 'o', 'o']
+
+>>> union(s1, s2, s3)
+['T', 'e', 'o', 'd', 'r', 'f', 'i', 'l']
+
+
+
+
+### Plik: print30.py (pierwsza wersja)
+
+"""
+Emulacja działania funkcji 'print' z Pythona 3.0 w celu wykorzystania jej w wersji 2.X
+sygnatura wywołania: print30(*args, sep=' ', end='\n', file=None)
+"""
+import sys
+
+def print30(*args, **kargs):
+   sep = kargs.get('sep', ' ')                # Wartości domyślne argumentów-słów kluczowych
+   end = kargs.get('end', '\n')
+   file = kargs.get('file', sys.stdout)
+   output = ''
+   first = True
+   for arg in args:
+      output += ('' if first else sep) + str(arg)
+      first = False
+   file.write(output + end)
+
+
+
+
+### Plik: testprint30.py
+
+from print30 import print30
+print30(1, 2, 3)
+print30(1, 2, 3, sep='')                               # Wstrzymanie separatora
+print30(1, 2, 3, sep='...')
+print30(1, [2], (3,), sep='...')                       # Różne typy obiektów
+
+print30(4, 5, 6, sep='', end='')                       # Wstrzymanie nowego wiersza
+print30(7, 8, 9)
+print30()                                              # Dodanie nowego wiersza (lub pustego wiersza)
+
+import sys
+print30(1, 2, 3, sep='??', end='.\n', file=sys.stderr) # Przekierowanie do pliku
+
+
+
+
+### Plik print30.py, zmodyfikowany
+
+# Wykorzystanie argumentów mogących być tylko słowami kluczowymi
+
+def print30(*args, sep=' ', end='\n', file=sys.stdout):
+   output = ''
+   first = True
+   for arg in args:
+      output += ('' if first else sep) + str(arg)
+      first = False
+   file.write(output + end)
+
+
+
+
+>>> print30(99, name='robert')
+TypeError: print30() got an unexpected keyword argument 'name'
+
+
+
+### Plik print30.py, zmodyfikowany
+
+# Zastosowanie usunięcia argumentów-słów kluczowych z wartościami domyślnymi
+
+def print30(*args, **kargs):
+   sep = kargs.pop('sep', ' ')
+   end = kargs.pop('end', '\n')
+   file = kargs.pop('file', sys.stdout)
+   if kargs: raise TypeError('dodatkowe słowa kluczowe: %s' % kargs)
+   output = ''
+   first = True
+   for arg in args:
+      output += ('' if first else sep) + str(arg)
+      first = False
+   file.write(output + end)
+
+
+
+
+>>> print30(99, name='robert')
+TypeError: dodatkowe słowa kluczowe: {'name': 'robert'}
+
+
+
+
+# Poniższe przykłady są niekompletne
+
+from tkinter import *
+widget = Button(text="Naciśnij mnie", command=someFunction)
+
+
+sorted(iterable, key=None, reverse=False)
+
+
+
+
+#### Kod quizu
+
+
+>>> def func(a, b=4, c=5):
+...    print(a, b, c)
+...
+>>> func(1, 2)
+
+
+
+>>> def func(a, b, c=5):
+...    print(a, b, c)
+...
+>>> func(1, c=3, b=2)
+
+
+
+>>> def func(a, *pargs):
+...    print(a, pargs)
+...
+>>> func(1, 2, 3)
+
+
+
+>>> def func(a, **kargs):
+...    print(a, kargs)
+...
+>>> func(a=1, c=3, b=2)
+
+
+
+>>> def func(a, b, c=3, d=4): print(a, b, c, d)
+...
+>>> func(1, *(5,6))

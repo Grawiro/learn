@@ -1,0 +1,451 @@
+﻿>>> def mysum(L):
+...     if not L:
+...         return 0
+...     else:
+...         return L[0] + mysum(L[1:])           # Wywołanie samej siebie
+
+>>> mysum([1, 2, 3, 4, 5])
+15
+
+
+>>> def mysum(L):
+...     print(L)                               # Śledzenie poziomów rekurencji
+...     if not L:                              # L z każdym wywołaniem ma coraz mniejszą długość 
+...         return 0
+...     else:
+...         return L[0] + mysum(L[1:])
+...
+>>> mysum([1, 2, 3, 4, 5])
+[1, 2, 3, 4, 5]
+[2, 3, 4, 5]
+[3, 4, 5]
+[4, 5]
+[5]
+[]
+15
+
+
+def mysum(L):
+    return 0 if not L else L[0] + mysum(L[1:])           # Użycie wyrażeń trójskładnikowych
+
+def mysum(L):
+    return L[0] if len(L) == 1 else L[0] + mysum(L[1:])  # Dowolny typ, domyślnie wartość 1
+
+def mysum(L):
+    first, *rest = L
+    return first if not rest else first + mysum(rest)    # Użycie rozszerzonego przypisania 
+                                                         # sekwencji z 3.0
+
+
+>>> mysum([1])                              # mysum([]) nie zadziała dla ostatnich 2 wersji funkcji
+1
+>>> mysum([1, 2, 3, 4, 5])
+15
+>>> mysum(('j', 'a', 'j', 'k', 'o'))        # Ale funkcja działa dla różnych typów
+'jajko'
+>>> mysum(['mielonka', 'szynka', 'jajka'])
+'mielonkaszynkajajka'
+
+
+>>> def mysum(L):
+...     if not L: return 0
+...     return nonempty(L)                  # Wywołuję funkcję, która wywołała mnie
+...
+>>> def nonempty(L):
+...     return L[0] + mysum(L[1:])          # Rekurencja pośrednia
+...
+>>> mysum([1.1, 2.2, 3.3, 4.4])
+11.0
+
+
+>>> L = [1, 2, 3, 4, 5]
+>>> sum = 0
+>>> while L:
+...     sum += L[0]
+...     L = L[1:]
+...
+>>> sum
+15
+
+
+>>> L = [1, 2, 3, 4, 5]
+>>> sum = 0
+>>> for x in L: sum += x
+...
+>>> sum
+15
+
+
+[1, [2, [3, 4], 5], 6, [7, 8]]                   # Dowolnie zagnieżdżone podlisty
+
+
+def sumtree(L):
+    tot = 0
+    for x in L:                                  # Dla każdego elementu na tym poziomie
+        if not isinstance(x, list):
+            tot += x                             # Bezpośrednie dodawanie liczb
+        else:
+            tot += sumtree(x)                    # Rekurencja dla podlist
+    return tot
+
+L = [1, [2, [3, 4], 5], 6, [7, 8]]               # Dowolne zagnieżdżanie
+print(sumtree(L))                                # Wypisuje 36
+
+# Przypadki zdegenerowane
+print(sumtree([1, [2, [3, [4, [5]]]]]))          # Wypisuje 15 (drzewo rozrośnięte po prawej)
+print(sumtree([[[[[1], 2], 3], 4], 5]))          # Wypisuje 15 (drzewo rozrośnięte po lewej)
+
+
+>>> def echo(message):                   # Nazwa echo przypisana do obiektu funkcji
+...     print(message)
+...
+>>> echo('Wywołanie bezpośrednie')       # Wywołanie obiektu przez oryginalną nazwę
+
+Direct call
+>>> x = echo                             # Teraz również zmienna x zawiera referencję do funkcji
+>>> x('Wywołanie pośrednie!')            # Wywołanie obiektu przez nazwę przez zastosowanie ()
+Wywołanie pośrednie!
+
+
+>>> def indirect(func, arg):
+...     func(arg)                          # Wywołanie przekazanego obiektu przez zastosowanie ()
+...
+>>> indirect(echo, 'Wywołanie argumentu!') # Przekazanie funkcji do innej funkcji
+Wywołanie argumentu!
+
+
+>>> schedule = [(echo, 'Mielonka!'), (echo, 'Szynka!')]
+>>> for (func, arg) in schedule:
+...     func(arg)                        # Wywołanie funkcji osadzonych w kontenerze
+...
+Mielonka!
+Szynka!
+
+
+>>> def make(label):             # Utworzenie funkcji, bez wywołania
+...     def echo(message):
+...         print(label + ':' + message)
+...     return echo
+...
+>>> F = make('Mielonka')         # Zostaje zapisana etykieta przekazana do funkcji w wewnętrznym zakresie
+>>> F('Szynka!')                 # Wywołanie funkcji utworzonej w funkcji make
+Mielonka:Szynka!
+>>> F('Jajka!')
+Mielonka:Jajka!
+
+
+>>> def func(a):
+...     b = 'mielonka'
+...     return b * a
+...
+>>> func(5)
+'mielonkamielonkamielonkamielonkamielonka'
+
+
+>>> func.__name__
+'func'
+>>> dir(func)
+['__annotations__', '__call__', '__class__', '__closure__', '__code__',
+...pominięta część wyniku...
+'__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__']
+
+
+>>> func.__code__
+<code object func at 0x0257C9B0, file "<stdin>", line 1>
+
+>>> dir(func.__code__)
+['__class__', '__delattr__', '__doc__', '__eq__', '__format__', '__ge__',
+...pominięta część wyniku...
+'co_argcount', 'co_cellvars', 'co_code', 'co_consts', 'co_filename',
+'co_firstlineno', 'co_flags', 'co_freevars', 'co_kwonlyargcount', 'co_lnotab',
+'co_name', 'co_names', 'co_nlocals', 'co_stacksize', 'co_varnames']
+
+>>> func.__code__.co_varnames
+('a', 'b')
+>>> func.__code__.co_argcount
+1
+
+
+>>> func
+<function func at 0x0257C738>
+>>> func.count = 0
+>>> func.count += 1
+>>> func.count
+1
+>>> func.handles = 'Button-Press'
+>>> func.handles
+'Button-Press'
+>>> dir(func)
+['__annotations__', '__call__', '__class__', '__closure__', '__code__',
+...pominięta część wyniku...
+__str__', '__subclasshook__', 'count', 'handles']
+
+
+>>> def func(a, b, c):
+...     return a + b + c
+...
+>>> func(1, 2, 3)
+6
+
+
+>>> def func(a: 'mielonka', b: (1, 10), c: float) -> int:
+...     return a + b + c
+...
+>>> func(1, 2, 3)
+6
+
+
+>>> func.__annotations__
+{'a': 'mielonka', 'c': <class 'float'>, 'b': (1, 10), 'return': <class 'int'>}
+
+
+>>> def func(a: 'mielonka', b, c: 99):
+...     return a + b + c
+...
+>>> func(1, 2, 3)
+6
+>>> func.__annotations__
+{'a': 'mielonka', 'c': 99}
+
+>>> for arg in func.__annotations__:
+...     print(arg, '=>', func.__annotations__[arg])
+...
+a => mielonka
+c => 99
+
+
+>>> def func(a: 'mielonka' = 4, b: (1, 10) = 5, c: float = 6) -> int:
+...     return a + b + c
+...
+>>> func(1, 2, 3)
+6
+>>> func()                       # 4 + 5 + 6     (wartości domyślne)
+15
+>>> func(1, c=10)                # 1 + 5 + 10   (parametry kluczowe działają standardowo)
+16
+>>> func.__annotations__
+{'a': 'mielonka', 'c': <class 'float'>, 'b': (1, 10), 'return': <class 'int'>}
+
+
+>>> def func(a:'mielonka'=4, b:(1,10)=5, c:float=6)->int:
+...     return a + b + c
+...
+>>> func(1, 2)                   # 1 + 2 + 6
+9
+>>> func.__annotations__
+{'a': 'mielonka', 'c': <class 'float'>, 'b': (1, 10), 'return': <class 'int'>}
+
+
+>>> def func(x, y, z): return x + y + z
+...
+>>> func(2, 3, 4)
+9
+
+
+>>> f = lambda x, y, z: x + y + z
+>>> f(2, 3, 4)
+9
+
+
+>>> x = (lambda a="raz", b="dwa", c="trzy": a + b + c)
+>>> x("las")
+'lasdwatrzy'
+
+
+>>> def knights( ):
+...    title = 'Sir'
+...    action = (lambda x: title + ' ' + x)  # Tytuł w instrukcji def zawierającej lambda
+...    return action                         # Zwrócenie funkcji
+...
+>>> act = knights( )
+>>> act('Robin')
+'Sir Robin'
+
+
+L = [(lambda x: x**2),                #Wewnętrzna definicja funkcji
+    (lambda x: x**3),
+    (lambda x: x**4)]                 #Lista trzech wywoływanych funkcji
+
+for f in L:
+    print f(2)                        # Wyświetla 4, 8, 16
+
+print L[0](3)                         # Wyświetla 9
+
+
+def f1(x): return x ** 2
+def f2(x): return x ** 3                # Definiujemy nazwane funkcje
+def f3(x): return x ** 4
+
+L = [f1, f2, f3]                        # Odwołanie przez nazwę
+
+for f in L:
+    print(f(2))                         # Wyświetla 4, 8, 16
+
+print(L[0](3))                          # Wyświetla 9
+
+
+>>> key = 'już'
+>>> {'mam': (lambda: 2 + 2),
+...  'już': (lambda: 2 * 4),
+...  'jeden': (lambda: 2 ** 6)}[key]()
+8
+
+
+>>> def f1(): return 2 + 2
+...
+>>> def f2(): return 2 * 4
+...
+>>> def f3(): return 2 ** 6
+...
+>>> key = 'jeden'
+>>> {'mam': f1, 'już': f2, 'jeden': f3}[key]()
+64
+
+
+>>> lower = (lambda x, y: x if x < y else y)
+>>> lower('bb', 'aa')
+'aa'
+>>> lower('aa', 'bb')
+'aa'
+
+
+>>> import sys
+>>> showall = (lambda x: map(sys.stdout.write, x))      # Użycie listy w3.0
+
+>>> t = showall(['mielonka\n', 'tost\n', 'jajka\n'])
+mielonka
+tost
+jajka
+
+>>> showall = lambda x: [sys.stdout.write(line) for line in x]
+
+>>> t = showall(('patrz\n', 'na\n', 'życie\n', 'z\n', 'humorem\n'))
+patrz
+na
+życie
+z
+humorem
+
+
+>>> def action(x):
+...    return (lambda y: x + y)             # Utworzenie i zwrócenie funkcji, zapamiętanie x
+...
+>>> act = action(99)
+>>> act
+<function <lambda> at 0x00A16A88>
+>>> act(2)                                  # Wywołanie wyniku funkcji action
+101
+
+
+>>> action = (lambda x: (lambda y: x + y))
+>>> act = action(99)
+>>> act(3)
+102
+>>> ((lambda x: (lambda y: x + y))(99))(4)
+103
+
+
+import sys
+from tkinter import Button, mainloop # Tkinter w 2.6
+x = Button(
+    text ='Naciśnij mnie',
+    command=(lambda:sys.stdout.write('Mielonka\n')))
+x.pack()
+mainloop()
+
+
+class MyGui:
+   def makewidgets(self):
+      Button(command=(lambda: self.display("mielonka")))
+   def display(self, message):
+      ...użycie komunikatu...
+
+
+>>> counters = [1, 2, 3, 4]
+>>>
+>>> updated = []
+>>> for x in counters:
+...    updated.append(x + 10)                # Dodanie 10 do każdego elementu
+...
+>>> updated
+[11, 12, 13, 14]
+
+
+>>> def inc(x): return x + 10                # Funkcja do wykonania
+...
+>>> map(inc, counters)                       # Zebranie wyników
+[11, 12, 13, 14]
+
+
+>>> map((lambda x: x + 3), counters)         # Wyrażenie funkcji
+[4, 5, 6, 7]
+
+
+>>> def mymap(func, seq):
+...    res = []
+...    for x in seq: res.append(func(x))
+...    return res
+
+
+>>> map(inc, [1, 2, 3])                     # Wbudowana funkcja zwraca iterator
+[11, 12, 13]
+>>> mymap(inc, [1, 2, 3])                   # Nasza wersja zwraca listę (patrz generatory)
+[11, 12, 13]
+
+
+>>> pow(3, 4)                                # 3**4
+81
+>>> map(pow, [1, 2, 3], [2, 3, 4])           # 1**2, 2**3, 3**4
+[1, 8, 81]
+
+
+>>> range(-5, 5)
+[-5, -4, -3, -2, -1, 0, 1, 2, 3, 4]
+
+>>> filter((lambda x: x > 0), range(-5, 5))
+[1, 2, 3, 4]
+
+
+>>> res = [ ]
+>>> for x in range(-5, 5):
+...    if x > 0:
+...       res.append(x)
+...
+>>> res
+[1, 2, 3, 4]
+
+
+>>> from functools import reduce      # Import tylko w 3.0, nie 2.6
+
+>>> reduce((lambda x, y: x + y), [1, 2, 3, 4])
+10
+>>> reduce((lambda x, y: x * y), [1, 2, 3, 4])
+24
+
+
+>>> L = [1,2,3,4]
+>>> res = L[0]
+>>> for x in L[1:]:
+...    res = res + x
+...
+>>> res
+10
+
+
+>>> def myreduce(function, sequence):
+...    tally = sequence[0]
+...    for next in sequence[1:]:
+...       tally = function(tally, next)
+...    return tally
+...
+>>> myreduce((lambda x, y: x + y), [1, 2, 3, 4, 5])
+15
+>>> myreduce((lambda x, y: x * y), [1, 2, 3, 4, 5])
+120
+
+
+>>> import operator, functools
+>>> functools.reduce(operator.add, [2, 4, 6])          # Dodawanie oparte na funkcji
+12
+>>> functools.reduce((lambda x, y: x + y), [2, 4, 6])
+12

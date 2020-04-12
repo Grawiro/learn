@@ -1,0 +1,121 @@
+>>> a = 3
+
+
+
+>>> a = 3                                    # Jest liczbą całkowitą
+>>> a = 'mielonka'                           # Teraz jest łańcuchem znaków
+>>> a = 1.23                                 # A teraz liczbą zmiennoprzecinkową
+
+
+
+>>> a = 3
+>>> a = 'mielonka'
+
+
+
+>>> x = 42
+>>> x = 'żywopłot'                           # Uwolnienie liczby 42 (o ile nie ma innych referencji)
+>>> x = 3.1415                               # Uwolnienie łańcucha znaków 'żywopłot'
+>>> x = [1,2,3]                              # Uwolnienie liczby 3.1415
+
+
+
+>>> a = 3
+>>> b = a
+>>> a = 'mielonka'
+
+
+
+>>> a = 3
+>>> b = a
+>>> a = a + 2
+
+
+
+>>> L1 = [2, 3, 4]
+>>> L2 = L1
+>>> L1 = 24
+
+
+
+>>> L1 = [2, 3, 4]                           # Zmienny obiekt
+>>> L2 = L1                                  # Referencja do tego samego obiektu
+>>> L1[0] = 24                               # Zmiana w miejscu
+
+>>> L1                                       # Lista L1 zmienia się
+[24, 3, 4]
+>>> L2                                       # Tak samo lista L2!
+[24, 3, 4]
+
+
+
+>>> L1 = [2, 3, 4]
+>>> L2 = L1[:]                               # Sporządzenie kopii L1
+>>> L1[0] = 24
+
+>>> L1
+[24, 3, 4]
+>>> L2                                       # L2 się nie zmienia
+[2, 3, 4]
+
+
+
+import copy
+X = copy.copy(Y)                             # Wykonanie "płytkiej" kopii dowolnego obiektu Y
+X = copy.deepcopy(Y)                         # Wykonanie "głębokiej" kopii dowolnego obiektu Y — skopiowanie wszystkich elementów zagnieżdżonych
+
+
+
+>>> x = 42
+>>> x = 'żywopłot'                           # Uwolnić teraz obiekt 42?
+
+
+
+>>> L = [1, 2, 3]
+>>> M = L                                    # M i L odnoszą się do jednego obiektu
+>>> L == M                                   # Ta sama wartość
+True
+>>> L is M                                   # Ten sam obiekt
+True
+
+
+
+>>> L = [1, 2, 3]
+>>> M = [1, 2, 3]                            # M i L odnoszą się do różnych obiektów
+>>> L == M                                   # Te same wartości
+True
+>>> L is M                                   # Różne obiekty
+False
+
+
+
+>>> X = 42
+>>> Y = 42                                   # Powinny być dwoma różnymi obiektami
+>>> X == Y
+True
+>>> X is Y                                   # A jednak to jeden obiekt (pamięć podręczna działa)!
+True
+
+
+
+>>> import sys
+>>> sys.getrefcount(1)                       # 837 wskaźników do tego miejsca w pamięci
+837
+
+
+
+A = "mielonka"
+B = A
+B = "żywopłot"
+
+
+A = ["mielonka"]
+B = A
+B[0] = "żywopłot"
+
+
+A = ["mielonka"]
+B = A[:]
+B[0] = "żywopłot"
+
+

@@ -1,0 +1,565 @@
+﻿% python
+>>> len([1, 2, 3])                           # Długość
+3
+>>> [1, 2, 3] + [4, 5, 6]                    # Konkatenacja
+[1, 2, 3, 4, 5, 6]
+>>> ['Ni!'] * 4                              # Powtórzenie
+['Ni!', 'Ni!', 'Ni!', 'Ni!']
+
+
+>>> str([1, 2]) + "34"                       # To samo co "[1, 2]" + "34"
+'[1, 2]34'
+>>> [1, 2] + list("34")                      # To samo co [1, 2] + ["3", "4"]
+[1, 2, '3', '4']
+
+
+>>> 3 in [1, 2, 3]                           # Przynależność
+True
+>>> for x in [1, 2, 3]:
+...     print(x, end=' ')                    # Iteracja
+...
+1 2 3
+
+
+>>> res = [c * 4 for c in 'JAJKO']          # Lista składana
+>>> res
+['JJJJ', 'AAAA', 'JJJJ', 'KKKK', 'OOOO']
+
+
+>>> res = []
+>>> for c in 'JAJKO':                       # Odpowiednik listy składanej
+...     res.append(c * 4)
+...
+>>> res
+['JJJJ', 'AAAA', 'JJJJ', 'KKKK', 'OOOO']
+
+
+>>> list(map(abs, [-1, -2, 0, 1, 2]))       # Wywołanie funkcji map na sekwencji
+[1, 2, 0, 1, 2]
+
+
+>>> L = ['mielonka', 'Mielonka', 'MIELONKA!']
+>>> L[2]                                     # Wartości przesunięcia rozpoczynają się od 0
+'MIELONKA!'
+>>> L[-2]                                    # Wartość ujemna: odliczamy od końca
+'Mielonka'
+>>> L[1:]                                    # Wycinek pobiera części listy
+['Mielonka', 'MIELONKA!']
+
+
+>>> matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+
+
+>>> matrix[1]
+[4, 5, 6]
+>>> matrix[1][1]
+5
+>>> matrix[2][0]
+7
+>>> matrix = [[1, 2, 3],
+...           [4, 5, 6],
+...           [7, 8, 9]]
+>>> matrix[1][1]
+5
+
+
+>>> L = ['mielonka', 'Mielonka', 'MIELONKA!']
+>>> L[1] = 'jajka'                           # Przypisanie do indeksu
+>>> L
+['mielonka', 'jajka', 'MIELONKA!']
+>>> L[0:2] = ['najsmaczniejsza', 'jest']     # Przypisanie do wycinka: usunięcie i wstawienie
+>>> L                                        # Zastąpienie elementów 0 i 1
+['najsmaczniejsza', 'jest', 'MIELONKA!']
+
+
+>>> L.append('puszkowana')                   # Dodanie elementu na końcu listy
+>>> L
+['najsmaczniejsza', 'jest', 'MIELONKA!', 'puszkowana']
+>>> L.sort( )                                # Sortowanie listy ('M' < 'j')
+>>> L
+['MIELONKA!', 'jest', 'najsmaczniejsza', 'puszkowana']
+
+
+>>> L = ['abc', 'ABD', 'aBe']
+>>> L.sort()                                # Sortowanie bez uwzględnienia wielkości liter
+>>> L
+['ABD', 'aBe', 'abc']
+>>> L = ['abc', 'ABD', 'aBe']
+>>> L.sort(key=str.lower)                   # Normalizacja do małych liter
+>>> L
+['abc', 'ABD', 'aBe']
+>>>
+>>> L = ['abc', 'ABD', 'aBe']
+>>> L.sort(key=str.lower, reverse=True)     # Zmiana kolejności sortowania
+>>> L
+['aBe', 'ABD', 'abc']
+
+
+>>> L = ['abc', 'ABD', 'aBe']
+>>> sorted(L, key=str.lower, reverse=True)          # Wbudowana funkcja sortująca
+['aBe', 'ABD', 'abc']
+
+>>> L = ['abc', 'ABD', 'aBe']
+>>> sorted([x.lower() for x in L], reverse=True)    # Wstępne przekształcenie elementów: zmienione 
+                                                    # elementy wyniku!
+['abe', 'abd', 'abc']
+
+
+>>> L = [1, 2]
+>>> L.extend([3,4,5])                        # Dodanie kilku elementów
+>>> L
+[1, 2, 3, 4, 5]
+>>> L.pop()                                  # Usunięcie i zwrócenie ostatniego elementu
+5
+>>> L
+[1, 2, 3, 4]
+>>> L.reverse()                              # Odwrócenie w miejscu
+>>> L
+[4, 3, 2, 1]
+>>> list(reversed(L))                        # Wbudowana funkcja odwracająca sekwencję
+[1, 2, 3, 4]
+
+
+>>> L = []
+>>> L.append(1)                              # Wstawienie na stos
+>>> L.append(2)
+>>> L
+[1, 2]
+>>> L.pop()                                  # Usunięcie ze stosu
+2
+>>> L
+[1]
+
+
+>>> L = ['mielonka', 'jajka', 'szynka']
+>>> L.index('jajka')                  # Pozycja elementu o zadanej wartości
+1
+>>> L.insert(1, 'tost')               # Wstawienie na pozycji
+>>> L
+['mielonka', 'tost', 'jajka', 'szynka']
+>>> L.remove('jajka')                 # Usunięcie elementu o zadanej wartości
+>>> L
+['mielonka', 'tost', 'szynka']
+>>> L.pop(1)                          # Usunięcie elementu na zadanej pozycji
+'tost'
+>>> L
+['mielonka', 'szynka']
+
+
+>>> L
+['MIELONKA!', 'jest', 'najsmaczniejsza', 'puszkowana']
+>>> del L[0]                                 # Usunięcie jednego elementu
+>>> L
+['jest', 'najsmaczniejsza', 'puszkowana']
+>>> del L[1:]                                # Usunięcie całej części
+>>> L                                        # To samo co L[1:] = []
+['jest']
+
+
+>>> L = ['Mam', 'już', 'coś']
+>>> L[1:] = []
+>>> L
+['Mam']
+>>> L[0] = []
+>>> L
+[[]]
+
+
+% python
+>>> D = {'mielonka': 2, 'szynka': 1, 'jajka': 3}  # Utworzenie słownika
+>>> D['mielonka']                                 # Pobranie wartości po kluczu
+2
+>>>D                                              # Kolejność zostaje pomieszana 
+{'szynka': 1, 'jajka': 3, 'mielonka': 2}
+
+
+>>> len(D)                                  # Liczba wpisów w słowniku
+3
+>>> 'szynka' in D                           # Alternatywne sprawdzanie istnienia klucza
+True
+>>> list(D.keys())                          # Utworzenie nowej listy kluczy
+['szynka', 'jajka', 'mielonka']
+
+
+>>> D
+{'jajka': 3, 'szynka': 1, 'mielonka': 2}
+
+>>> D['szynka'] = ['grillowanie', 'pieczenie', 'smażenie'] # Zmiana wpisu
+>>> D
+{'jajka': 3, 'szynka': ['grillowanie', 'pieczenie', 'smażenie'],  'mielonka': 2}
+
+>>> del D['jajka']                                         # Usunięcie wpisu
+>>> D
+{'szynka': ['grillowanie', 'pieczenie', 'smażenie'], 'mielonka': 2}
+
+>>> D['lunch'] = 'Bekon'                                   # Dodanie nowego wpisu
+>>> D
+{'lunch': 'Bekon', 'szynka': ['grillowanie', 'pieczenie', 'smażenie'], 'mielonka': 2}
+
+
+>>> D = {'mielonka': 2, 'szynka': 1, 'jajka': 3}
+>>> list(D.values( ))
+[1, 3, 2]
+>>> (D.items( ))
+[ ('jajka', 3), ('szynka', 1),  ('mielonka', 2)]
+
+
+>>> D.get('mielonka')                       # Klucz istnieje
+2
+>>> print(D.get('tost'))                    # Brakujący klucz
+None
+>>> D.get('tost', 88)
+88
+
+
+>>> D
+{'jajka': 3, 'szynka': 1, 'mielonka': 2}
+>>> D2 = {'tost':4, 'ciastko':5}
+>>> D.update(D2)
+>>> D
+{'tost': 4, 'ciastko': 5'jajka': 3, 'szynka': 1, 'mielonka': 2}
+
+
+# Usunięcie wpisu ze słownika po jego kluczu
+
+>>> D
+{'tost': 4, 'ciastko': 5},'jajka': 3, 'szynka': 1, 'mielonka': 2, 
+>>> D.pop('ciastko')
+5
+>>> D.pop('tost')                            # Usunięcie i zwrócenie wartości klucza
+4
+>>> D
+{'jajka': 3, 'szynka': 1, 'mielonka': 2}
+
+# Usunięcie elementu z listy po jego pozycji
+
+>>> L = ['aa', 'bb', 'cc', 'dd']
+>>> L.pop( )                                 # Usunięcie i zwrócenie ostatniego elementu
+'dd'
+>>> L
+['aa', 'bb', 'cc']
+>>> L.pop(1)                                 # Usunięcie elementu z określonej pozycji
+'bb'
+>>> L
+['aa', 'cc']
+
+
+>>> table = {'Python': 'Guido van Rossum',
+...          'Perl':   'Larry Wall',
+...          'Tcl':    'John Ousterhout' }
+...
+>>> language = 'Python'
+>>> creator  = table[language]
+>>> creator
+'Guido van Rossum'
+
+>>> for lang in table:                      # Równoznaczne: for lang in table.keys()
+...     print lang, '\t', table[lang]
+...
+
+Tcl     John Ousterhout
+Python  Guido van Rossum 
+Perl    Larry Wall
+
+
+>>> L = []
+>>> L[99] = 'mielonka'
+Traceback (most recent call last):
+   File "<stdin>", line 1, in ?
+IndexError: list assignment index out of range
+
+
+>>> D = {}
+>>> D[99] = 'mielonka'
+>>> D[99]
+'mielonka'
+>>> D
+{99: 'mielonka'}
+
+
+>>> Matrix = {}
+>>> Matrix[(2, 3, 4)] = 88
+>>> Matrix[(7, 8, 9)] = 99
+>>>
+>>> X = 2; Y = 3; Z = 4                      # Znak ; rozdziela instrukcje
+>>> Matrix[(X, Y, Z)]
+88
+>>> Matrix
+{(2, 3, 4): 88, (7, 8, 9): 99}
+
+
+>>> Matrix[(2,3,6)]
+Traceback (most recent call last):
+   File "<stdin>", line 1, in ?
+KeyError: (2, 3, 6)
+
+
+>>> if ((2,3,6) in Matrix:                 # Sprawdzanie kluczy przed pobraniem
+...    print Matrix[(2,3,6)]               # Więcej w rozdziale 12. przy okazji zagadnienia if/else
+... else:
+...    print 0
+...
+0
+
+>>> try:
+...    print Matrix[(2,3,6)]                # Próba indeksowania
+... except KeyError:                        # Przechwycenie i obsługa błędu
+...    print 0                              # Więcej w rozdziale 33. przy okazji zagadnienia try/except
+...
+0
+>>> Matrix.get((2,3,4), 0)                  # Istnieje — pobranie i zwrócenie
+88
+>>> Matrix.get((2,3,6), 0)                  # Nie istnieje — użycie argumentu domyślnego
+0
+
+
+>>> rec = {}
+>>> rec['name'] = 'mel'
+>>> rec['age'] = 45
+>>> rec['job'] = 'instruktor'
+>>>
+>>> print rec['name']
+mel
+
+
+>>> mel = {'name': 'Mark',
+...        'jobs': ['instruktor', 'pisarz'],
+...        'web': 'www.rmi.net/~lutz',
+...        'home': {'state': 'CO', 'zip':80513}}
+
+
+>>> mel['name']
+'Mark'
+>>> mel['jobs']
+['instruktor', 'pisarz']
+>>> mel['jobs'][1]
+'pisarz'
+>>> mel['home']['zip']
+80513
+
+
+# UWAGA: w wersji 3.x w poniższym przykładzie należy użyć "dbm" zamiast "anydbm".
+
+import anydbm
+file = anydbm.open("nazwa_pliku")            # Łącze do pliku
+file['key'] = 'data'                         # Przechowanie danych po kluczu
+data = file['key']                           # Pobranie danych po kluczu
+
+
+import cgi
+form = cgi.FieldStorage( )                   # Analiza danych z formularza
+if form.has_key('name'):
+   showReply('Witaj, ' + form['name'].value)
+
+
+{'name': 'mel', 'age': 45}             # Tradycyjne wyrażenie literału słownika
+
+D = {}                                 # Dynamiczne przypisanie do kluczy
+D['name'] = 'mel'
+D['age']  = 45
+
+dict(name='mel', age=45)               # Argument ze słowem kluczowym
+
+dict([('name', 'mel'), ('age', 45)])   # Krotki klucz/wartość
+
+
+>>> dict.fromkeys(['a', 'b'], 0)
+{'a': 0, 'b': 0}
+
+
+>>> list(zip(['a', 'b', 'c'], [1, 2, 3]))        # Połączenie kluczy i wartości
+[('a', 1), ('b', 2), ('c', 3)]
+
+>>> D = dict(zip(['a', 'b', 'c'], [1, 2, 3]))    # Stworzenie słownika z wyniku funkcji zip
+>>> D
+{'a': 1, 'c': 3, 'b': 2}
+
+
+C:\misc> c:\python30\python                      # Użycie słownika składanego
+
+>>> D = {k: v for (k, v) in zip(['a', 'b', 'c'], [1, 2, 3])}
+>>> D
+{'a': 1, 'c': 3, 'b': 2}
+
+
+>>> D = {x: x ** 2 for x in [1, 2, 3, 4]}         # Lub: range(1, 5)
+>>> D
+{1: 1, 2: 4, 3: 9, 4: 16}
+
+>>> D = {c: c * 4 for c in 'JAJKO'}               # Iteracja po dowolnym iteratorze
+>>> D
+{'A': 'AAAA', 'K': 'KKKK', 'J': 'JJJJ', 'O': 'OOOO'}
+
+>>> D = {c.lower(): c + '!' for c in ['MIELONKA', 'JAJKA', 'SZYNKA']}
+>>> D
+{'szynka': 'SZYNKA!', 'jajka': 'JAJKA!', 'mielonka': 'MIELONKA!'}
+
+
+>>> D = dict.fromkeys(['a', 'b', 'c'], 0)         # Inicjalizacja słownika z listy kluczy
+>>> D
+{'a': 0, 'c': 0, 'b': 0}
+
+>>> D = {k:0 for k in ['a', 'b', 'c']}            # To samo, ale z użyciem słownika składanego
+>>> D
+{'a': 0, 'c': 0, 'b': 0}
+
+>>> D = dict.fromkeys('mielonka')                 # Inne iteratory, użycie wartości domyślnej
+>>> D
+{'a': None, 'p': None, 's': None, 'm': None}
+
+>>> D = {k: None for k in ' mielonka '}
+>>> D
+{'a': None, 'p': None, 's': None, 'm': None}
+
+
+>>> D = dict(a=1, b=2, c=3)
+>>> D
+{'a': 1, 'c': 3, 'b': 2}
+
+>>> K = D.keys()                   # Tworzy obiekt widoku w 3.0, nie listę
+>>> K
+<dict_keys object at 0x026D83C0>
+>>> list(K)                        # Wymusza listy w 3.0, o ile to konieczne
+['a', 'c', 'b']
+
+>>> V = D.values()                 # To samo w przypadku widoków values i items
+>>> V
+<dict_values object at 0x026D8260>
+>>> list(V)
+[1, 3, 2]
+
+>>> list(D.items())
+[('a', 1), ('c', 3), ('b', 2)]
+
+>>> K[0]                           # Operacje na listach nie działają, dopóki nie zostaną przekształcone
+TypeError: 'dict_keys' object does not support indexing
+>>> list(K)[0]
+'a'
+
+
+>>> for k in D.keys(): print(k)    # Iteratory są automatycznie używane w pętlach
+...
+a
+c
+b
+
+
+>>> for key in D: print(key)       # Nie ma potrzeby wywoływać metody keys() do iteracji
+...
+a
+c
+b
+
+
+>>> D = {'a':1, 'b':2, 'c':3}
+>>> D
+{'a': 1, 'c': 3, 'b': 2}
+
+>>> K = D.keys()
+>>> V = D.values()
+>>> list(K)                        # Widok zachowuje tę samą kolejność elementów co słownik źródłowy
+['a', 'c', 'b']
+>>> list(V)
+[1, 3, 2]
+
+>>> del D['b']                     # Modyfikacja słownika
+>>> D
+{'a': 1, 'c': 3}
+
+>>> list(K)                        # Zmiana jest uwzględniona w widoku
+['a', 'c']
+>>> list(V)                        # W 2.X tak się nie dzieje!
+[1, 3]
+
+
+>>> K | {'x': 4}                   # Widoki keys (oraz niektóre widoki items) zachowują się jak zbiory
+{'a', 'x', 'c'}
+
+>>> V & {'x': 4}
+TypeError: unsupported operand type(s) for &: 'dict_values' and 'dict'
+>>> V & {'x': 4}.values()
+TypeError: unsupported operand type(s) for &: 'dict_values' and 'dict_values'
+
+>>> D = {'a':1, 'b':2, 'c':3}
+>>> D.keys() & D.keys()            # Iloczyn widoków keys
+{'a', 'c', 'b'}
+>>> D.keys() & {'b'}               # Iloczyn widoku keys i zbioru
+{'b'}
+>>> D.keys() & {'b': 1}            # Iloczyn widoku keys i słownika
+{'b'}
+>>> D.keys() | {'b', 'c', 'd'}     # Unia widoku keys i zbioru
+{'a', 'c', 'b', 'd'}
+
+
+>>> D = {'a': 1}
+>>> list(D.items())                # Widok items zachowuje się jak zbiór, jeśli jest haszowalny
+[('a', 1)]
+>>> D.items() | D.keys()           # Unia widoku items i keys
+{('a', 1), 'a'}
+>>> D.items() | D                  # Słownik jest traktowany jak jego widok keys
+{('a', 1), 'a'}
+
+>>> D.items() | {('c', 3), ('d', 4)}           # Zbiór poar klucz/wartość
+{('a', 1), ('d', 4), ('c', 3)}
+>>> dict(D.items() | {('c', 3), ('d', 4)})     # Funkcja dict akceptuje również iterowane zbiory
+{'a': 1, 'c': 3, 'd': 4}
+
+
+>>> D = {'a':1, 'b':2, 'c':3}
+>>> D
+{'a': 1, 'c': 3, 'b': 2}
+
+>>> Ks = D.keys()                            # Sortowanie obiektu widoku nie działa!
+>>> Ks.sort()
+AttributeError: 'dict_keys' object has no attribute 'sort'
+
+>>> Ks = list(Ks)                            # Przekształcenie na listę i posortowanie wyniku
+>>> Ks.sort()
+>>> for k in Ks: print(k, D[k])
+...
+a 1
+b 2
+c 3
+
+>>> D
+{'a': 1, 'c': 3, 'b': 2}
+>>> Ks = D.keys()                            # Można też użyć funkcji sorted() na kluczach
+>>> for k in sorted(Ks): print(k, D[k])      # Funkcja sorted() akceptuje dowolny obiekt iterowany
+...                                          # sorted() zwraca listę
+a 1
+b 2
+c 3
+
+>>> D
+{'a': 1, 'c': 3, 'b': 2}                     # Jeszcze lepiej będzie posortować sam słownik
+>>> for k in sorted(D): print(k, D[k])       # Iteratory słowników zwracają klucze
+...
+a 1
+b 2
+c 3
+
+
+sorted(D1.items()) < sorted(D2.items())      # Odpowiednik D1 < D2 w 2.6
+
+
+>>> D
+{'a': 1, 'c': 3, 'b': 2}
+
+>>> D.has_key('c')                                        # Tylko dla 2.X: True/False
+AttributeError: 'dict' object has no attribute 'has_key'
+
+>>> 'c' in D
+True
+>>> 'x' in D
+False
+>>> if 'c' in D: print('present', D['c'])                 # Metoda preferowana w 3.0
+...
+present 3
+
+>>> print(D.get('c'))
+3
+>>> print(D.get('x'))
+None
+>>> if D.get('c') != None: print('present', D['c'])       # Inne rozwiązanie
+...
+present 3

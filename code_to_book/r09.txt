@@ -1,0 +1,461 @@
+>>> (1, 2) + (3, 4)                          # Konkatenacja
+(1, 2, 3, 4)
+
+>>> (1, 2) * 4                               # Powtórzenie
+(1, 2, 1, 2, 1, 2, 1, 2)
+
+>>> T = (1, 2, 3, 4)                         # Indeksowanie, wycinek
+>>> T[0], T[1:3]
+(1, (2, 3))
+
+
+
+>>> x = (40)                                 # Liczba całkowita
+>>> x
+40
+>>> y = (40,)                                # Krotka zawierająca liczbę całkowitą
+>>> y
+(40,)
+
+
+
+>>> T = ('cc', 'aa', 'dd', 'bb')
+>>> tmp = list(T)                            # Sporządzenie listy z elementów krotki
+>>> tmp.sort()                               # Sortowanie listy
+>>> tmp
+['aa', 'bb', 'cc', 'dd']
+>>> T = tuple(tmp)                           # Sporządzenie krotki z elementów listy
+>>> T
+('aa', 'bb', 'cc', 'dd')
+
+>>> sorted(T)                                # Można także użyć funkcji wbudowanej sorted
+['aa', 'bb', 'cc', 'dd']
+
+
+
+>>> T = (1, 2, 3, 4, 5)
+>>> L = [x + 20 for x in T]
+>>> L
+[21, 22, 23, 24, 25]
+
+
+
+>>> T = (1, 2, 3, 2, 4, 2)            # Metody krotek w Pythonie 2.6 oraz 3.0
+>>> T.index(2)                        # Przesunięcie pierwszego wystąpienia obiektu 2
+1
+>>> T.index(2, 2)                     # Przesunięcie wystąpienia po przesunięciu 2
+3
+>>> T.count(2)                        # Ile jest obiektów 2?
+3
+
+
+
+>>> T = (1, [2, 3], 4)
+>>> T[1] = 'mielonka'                        # Nie działa — nie da się zmienić krotki
+TypeError: object doesn't support item assignment
+
+>>> T[1][0] = 'mielonka'                     # Działa — można modyfikować jej zmienne elementy
+>>> T
+(1, ['mielonka', 3], 4)
+
+
+
+>>> myfile = open('myfile.txt', 'w')         # Otwarcie do zapisu tekstowego (tworzy pusty plik)
+>>> myfile.write('witaj, pliku tekstowy\n')  # Zapisanie wiersza tekstu
+22
+>>> myfile.write('żegnaj, pliku tekstowy\n')
+23
+>>> myfile.close()                           # Zrzucenie bufora wyjściowego na dysk
+
+>>> myfile = open('myfile.txt')              # Otwarcie do odczytu tekstu — 'r' jest domyślne
+>>> myfile.readline()                        # Wczytanie wierszy z powrotem
+'witaj, pliku tekstowy\n'
+>>> myfile.readline()
+'żegnaj, pliku tekstowy\n'
+>>> myfile.readline()                        # Pusty łańcuch znaków — koniec pliku
+''
+
+
+
+>>> open('myfile.txt').read()               # Wczytanie wszystkiego naraz do łańcucha znaków
+'witaj, pliku tekstowy\nżegnaj, pliku tekstowy\n'
+
+>>> print(open('myfile.txt').read())        # Sposób wyświetlania przyjazny dla użytkownika
+witaj, pliku tekstowy
+żegnaj, pliku tekstowy
+
+
+>>> for line in open('myfile'):             # Użycie iteratorów plików, a nie wczytywania
+...    print(line, end='')
+...
+witaj, pliku tekstowy
+żegnaj, pliku tekstowy
+
+
+
+>>> data = open('data.bin', 'rb').read()    # Otwarcie pliku binarnego: rb = „read binary”
+>>> data                                    # Łańcuch bytes przechowuje dane binarne
+b'\x00\x00\x00\x07mielonka\x00\x08'
+>>> data[4:12]                              # Działa jak łańcuch znaków
+b'mielonka'
+>>> data[4:12][0]                           # Ale tak naprawdę to małe 8-bitowe liczby całkowite
+109
+>>> bin(data[4:12][0])                      # Funkcja bin z Pythona 3.0
+'0b1101101'
+
+
+
+>>> X, Y, Z = 43, 44, 45                     # Obiekty Pythona muszą być łańcuchami znaków,
+>>> S = 'Mielonka'                           # by można je było umieścić w plikach
+>>> D = {'a': 1, 'b': 2}
+>>> L = [1, 2, 3]
+>>>
+>>> F = open('datafile.txt', 'w')            # Utworzenie pliku wyjściowego
+>>> F.write(S + '\n')                        # Zakończenie wierszy za pomocą \n
+>>> F.write('%s,%s,%s\n' % (X, Y, Z))        # Konwersja liczb na łańcuchy znaków
+>>> F.write(str(L) + '$' + str(D) + '\n')    # Konwersja i rozdzielenie znakiem $
+>>> F.close()
+
+
+
+>>> chars = open('datafile.txt').read()      # Wyświetlenie "surowego" łańcucha znaków
+>>> chars 
+"Mielonka\n43,44,45\n[1, 2, 3]${'a': 1, 'b': 2}\n"
+>>> print(chars)                             # Wyświetlenie w sposób przyjazny dla użytkownika
+Mielonka
+43,44,45
+[1, 2, 3]${'a': 1, 'b': 2}
+
+
+
+>>> F = open('datafile.txt')                # Ponowne otwarcie pliku
+>>> line = F.readline()                     # Wczytanie jednego wiersza
+>>> line
+'Mielonka\n'
+>>> line.rstrip()                           # Usunięcie znaku końca wiersza
+'Mielonka'
+
+
+
+>>> line = F.readline()                     # Kolejny wiersz pliku
+>>> line                                    # Tutaj jest on łańcuchem znaków
+'43,44,45\n'
+>>> parts = line.split(',')                 # Podział na przecinkach
+>>> parts
+['43', '44', '45\n']
+
+
+
+>>> int(parts[1])                            # Konwersja z łańcucha na liczbę
+44
+>>> numbers = [int(P) for P in parts]        # Konwersja wszystkich liczb naraz
+>>> numbers
+[43, 44, 45]
+
+
+
+>>> line = F.readline()
+>>> line
+"[1, 2, 3]${'a': 1, 'b': 2}\n"
+>>> parts = line.split('$')                  # Podział na znaku $
+>>> parts
+['[1, 2, 3]', "{'a': 1, 'b': 2}\n"]
+>>> eval(parts[0])                           # Konwersja na dowolny typ obiektu
+[1, 2, 3]
+>>> objects = [eval(P) for P in parts]       # To samo w jednej liście
+>>> objects
+[[1, 2, 3], {'a': 1, 'b': 2}]
+
+
+
+>>> D = {'a': 1, 'b': 2}
+>>> F = open('datafile.pkl', 'wb')
+>>> import pickle
+>>> pickle.dump(D, F)                        # Serializacja dowolnego obiektu w pliku
+>>> F.close()
+
+
+
+>>> F = open('datafile.pkl', 'rb')
+>>> E = pickle.load(F)                       # Załadowanie dowolnego obiektu z pliku
+>>> E
+{'a': 1, 'b': 2}
+
+
+
+>>> open('datafile.pkl', 'rb').read()        # Format może się zmienić!
+b'\x80\x03}q\x00(X\x01\x00\x00\x00aq\x01K\x01X\x01\x00\x00\x00bq\x02K\x02u.'
+
+
+
+>>> F = open('data.bin', 'wb')                # Otwarcie pliku binarnego do zapisu
+>>> import struct
+>>> data = struct.pack('>i4sh', 7, 'jajo', 8) # Utworzenie spakowanych danych binarnych
+>>> data
+'\x00\x00\x00\x07jajo\x00\x08'
+>>> F.write(data)                             # Zapisanie łańcucha bajtowego
+>>> F.close()
+
+
+
+>>> F = open('data.bin', 'rb')
+>>> data = F.read()                         # Pobranie spakowanych danych binarnych
+>>> data
+'\x00\x00\x00\x07jajo\x00\x08'
+>>> values = struct.unpack('>i4sh', data)    # Konwersja na obiekty Pythona
+>>> values
+(7, 'jajo', 8)
+
+
+
+with open(r'C:\misc\data.txt') as myfile:   # Więcej informacji w rozdziale 33.
+   for line in myfile:
+      ...tutaj użycie line...
+
+
+
+myfile = open(r'C:\misc\data.txt')
+try:
+   for line in myfile:
+      ...tutaj użycie line...
+finally:
+   myfile.close()
+
+
+
+class MySequence:
+   def __getitem__(self, index):
+      # Wywoływany na self[index], others
+   def __add__(self, other):
+      # Wywoływany na self + other
+
+
+
+>>> L = ['abc', [(1, 2), ([3], 4)], 5]
+>>> L[1]
+[(1, 2), ([3], 4)]
+>>> L[1][1]
+([3], 4)
+>>> L[1][1][0]
+[3]
+>>> L[1][1][0][0]
+3
+
+
+
+>>> X = [1, 2, 3]
+>>> L = ['a', X, 'b']                        # Osadzone referencje do obiektu zmiennej X
+>>> D = {'x':X, 'y':2}
+
+>>> X[1] = 'niespodzianka'                   # Zmienia wszystkie trzy referencje!
+>>> L
+['a', [1, 'niespodzianka', 3], 'b']
+>>> D
+{'x': [1, 'niespodzianka', 3], 'y': 2}
+
+
+
+>>> L = [1,2,3]
+>>> D = {'a':1, 'b':2}
+
+>>> A = L[:]                                 # Zamiast A = L (lub list(L))
+>>> B = D.copy()                             # Zamiast B = D (tak samo dla zbiorów)
+
+>>> A[1] = 'Ni'
+>>> B['c'] = 'mielonka'
+>>>
+>>> L, D
+([1, 2, 3], {'a': 1, 'b': 2})
+>>> A, B
+([1, 'Ni', 3], {'a': 1, 'c': 'mielonka', 'b': 2})
+
+
+
+>>> X = [1, 2, 3]
+>>> L = ['a', X[:], 'b']                     # Osadzenie kopii obiektu zmiennej X
+>>> D = {'x':X[:], 'y':2}
+
+
+
+>>> L1 = [1, ('a', 3)]                       # Ta sama wartość, unikalne obiekty
+>>> L2 = [1, ('a', 3)]
+>>> L1 == L2, L1 is L2                       # Odpowiednik? Ten sam obiekt?
+(True, False)
+
+>>> S1 = 'mielonka'
+>>> S2 = 'mielonka'
+>>> S1 == S2, S1 is S2
+(True, True)
+
+>>> S1 = 'dłuższy łańcuch znaków'
+>>> S2 = 'dłuższy łańcuch znaków'
+>>> S1 == S2, S1 is S2
+(True, False)
+
+>>> L1 = [1, ('a', 3)]
+>>> L2 = [1, ('a', 2)]
+>>> L1 < L2, L1 == L2, L1 > L2               # Mniejszy, równy, większy — krotka wyników
+(False, False, True)
+
+
+
+C:\misc> c:\python26\python
+>>> D1 = {'a':1, 'b':2}
+>>> D2 = {'a':1, 'b':3}
+>>> D1 == D2
+False
+>>> D1 < D2
+True
+
+
+C:\misc> c:\python30\python
+>>> D1 = {'a':1, 'b':2}
+>>> D2 = {'a':1, 'b':3}
+>>> D1 == D2
+False
+>>> D1 < D2
+TypeError: unorderable types: dict() < dict()
+
+>>> list(D1.items())
+[('a', 1), ('b', 2)]
+>>> sorted(D1.items())
+[('a', 1), ('b', 2)]
+
+>>> sorted(D1.items()) < sorted(D2.items())
+True
+>>> sorted(D1.items()) > sorted(D2.items())
+False
+
+
+
+>>> L = [None] * 100
+>>>
+>>> L
+[None, None, None, None, None, None, None, ... ]
+
+
+
+>>> bool(1)
+True
+>>> bool('mielonka')
+True
+>>> bool({})
+False
+
+
+
+type([1]) == type([])           # Typ innej listy
+type([1]) == list               # Nazwa typu listy
+isinstance([1], list)           # Lista lub jej dostosowanie do własnych potrzeb
+
+import types                    # Moduł types zawiera nazwy dla innych typów
+def f(): pass
+type(f) == types.FunctionType
+
+
+
+>>> L = [1, 2, 3]
+>>> M = ['X', L, 'Y']                        # Osadzenie referencji do L
+>>> M
+['X', [1, 2, 3], 'Y']
+
+>>> L[1] = 0                                 # Zmiany również w M
+>>> M
+['X', [1, 0, 3], 'Y']
+
+
+
+>>> L = [1, 2, 3]
+>>> M = ['X', L[:], 'Y']                     # Osadzenie kopii L
+>>> L[1] = 0                                 # Zmiana tylko L, nie M
+>>> L
+[1, 0, 3]
+>>> M
+['X', [1, 2, 3], 'Y']
+
+
+
+>>> L = [4, 5, 6]
+>>> X = L * 4                                # Jak [4, 5, 6] + [4, 5, 6] + ...
+>>> Y = [L] * 4                              # [L] + [L] + ... = [L, L, ...]
+
+>>> X
+[4, 5, 6, 4, 5, 6, 4, 5, 6, 4, 5, 6]
+>>> Y
+[[4, 5, 6], [4, 5, 6], [4, 5, 6], [4, 5, 6]]
+
+
+
+>>> L[1] = 0                                 # Ma wpływ na Y, ale nie na X
+>>> X
+[4, 5, 6, 4, 5, 6, 4, 5, 6, 4, 5, 6]
+>>> Y
+[[4, 0, 6], [4, 0, 6], [4, 0, 6], [4, 0, 6]]
+
+
+
+>>> L = ['Graal']                            # Dodanie referencji do tego samego obiektu
+>>> L.append(L)                              # Utworzenie cyklu w obiekcie: [...]
+>>> L
+['Graal', [...]]
+
+
+
+T = (1, 2, 3)
+
+T[2] = 4                                     # Błąd!
+
+T = T[:2] + (4,)                             # OK: (1, 2, 4)
+
+
+
+#### Kod ćwiczeń
+
+2 ** 16
+2 / 5, 2 / 5.0
+
+"mielonka" + "jajka"
+S = "szynka"
+"jajka " + S
+S * 5
+S[:0]
+"zielone %s i %s" % ("jajka", S)
+'zielone {0} i {1}'.format('jajka', S)
+
+('x',)[0]
+('x', 'y')[1]
+
+L = [1,2,3] + [4,5,6]
+L, L[:], L[:0], L[-2], L[-2:]
+([1,2,3] + [4,5,6])[2:4]
+[L[2], L[3]]
+L.reverse(); L
+L.sort(); L
+L.index(4)
+
+{'a':1, 'b':2}['b']
+D = {'x':1, 'y':2, 'z':3}
+D['w'] = 0
+D['x'] + D['w']
+D[(1,2,3)] = 4
+list(D.keys()), list(D.values()), (1,2,3) in D
+
+[[]], ["",[],(),{},None]
+
+
+
+>>> X = 'mielonka'
+>>> Y = 'jajka'
+>>> X, Y = Y, X
+
+
+
+>>> D = {}
+>>> D[1] = 'a'
+>>> D[2] = 'b'
+
+
+
+>>> D[(1, 2, 3)] = 'c'
+>>> D
+{1: 'a', 2: 'b', (1, 2, 3): 'c'}

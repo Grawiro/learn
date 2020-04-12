@@ -1,0 +1,155 @@
+>>> print('Witaj, świecie!')
+Witaj, świecie!
+>>> print(2 ** 8)
+256
+
+
+
+>>> drwal = 'git'
+>>> drwal
+'git'
+>>> 2 ** 8
+256
+
+
+
+>>> 'Mielonka!' * 8                      <== Nauka przez próbowanie
+'Mielonka!Mielonka!Mielonka!Mielonka!Mielonka!Mielonka!Mielonka!Mielonka!'
+
+
+
+>>> X                                       <== Robimy błąd
+Traceback (most recent call last):
+   File "<stdin>", line 1, in <module>
+NameError: name 'X' is not defined
+
+
+
+>>> import os
+>>> os.getcwd()        # <== Testowanie w locie
+'c:\\Python30'
+
+
+
+>>> for x in 'mielonka':
+...    print(x)            <== Dwukrotne naciśnięcie Enter w celu wykonania tej pętli
+...
+
+
+
+>>> for x in 'mielonka':
+...    print(x)            <== Dwukrotne naciśnięcie Enter przed wpisaniem nowej instrukcji
+... print('gotowe')
+   File "<stdin>", line 3
+      print('gotowe')
+          ^
+SyntaxError: invalid syntax
+
+
+
+### Plik: script1.py
+
+# Pierwszy skrypt w Pythonie
+import sys                                  # Załadowanie modułu biblioteki
+print(sys.platform)
+print(2 ** 100)                             # Podniesienie 2 do potęgi
+x = 'Mielonka!'
+print(x * 8)                                # Powtórzenie łańcucha znaków
+
+
+
+### Plik: brian
+
+#!/usr/local/bin/python                           # lub: #!/usr/bin/env python
+print('Zawsze patrz ' + 'na życie z humorem')     # + oznacza w łańcuchach znaków konkatenację
+
+
+
+### Plik: script1.py (zmodyfikowany)
+
+# Pierwszy skrypt w Pythonie
+import sys                                  # Załadowanie modułu biblioteki
+print(sys.platform)
+print(2 ** 100)                             # Podniesienie 2 do potęgi (później zmienione na 2 ** 16)
+x = 'Mielonka!'
+print(x * 8)                                # Powtórzenie łańcucha znaków
+input()                                     # <== DODANO (w Pythonie 2.X należy użyć raw_input())
+
+
+
+#### Plik: myfile.py
+
+title = "Sens życia"
+
+
+
+>>> import myfile                            # Wykonanie pliku; moduł ładowany jest w całości
+>>> print(myfile.title)                      # Wykorzystanie nazw atrybutów: użycie znaku '.'
+Sens życia
+
+>>> from myfile import title                 # Wykonanie pliku; skopiowanie jego nazw
+>>> print(title)                             # Bezpośrednie wykorzystanie nazw: nie ma konieczności użycia znaku '.' i nazwy modułu
+Sens życia
+
+
+
+### Plik: threenames.py
+
+a = 'skecz'                                  # Zdefiniowanie trzech atrybutów
+b = 'z martwą'                               # Wyeksportowanie ich do innego pliku
+c = 'papugą'
+print(a, b, c)                               # Wykorzystanie ich także w tym pliku
+
+
+
+>>> import threenames                        # Pobranie całego modułu.
+skecz z martwą papugą
+>>>
+>>> threenames.b, threenames.c
+('z martwą', 'papugą')
+>>>
+>>> from threenames import a, b, c           # Skopiowanie kilku nazw
+>>> b, c
+('z martwą', 'papugą')
+
+
+
+>>> dir(threenames)
+['__builtins__', '__doc__', '__file__', '__name__', '__package__', 'a', 'b', 'c']
+
+
+
+>>> exec(open('script1.py').read())
+win32
+65536
+Mielonka!Mielonka!Mielonka!Mielonka!Mielonka!Mielonka!Mielonka!Mielonka!
+
+...modyfikacja pliku script1.py w oknie edytora tekstowego...
+
+>>> exec(open('script1.py').read())
+win32
+4294967296
+Mielonka!Mielonka!Mielonka!Mielonka!Mielonka!Mielonka!Mielonka!Mielonka!
+
+
+
+>>> x = 999
+>>> exec(open('script1.py').read())    # Kod domyślnie wykonywany jest w tej przestrzeni nazw
+...te same dane wyjściowe...
+>>> x                                  # Jego przypisania mogą nadpisać tutejsze zmienne
+'Mielonka!'
+
+
+
+### Kod w języku C (osadzanie)
+
+#include <Python.h>
+...
+Py_Initialize();                                        // To kod w języku C, nie w Pythonie
+PyRun_SimpleString("x = 'waleczny ' + 'sir robin'");    // Wykonuje on jednak kod w Pythonie
+
+
+
+L = [1, 2]                            # Utworzenie listy dwuelementowej
+L.append(L)                           # Dodanie L jako elementu do samej siebie
+L                                     # Wyświetlenie L

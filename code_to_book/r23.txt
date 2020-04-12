@@ -1,0 +1,339 @@
+﻿# Plik dir1\__init__.py
+print 'dir1 init'
+x = 1
+
+# Plik dir1\dir2\__init__.py
+print 'dir2 init'
+y = 2
+
+# Plik dir1\dir2\mod.py
+print 'w mod.py'
+z = 3
+
+
+% python
+>>> import dir1.dir2.mod                     # Pierwszy import wykonuje pliki inicjalizacyjne
+dir1 init
+dir2 init
+w mod.py
+>>>
+>>> import dir1.dir2.mod                     # Kolejne importy tego nie robią
+>>>
+>>> from imp import reload                   # Wymagane w 3.0
+>>> reload(dir1)
+dir1 init
+<module 'dir1' from 'dir1\__init__.pyc'>
+>>>
+>>> reload(dir1.dir2)
+dir2 init
+<module 'dir1.dir2' from 'dir1\dir2\__init__.pyc'>
+
+
+>>> dir1
+<module 'dir1' from 'dir1\__init__.pyc'>
+>>> dir1.dir2
+<module 'dir1.dir2' from 'dir1\dir2\__init__.pyc'>
+>>> dir1.dir2.mod
+<module 'dir1.dir2.mod' from 'dir1\dir2\mod.pyc'>
+
+
+>>> dir1.x
+1
+>>> dir1.dir2.y
+2
+>>> dir1.dir2.mod.z
+3
+
+
+>>> dir2.mod
+NameError: name 'dir2' is not defined
+>>> mod.z
+NameError: name 'mod' is not defined
+
+
+% python
+>>> from dir1.dir2 import mod                # Ścieżka podana jedynie tutaj
+dir1 init
+dir2 init
+w mod.py
+>>> mod.z                                    # Nie powtarzamy ścieżki
+3
+>>> from dir1.dir2.mod import z
+>>> z
+3
+>>> import dir1.dir2.mod as mod              # Użycie krótszej nazwy (w kolejnym, 24. rozdziale)
+>>> mod.z
+3
+
+
+import utilities
+
+
+import database.client.utilities
+
+
+system1\
+   utilities.py                              # Wspólne funkcje i klasy narzędzi
+   main.py                                   # Uruchamia program
+   other.py                                  # Importuje utilities w celu załadowania narzędzi
+
+
+system2\
+   utilities.py                              # Wspólne narzędzia
+   main.py                                   # Uruchamia program
+   other.py                                  # Importuje narzędzia
+
+
+import utilities
+utilities.func('mielonka')
+
+
+root\
+     system1\
+             __init__.py
+             utilities.py
+             main.py
+             other.py
+     system2\
+             __init__.py
+             utilities.py
+             main.py
+             other.py
+     system3\                                # Tutaj lub w dowolnym innym miejscu
+             __init__.py                     # Tutaj nasz nowy kod
+             myfile.py
+
+
+import system1.utilities
+import system2.utilities
+system1.utilities.function('mielonka')
+system2.utilities.function('jajka')
+
+
+from . import spam                          # Import względny w stosunku do pakietu
+
+from .spam import name
+
+from __future__ import  absolute_import     # Wymagane do wersji 2.7?
+
+import string                               # Pominięcie wersji zdefiniowanej w bieżącym pakiecie
+
+from . import string                        # Wyszukuje w bieżącym pakiecie
+
+
+from .string import name1, name2  # Importuje nazwy z mypkg.string
+from . import string              # Importuje mypkg.string
+from .. import string             # Importuje string z tego samego poziomu, na którym znajduje się mypkg
+
+
+import string                          # Importuje moduł string spoza pakietu
+
+from string import name                # Importuje name z modułu string poza pakietem
+
+from . import string                   # Importuje mypkg.string (import względny)
+
+from .string import name1, name2       # Importuje nazwy z mypkg.string
+
+from .. import spam                    # Importuje spam sąsiadujący z mypkg
+
+from . import D                        # Importuje A.B.D     (. oznacza A.B)
+from .. import E                       # Importuje A.E       (.. oznacza A)
+from .D import X                       # Importuje A.B.D.X   (. oznacza A.B)
+from ..E import X                      # Importuje A.E.X     (.. oznacza A)
+
+
+from mypkg import string                    # Importuje mypkg.string (import bezwzględny)
+
+from system.section.mypkg import string     # system znajduje się w katalogu zdefiniowanym w sys.path
+
+from . import string                        # Składnia importów względnych
+
+
+C:\test> c:\Python30\python
+>>> import string
+>>> string
+<module 'string' from 'c:\Python30\lib\string.py'>
+
+
+# test\string.py
+print('string' * 8)
+
+C:\test> c:\Python30\python
+>>> import string
+stringstringstringstringstringstringstringstring
+>>> string
+<module 'string' from 'string.py'>
+
+
+>>> from . import string
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ValueError: Attempted relative import in non-package
+
+
+# test\main.py
+import string
+print(string)
+
+C:\test> C:\python30\python main.py                   # Wyniki w 2.6 będą takie same
+stringstringstringstringstringstringstringstring
+<module 'string' from 'C:\test\string.py'>
+
+
+C:\test> del string*
+C:\test> mkdir pkg
+
+# test\pkg\spam.py
+import eggs                    # <== Działa w 2.6, ale nie w 3.0!
+print(eggs.X)
+
+# test\pkg\eggs.py
+X = 99999
+import string
+print(string)
+
+
+C:\test> c:\Python26\python
+>>> import pkg.spam
+<module 'string' from 'c:\Python26\lib\string.pyc'>
+99999
+
+C:\test> c:\Python30\python
+>>> import pkg.spam
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "pkg\spam.py", line 1, in <module>
+    import eggs
+ImportError: No module named eggs
+
+
+# test\pkg\spam.py
+from . import eggs             # <== użycie względnych importów w 2.6 i 3.0
+print(eggs.X)
+
+# test\pkg\eggs.py
+X = 99999
+import string
+print(string)
+
+C:\test> c:\Python26\python
+>>> import pkg.spam
+<module 'string' from 'c:\Python26\lib\string.pyc'>
+99999
+
+C:\test> c:\Python30\python
+>>> import pkg.spam
+<module 'string' from 'c:\Python30\lib\string.py'>
+99999
+
+
+# test\string.py
+print('string' * 8)
+
+# test\pkg\spam.py
+from . import eggs
+print(eggs.X)
+
+# test\pkg\eggs.py
+X = 99999
+import string                  # <== Znajduje string w katalogu roboczym, nie w bibliotece standardowej!
+print(string)
+
+C:\test> c:\Python30\python    # W 2.6 wynik będzie taki sam
+>>> import pkg.spam
+stringstringstringstringstringstringstringstring
+<module 'string' from 'string.py'>
+99999
+
+
+C:\test> del string*
+
+# test\pkg\spam.py
+import string                  # <== Względny w 2.6, bezwzględny w 3.0
+print(string)
+
+# test\pkg\string.py
+print('Ni' * 8)
+
+
+C:\test> c:\Python30\python
+>>> import pkg.spam
+<module 'string' from 'c:\Python30\lib\string.py'>
+
+C:\test> c:\Python26\python
+>>> import pkg.spam
+NiNiNiNiNiNiNiNi
+<module 'pkg.string' from 'pkg\string.py'>
+
+
+# test\pkg\spam.py
+from . import string           # <== Import względny w 2.6 i 3.0
+print(string)
+
+# test\pkg\string.py
+print('Ni' * 8)
+
+C:\test> c:\Python30\python
+>>> import pkg.spam
+NiNiNiNiNiNiNiNi
+<module 'pkg.string' from 'pkg\string.py'>
+
+C:\test> c:\Python26\python
+>>> import pkg.spam
+NiNiNiNiNiNiNiNi
+<module 'pkg.string' from 'pkg\string.py'>
+
+
+# test\pkg\spam.py
+from . import string           # <== Nie działa, brak lokalnego string.py!
+
+C:\test> C:\python30\python
+>>> import pkg.spam
+...pominięta część komunikatu...
+ImportError: cannot import name string
+
+
+# test\string.py
+print('string' * 8)
+
+# test\pkg\spam.py
+from . import string           # <== Względny w 2.6 i 3.0
+print(string)
+
+# test\pkg\string.py
+print('Ni' * 8)
+
+
+C:\test> c:\Python30\python    # Takie same wyniki w 2.6
+>>> import pkg.spam
+NiNiNiNiNiNiNiNi
+<module 'pkg.string' from 'pkg\string.py'>
+
+
+# test\string.py
+print('string' * 8)
+
+# test\pkg\spam.py
+import string                  # <== Import względny w 2.6, "bezwzględny" w 3.0: ścieżka robocza!
+print(string)
+
+# test\pkg\string.py
+print('Ni' * 8)
+
+C:\test> c:\Python30\python
+>>> import pkg.spam
+stringstringstringstringstringstringstringstring
+<module 'string' from 'string.py'>
+
+C:\test> c:\Python26\python
+>>> import pkg.spam
+NiNiNiNiNiNiNiNi
+<module 'pkg.string' from 'pkg\string.pyc'>
+
+
+from win32com.client import constants, Dispatch
+
+
+from email.message import Message
+from tkinter.filedialog import askopenfilename
+from http.server import CGIHTTPRequestHandler

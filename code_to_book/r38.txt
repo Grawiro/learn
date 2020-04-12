@@ -1,0 +1,1593 @@
+# UWAGA: w przypadku dwóch ostatnich rozdziałów w pliku uwzględniam
+# przede wszystkim przykłady działającego kodu. By rozszerzyć fragmenty
+# pseudokodu zamieszczone na początku rozdziałów, należy wpisać je do
+# edytora.
+
+
+def decorator(cls):                          # W momencie dekoracji @
+   class Wrapper:
+      def __init__(self, *args):             # W momencie tworzenia instancji
+         self.wrapped = cls(*args)
+      def __getattr__(self, name):           # W momencie pobrania atrybutu
+         return getattr(self.wrapped, name)
+   return Wrapper
+
+@decorator
+class C:                                      # C = decorator(C)
+   def __init__(self, x, y):                  # Wykonywane przez Wrapper.__init__
+      self.attr = 'spam'
+
+x = C(6, 7)                                   # Tak naprawdę wywołuje Wrapper(6, 7)
+print(x.attr)                                 # Wykonuje Wrapper.__getattr__, wyświetla "spam"
+
+
+
+
+def d1(F): return F
+def d2(F): return F
+def d3(F): return F
+
+@d1
+@d2
+@d3
+def func():                          # func = d1(d2(d3(func)))
+   print('mielonka')
+
+func()                               # Wyświetla "mielonka"
+
+
+
+
+
+def d1(F): return lambda: 'X' + F()
+def d2(F): return lambda: 'Y' + F()
+def d3(F): return lambda: 'Z' + F()
+
+@d1
+@d2
+@d3
+def func():                            # func = d1(d2(d3(func)))
+   return 'mielonka'
+
+print(func())                         # Wyświetla "XYZmielonka"
+
+
+
+
+
+### Plik: decorator1.py
+
+class tracer:
+   def __init__(self, func):       # W momencie dekoracji @: zapisanie oryginalnej funkcji
+      self.calls = 0
+      self.func = func
+   def __call__(self, *args):      # W momencie późniejszego wywołania: wykonanie oryginalnej funkcji
+      self.calls += 1
+      print('wywołanie %s %s' % (self.calls, self.func.__name__))
+      self.func(*args)
+
+@tracer
+def spam(a, b, c):                  # spam = tracer(spam)
+   print(a + b + c)                 # Opakowuje spam w obiekt dekoratora
+
+
+
+
+
+>>> from decorator1 import spam
+
+>>> spam(1, 2, 3)                   # Tak naprawdę wywołuje opakowujący obiekt śledzenia
+wywołanie 1 spam
+6
+
+>>> spam('a', 'b', 'c')             # Wywołuje metodę __call__ w klasie
+wywołanie 2 spam
+abc
+
+>>> spam.calls                      # Zliczenie wywołań w informacjach o stanie obiektu opakowującego
+2
+
+>>> spam
+<decorator1.tracer object at 0x02D9A730>
+
+
+
+
+
+calls = 0
+def tracer(func, *args):
+   global calls
+   calls += 1
+   print('wywołanie %s %s' % (calls, func.__name__))
+   func(*args)
+
+def spam(a, b, c):
+   print(a, b, c)
+
+>>> spam(1, 2, 3)                      # Normalne, nieśledzone wywołanie: przypadkowe?
+1 2 3
+
+>>> tracer(spam, 1, 2, 3)              # Specjalne śledzone wywołanie bez dekoratorów
+wywołanie 1 spam
+1 2 3
+
+
+
+
+
+class tracer:                              # Stan w atrybutach instancji
+   def __init__(self, func):               # W momencie dekoracji @
+      self.calls = 0                       # Zapisanie func dla późniejszego wywołania
+      self.func = func
+   def __call__(self, *args, **kwargs):    # W momencie wywołania oryginalnej funkcji
+      self.calls += 1
+      print('wywołanie %s %s' % (self.calls, self.func.__name__))
+      return self.func(*args, **kwargs)
+
+@tracer
+def spam(a, b, c):                          # To samo co: spam = tracer(spam)
+   print(a + b + c)                         # Uruchamia tracer.__init__
+
+@tracer
+def eggs(x, y):                             # To samo co: eggs = tracer(eggs)
+   print(x ** y)                            # Opakowuje eggs w obiekt tracer
+
+spam(1, 2, 3)                               # Tak naprawdę wywołuje instancję tracer: wykonuje tracer.__call__
+spam(a=4, b=5, c=6)                         # spam jest atrybutem instancji
+
+eggs(2, 16)                                 # Tak naprawdę wywołuje instancję tracer, self.func to eggs
+eggs(4, y=4)                                # self.calls zliczane tutaj per funkcja (potrzebna instrukcja nonlocal z 3.0)
+
+
+
+
+
+calls = 0
+def tracer(func):                    # Stan w zakresie zawierającym oraz zmiennej globalnej
+   def wrapper(*args, **kwargs):     # Zamiast atrybutów klas
+      global calls                   # Zmienna calls jest globalna, a nie per funkcja
+      calls += 1
+      print('wywołanie %s %s' % (calls, func.__name__))
+      return func(*args, **kwargs)
+   return wrapper
+
+@tracer
+def spam(a, b, c):                    # To samo co: spam = tracer(spam)
+   print(a + b + c)
+
+@tracer
+def eggs(x, y):                       # To samo co: eggs = tracer(eggs)
+   print(x ** y)
+
+spam(1, 2, 3)                         # Tak naprawdę wywołuje wrapper, dowiązany do func
+spam(a=4, b=5, c=6)                   # wrapper wywołuje spam
+
+eggs(2, 16)                           # Tak naprawdę wywołuje wrapper, dowiązany do eggs
+eggs(4, y=4)                          # Zmienna globalna calls nie jest tutaj liczona per funkcja!
+
+
+
+
+
+def tracer(func):                       # Stan w zakresie zawierającym i zmiennej nielokalnej
+   calls = 0                            # Zamiast atrybutów klasy lub zmiennej globalnej
+   def wrapper(*args, **kwargs):        # Zmienna calls jest per funkcja, a nie globalna
+      nonlocal calls
+      calls += 1
+      print('wywołanie %s %s' % (calls, func.__name__))
+      return func(*args, **kwargs)
+   return wrapper
+
+@tracer
+def spam(a, b, c):                         # To samo co: spam = tracer(spam)
+   print(a + b + c)
+
+@tracer
+def eggs(x, y):                            # To samo co: eggs = tracer(eggs)
+   print(x ** y)
+
+spam(1, 2, 3)                              # Tak naprawdę wywołuje wrapper, dowiązany do func
+spam(a=4, b=5, c=6)                        # wrapper wywołuje spam
+
+eggs(2, 16)                                # Tak naprawdę wywołuje wrapper, dowiązany do eggs
+eggs(4, y=4)                               # Zmienna nielokalna calls nie jest tutaj per funkcja
+
+
+
+
+
+def tracer(func):                    # Stan w zakresie funkcji zawierającej i atrybucie funkcji
+   def wrapper(*args, **kwargs):     # Zmienna calls jest per funkcja, a nie globalna
+      wrapper.calls += 1
+      print('wywołanie %s %s' % (wrapper.calls, func.__name__))
+      return func(*args, **kwargs)
+   wrapper.calls = 0
+   return wrapper
+
+
+
+
+
+class tracer:
+   def __init__(self, func):                 # W momencie dekoracji @
+      self.calls = 0                         # Zapisanie func dla późniejszego wywołania
+      self.func = func
+   def __call__(self, *args, **kwargs):      # W momencie wywołania oryginalnej funkcji
+      self.calls += 1
+      print('wywołanie %s %s' % (self.calls, self.func.__name__))
+      return self.func(*args, **kwargs)
+
+
+
+@tracer
+def spam(a, b, c):                            # spam = tracer(spam)
+   print(a + b + c)                           # Uruchamia tracer.__init__
+
+spam(1, 2, 3)                                 # Wykonuje tracer.__call__
+spam(a=4, b=5, c=6)                           # spam jest atrybutem instancji
+
+
+class Person:
+   def __init__(self, name, pay):
+      self.name = name
+      self.pay = pay
+
+   @tracer
+   def giveRaise(self, percent):               # giveRaise = tracer(giverRaise)
+      self.pay *= (1.0 + percent)
+
+   @tracer
+   def lastName(self):                          # lastName = tracer(lastName)
+      return self.name.split()[-1]
+
+bob = Person('Robert Zielony', 50000)           # tracer pamięta funkcje metod
+bob.giveRaise(.25)                              # Wykonuje tracer.__call__(???, .25)
+print(bob.lastName())                           # Wykonuje tracer.__call__(???)
+
+
+
+
+
+# Dekorator przeznaczony zarówno dla funkcji, jak i dla metod
+
+def tracer(func):              # Użycie funkcji, a nie klasy z __call__
+   calls = 0                   # Inaczej "self" będzie jedynie instancją dekoratora!
+   def onCall(*args, **kwargs):
+      nonlocal calls
+      calls += 1
+      print('wywołanie %s %s' % (calls, func.__name__))
+      return func(*args, **kwargs)
+   return onCall
+
+# Ma zastosowanie do prostych funkcji
+
+@tracer
+def spam(a, b, c):               # spam = tracer(spam)
+   print(a + b + c)              # onCall pamięta spam
+
+spam(1, 2, 3)                    # Wykonuje onCall(1, 2, 3)
+spam(a=4, b=5, c=6)
+
+# Ma zastosowanie również do funkcji metod klas!
+
+class Person:
+   def __init__(self, name, pay):
+      self.name = name
+      self.pay = pay
+
+   @tracer
+   def giveRaise(self, percent):          # giveRaise = tracer(giverRaise)
+      self.pay *= (1.0 + percent)         # onCall pamięta giveRaise
+
+   @tracer
+   def lastName(self):                    # lastName = tracer(lastName)
+      return self.name.split()[-1]
+
+print('metody...')
+bob = Person('Robert Zielony', 50000)
+anna = Person('Anna Czerwona', 100000)
+print(bob.name, anna.name)
+anna.giveRaise(.10)                        # Wykonuje onCall(anna, .10)
+print(anna.pay)
+print(bob.lastName(), anna.lastName())     # Wykonuje onCall(bob), lastName w zakresach
+
+
+
+
+
+class Descriptor(object):
+   def __get__(self, instance, owner): ...
+
+class Subject:
+   attr = Descriptor()
+
+X = Subject()
+X.attr                       # Wykonuje w przybliżeniu Descriptor.__get__(Subject.attr, X, Subject)
+
+
+
+
+
+class tracer(object):
+   def __init__(self, func):               # W momencie dekoracji @
+      self.calls = 0                       # Zapisanie func na potrzeby późniejszego wywołania
+      self.func = func
+   def __call__(self, *args, **kwargs):    # W momencie wywołania oryginalnej funkcji
+      self.calls += 1
+      print('wywołanie %s %s' % (self.calls, self.func.__name__))
+      return self.func(*args, **kwargs)
+   def __get__(self, instance, owner):      # W momencie pobrania atrybutu metody
+      return wrapper(self, instance)
+
+class wrapper:
+   def __init__(self, desc, subj):          # Zapisanie obu instancji
+      self.desc = desc                      # Przekierowanie wywołań z powrotem do dekoratora
+      self.subj = subj
+   def __call__(self, *args, **kwargs):
+      return self.desc(self.subj, *args, **kwargs)     # Wykonuje tracer.__call__
+
+@tracer
+def spam(a, b, c):                          # spam = tracer(spam)
+   ...to samo co poprzednio...              # Wykorzystuje jedynie __call__
+
+class Person:
+   @tracer
+   def giveRaise(self, percent):           # giveRaise = tracer(giverRaise)
+      ...to samo co poprzednio...          # Sprawia, że giveRaise staje się deskryptorem
+
+
+
+
+
+class tracer(object):
+   def __init__(self, func):                  # W momencie dekoracji @
+      self.calls = 0                          # Zapisanie func na potrzeby późniejszego wywołania
+      self.func = func
+   def __call__(self, *args, **kwargs):       # W momencie wywołania oryginalnej funkcji
+      self.calls += 1
+      print('wywołanie %s %s' % (self.calls, self.func.__name__))
+      return self.func(*args, **kwargs)
+   def __get__(self, instance, owner):        # W momencie pobrania metody
+      def wrapper(*args, **kwargs):           # Zachowanie obu instancji
+         return self(instance, *args, **kwargs)  # Wykonuje __call__
+   return wrapper
+
+
+
+
+
+import time
+
+class timer:
+   def __init__(self, func):
+      self.func = func
+      self.alltime = 0
+   def __call__(self, *args, **kargs):
+      start = time.clock()
+      result = self.func(*args, **kargs)
+      elapsed = time.clock() - start
+      self.alltime += elapsed
+      print('%s: %.5f, %.5f' % (self.func.__name__, elapsed, self.alltime))
+      return result
+
+@timer
+def listcomp(N):
+   return [x * 2 for x in range(N)]
+
+@timer
+def mapcall(N):
+   return map((lambda x: x * 2), range(N))
+
+result = listcomp(5)                       # Czas dla tego wywołania, wszystkich wywołań, zwracana wartość
+listcomp(50000)
+listcomp(500000)
+listcomp(1000000)
+print(result)
+print('allTime = %s' % listcomp.alltime)   # Całkowity czas dla wszystkich wywołań listcomp
+
+print('')
+result = mapcall(5)
+mapcall(50000)
+mapcall(500000)
+mapcall(1000000)
+print(result)
+print('allTime = %s' % mapcall.alltime)     # Całkowity czas dla wszystkich wywołań mapcall
+
+print('map/comp = %s' % round(mapcall.alltime / listcomp.alltime, 3))
+
+
+
+
+...
+import sys
+
+@timer
+def listcomp(N):
+   return [x * 2 for x in range(N)]
+
+if sys.version_info[0] == 2:
+   @timer
+   def mapcall(N):
+      return map((lambda x: x * 2), range(N))
+else:
+   @timer
+   def mapcall(N):
+      return list(map((lambda x: x * 2), range(N)))
+   ...
+
+
+
+
+def timer(label=''):
+   def decorator(func):
+      def onCall(*args):                     # Argumenty przekazane do funkcji
+         ...                                 # Funkcja zachowana w zakresie zawierającym
+         print(label, ...                    # Etykieta zachowana w zakresie zawierającym
+      return onCall
+   return decorator                          # Zwraca sam dekorator
+
+@timer('==>')                                # Jak listcomp = timer('==>')(listcomp)
+def listcomp(N): ...                         # Nazwa listcomp ponownie dowiązana do dekoratora
+
+listcomp(...)                                # Tak naprawdę wywołuje dekorator
+
+
+
+
+
+### Plik: mytools.py
+
+import time
+
+def timer(label='', trace=True):           # Dla argumentów dekoratora: zachowanie argumentów
+   class Timer:
+      def __init__(self, func):            # Dla @: zachowanie udekorowanej funkcji
+         self.func = func
+         self.alltime = 0
+      def __call__(self, *args, **kargs):  # Dla wywołań: wywołanie oryginalnej funkcji
+         start = time.clock()
+         result = self.func(*args, **kargs)
+         elapsed = time.clock() - start
+         self.alltime += elapsed
+         if trace:
+            format = '%s %s: %.5f, %.5f'
+            values = (label, self.func.__name__, elapsed, self.alltime)
+            print(format % values)
+         return result
+   return Timer
+
+
+
+
+
+## Plik: testseqs.py
+
+from mytools import timer
+
+@timer(label='[CCC]==>')
+def listcomp(N):                          # Jak listcomp = timer(...)(listcomp)
+   return [x * 2 for x in range(N)]       # listcomp(...) uruchamia Timer.__call__
+
+@timer(trace=True, label='[MMM]==>')
+def mapcall(N):
+   return map((lambda x: x * 2), range(N))
+
+for func in (listcomp, mapcall):
+   print('')
+   result = func(5)                       # Czas dla tego wywołania, wszystkich wywołań, zwracana wartość
+   func(50000)
+   func(500000)
+   func(1000000)
+   print(result)
+   print('allTime = %s' % func.alltime)   # Całkowity czas dla wszystkich wywołań
+
+print('map/comp = %s' % round(mapcall.alltime / listcomp.alltime, 3))
+
+
+
+
+
+>>> from mytools import timer
+>>> @timer(trace=False)                      # Brak śledzenia, zebranie całkowitego czasu
+... def listcomp(N):
+...    return [x * 2 for x in range(N)]
+...
+>>> x = listcomp(5000)
+>>> x = listcomp(5000)
+>>> x = listcomp(5000)
+>>> listcomp
+<mytools.Timer instance at 0x025C77B0>
+>>> listcomp.alltime
+0.0051938863738243413
+ 
+>>> @timer(trace=True, label='\t=>')          # Załączenie śledzenia
+... def listcomp(N):
+...    return [x * 2 for x in range(N)]
+...
+>>> x = listcomp(5000)
+       => listcomp: 0.00155, 0.00155
+>>> x = listcomp(5000)
+       => listcomp: 0.00156, 0.00311
+>>> x = listcomp(5000)
+       => listcomp: 0.00174, 0.00486
+>>> listcomp.alltime
+0.0048562736325408196
+
+
+
+
+
+instances = {}
+def getInstance(aClass, *args):                # Zarządzanie globalną tabelą
+   if aClass not in instances:                 # Dodanie **kargs dla słów kluczowych
+      instances[aClass] = aClass(*args)        # Jeden wpis słownika na klasę
+   return instances[aClass]
+
+def singleton(aClass):                         # W momencie dekoracji @
+   def onCall(*args):                          # W momencie tworzenia instancji
+      return getInstance(aClass, *args)
+   return onCall
+
+
+
+
+
+@singleton                                     # Person = singleton(Person)
+class Person:                                  # Ponownie dowiązuje Person do onCall
+   def __init__(self, name, hours, rate):      # onCall pamięta Person
+      self.name = name
+      self.hours = hours
+      self.rate = rate
+   def pay(self):
+      return self.hours * self.rate
+
+@singleton                                     # Spam = singleton(Spam)
+class Spam:                                    # Ponownie dowiązuje Spam do onCall
+   def __init__(self, val):                    # onCall pamięta Spam
+      self.attr = val
+
+bob = Person('Robert', 40, 10)                 # Tak naprawdę wywołuje onCall
+print(bob.name, bob.pay())
+
+anna = Person('Anna', 50, 20)                  # Ten sam pojedynczy obiekt
+print(anna.name, anna.pay())
+
+X = Spam(42)                                   # Jeden obiekt Person, jeden obiekt Spam
+Y = Spam(99)
+print(X.attr, Y.attr)
+
+
+
+
+
+def singleton(aClass):                 # W momencie dekoracji @
+   instance = None
+   def onCall(*args):                  # W momencie tworzenia instancji
+      nonlocal instance                # Instrukcja nonlocal z wersji 3.0 i nowszych
+      if instance == None:
+         instance = aClass(*args)      # Jeden zakres na klasę
+      return instance
+   return onCall
+
+
+
+
+
+class singleton:
+   def __init__(self, aClass):                 # W momencie dekoracji @
+      self.aClass = aClass
+      self.instance = None
+   def __call__(self, *args):                  # W momencie tworzenia instancji
+      if self.instance == None:
+         self.instance = self.aClass(*args)    # Jedna instancja na klasę
+      return self.instance
+
+
+
+
+
+class Wrapper:
+   def __init__(self, object):
+      self.wrapped = object                       # Zapisanie obiektu
+   def __getattr__(self, attrname):
+      print('Śledzenie:', attrname)               # Śledzenie pobrania
+      return getattr(self.wrapped, attrname)      # Delegacja pobrania
+
+>>> x = Wrapper([1,2,3])                          # Opakowanie listy
+>>> x.append(4)                                   # Wydelegowanie do metody listy
+Śledzenie: append
+>>> x.wrapped                                     # Wyświetlenie mojej składowej
+[1, 2, 3, 4]
+
+>>> x = Wrapper({"a": 1, "b": 2})                 # Opakowanie słownika
+>>> list(x.keys())                                # Wydelegowanie do metody słownika
+Śledzenie: keys                                   # W Pythonie 3.0 należy użyć list()
+['a', 'b']
+
+
+
+
+
+def Tracer(aClass):                             # W momencie dekoracji @
+   class Wrapper:
+      def __init__(self, *args, **kargs):       # W momencie tworzenia instancji
+         self.fetches = 0
+         self.wrapped = aClass(*args, **kargs)  # Użycie nazwy z zakresu funkcji zawierającej
+      def __getattr__(self, attrname):
+         print('Śledzenie: ' + attrname)        # Przechwytuje wszystko oprócz własnych atrybutów
+         self.fetches += 1
+         return getattr(self.wrapped, attrname) # Delegacja do opakowanego obiektu
+   return Wrapper
+
+@Tracer
+class Spam:                                     # Spam = Tracer(Spam)
+   def display(self):                           # Klasa Spam ponownie dowiązana do Wrapper
+      print('Mielonka!' * 8)
+
+@Tracer
+class Person:                                   # Person = Tracer(Person)
+   def __init__(self, name, hours, rate):       # Wrapper pamięta Person
+      self.name = name
+      self.hours = hours
+      self.rate = rate
+   def pay(self):                               # Próby dostępu spoza klasy są śledzone
+      return self.hours * self.rate             # Próby dostępu z wewnątrz metody nie są śledzone
+
+food = Spam()                                   # Wywołuje Wrapper()
+food.display()                                  # Wywołuje __getattr__
+print([food.fetches])
+
+bob = Person('Robert', 40, 50)                  # Obiekt bob jest tak naprawdę instancją Wrapper
+print(bob.name)                                 # Wrapper osadza instancję Person
+print(bob.pay())
+
+print('')
+anna = Person('Anna', rate=100, hours=60)       # Obiekt anna jest inną instancją Wrapper
+print(anna.name)                                # z inną klasą Person
+print(anna.pay())
+
+print(bob.name)                                 # Obiekt bob ma inny stan
+print(bob.pay())
+print([bob.fetches, anna.fetches])              # Atrybuty klasy Wrapper nie są śledzone
+
+
+
+
+
+>>> from tracer import Tracer                # Dekorator przeniesiony do pliku modułu
+
+>>> @Tracer
+... class MyList(list): pass                 # MyList = Tracer(MyList)
+
+>>> x = MyList([1, 2, 3])                    # Wywołuje Wrapper()
+>>> x.append(4)                              # Wywołuje __getattr__, append
+Śledzenie: append
+>>> x.wrapped
+[1, 2, 3, 4]
+
+>>> WrapList = Tracer(list)                  # Lub ręczne wykonanie dekoracji
+>>> x = WrapList([4, 5, 6])                  # Inaczej wymagana instrukcja klasy podrzędnej
+>>> x.append(7)
+Śledzenie: append
+>>> x.wrapped
+[4, 5, 6, 7]
+
+
+
+
+
+@Tracer                                      # Rozwiązanie z dekoratorem
+class Person: ...
+bob = Person('Robert', 40, 50)
+anna = Person('Anna', rate=100, hours=60)
+
+class Person: ...                            # Rozwiązanie bez dekoratora
+bob = Wrapper(Person('Robert', 40, 50))
+anna = Wrapper(Person('Anna', rate=100, hours=60))
+
+
+
+
+
+class Tracer:
+   def __init__(self, aClass):                   # W momencie dekoracji @
+      self.aClass = aClass                       # Użycie atrybutu instancji
+   def __call__(self, *args):                    # W momencie tworzenia instancji
+      self.wrapped = self.aClass(*args)          # JEDNA (OSTATNIA) INSTANCJA NA KLASĘ!
+      return self
+   def __getattr__(self, attrname):
+      print('Śledzenie: ' + attrname)
+      return getattr(self.wrapped, attrname)
+
+@Tracer                                          # Wywołuje __init__
+class Spam:                                      # Jak: Spam = Tracer(Spam)
+   def display(self):
+      print('Mielonka!' * 8)
+
+...
+food = Spam()                                    # Wywołuje __call__
+food.display()                                   # Wywołuje __getattr__
+
+
+
+
+@Tracer
+class Person:                              # Person = Tracer(Person)
+   def __init__(self, name):               # Klasa Wrapper dowiązana do Person
+      self.name = name
+
+bob = Person('Robert')                     # Obiekt bob jest tak naprawdę instancją Wrapper
+print(bob.name)                            # Wrapper osadza Person
+Anna = Person('Anna')
+print(anna.name)                           # Obiekt anna nadpisuje obiekt bob
+print(bob.name)                            # UPS: teraz obiekt bob nazywa się 'Anna'!
+
+
+
+
+
+class Spam:                              # Wersja bez dekoratora
+   ...                                   # Wystarczy jakakolwiek klasa
+food = Wrapper(Spam())                   # Specjalna składnia tworzenia instancji
+
+@Tracer
+class Spam:                              # Wersja z dekoratorem
+   ...                                   # Wymaga składni z @ w klasie
+food = Spam()                            # Normalna składnia tworzenia instancji
+
+
+
+
+
+instances = {}
+def getInstance(aClass, *args):
+   if aClass not in instances:
+      instances[aClass] = aClass(*args)
+   return instances[aClass]
+
+bob = getInstance(Person, 'Robert', 40, 10)       # Nie: bob = Person('Robert', 40, 10)
+
+
+
+
+
+instances = {}
+def getInstance(object):
+   aClass = object.__class__
+   if aClass not in instances:
+      instances[aClass] = object
+   return instances[aClass]
+
+bob = getInstance(Person('Robert', 40, 10))       # Nie: bob = Person('Robert', 40, 10)
+
+
+
+
+def func(x, y):                              # Wersja bez dekoratora
+   ...                                       # def tracer(func, args): ... func(*args)
+result = tracer(func, (1, 2))                # Specjalna składnia wywołania
+
+@tracer
+def func(x, y):                              # Wersja z dekoratorem
+   ...                                       # Ponownie dowiązuje nazwę: func = tracer(func)
+result = func(1, 2)                          # Normalna składnia wywołania
+
+
+
+
+
+# Rejestrowanie udekorowanych obiektów w API
+
+registry = {}
+def register(obj):                            # Dekorator zarówno klasy, jak i funkcji
+   registry[obj.__name__] = obj               # Dodanie do rejestru
+   return obj                                 # Zwrócenie samego obiektu, a nie obiektu opakowującego
+
+@register
+def spam(x):
+   return(x ** 2)                              # spam = register(spam)
+
+@register
+def ham(x):
+   return(x ** 3)
+
+@register
+class Eggs:                                    # Eggs = register(Eggs)
+   def __init__(self, x):
+      self.data = x ** 4
+   def __str__(self):
+      return str(self.data)
+
+print('Rejestr:')
+for name in registry:
+   print(name, '=>', registry[name], type(registry[name]))
+
+print('\nWywołania ręczne:')
+print(spam(2))                                 # Ręczne wywołanie obiektów
+print(ham(2))                                  # Późniejsze wywołania nie są przechwytywane
+X = Eggs(2)
+print(X)
+
+print('\nWywołania z rejestru:')
+for name in registry:
+   print(name, '=>', registry[name](3))          # Wywołanie z rejestru
+
+
+
+
+
+# Bezpośrednie rozszerzenie udekorowanych obiektów
+
+>>> def decorate(func):
+...    func.marked = True              # Przypisanie atrybutu funkcji dla późniejszego użycia
+...    return func
+...
+>>> @decorate
+... def spam(a, b):
+...    return a + b
+...
+>>> spam.marked
+True
+
+>>> def annotate(text):                 # To samo, jednak wartość jest argumentem dekoratora
+...    def decorate(func):
+...       func.label = text
+...       return func
+...    return decorate
+...
+>>> @annotate('mielonka dane')
+... def spam(a, b):                      # spam = annotate(...)(spam)
+...    return a + b
+...
+>>> spam(1, 2), spam.label
+(3, 'mielonka dane')
+
+
+
+
+
+
+"""
+Prywatność dla atrybutów pobranych z instancji klas.
+Przykłady użycia można znaleźć w kodzie testu samosprawdzającego na dole pliku.
+Dekorator jest tym samym co: Doubler = Private('data', 'size')(Doubler).
+Private zwraca onDecorator, onDecorator zwraca onInstance, a każda instancja onInstance osadza instancję Doubler.
+"""
+traceMe = False
+def trace(*args):
+   if traceMe: print('[' + ' '.join(map(str, args)) + ']')
+
+def Private(*privates):                       # privates w zakresie funkcji zawierającej
+   def onDecorator(aClass):                   # aClass w zakresie funkcji zawierającej
+      class onInstance:                       # Opakowane w atrybut instancji
+         def __init__(self, *args, **kargs):
+            self.wrapped = aClass(*args, **kargs)
+         def __getattr__(self, attr):           # Moje atrybuty nie wywołują metody getattr
+            trace('pobranie:', attr)            # Inne zakładane w obiekcie wrapped
+            if attr in privates:
+               raise TypeError('pobranie atrybutu prywatnego: ' + attr)
+            else:
+               return getattr(self.wrapped, attr)
+         def __setattr__(self, attr, value):    # Próby dostępu z zewnątrz
+            trace('ustawienie:', attr, value)   # Pozostałe działają normalnie
+            if attr == 'wrapped':               # Pozwolenie na własne atrybuty
+               self.__dict__[attr] = value      # Uniknięcie pętli
+            elif attr in privates:
+               raise TypeError('modyfikacja atrybutu prywatnego: ' + attr)
+            else:
+               setattr(self.wrapped, attr, value) # Opakowane atrybuty obiektu
+      return onInstance                           # Lub użycie __dict__
+   return onDecorator
+
+if __name__ == '__main__':
+   traceMe = True
+
+   @Private('data', 'size')                       # Doubler = Private(...)(Doubler)
+   class Doubler:
+      def __init__(self, label, start):
+         self.label = label                       # Próby dostępu wewnątrz podmiotowej klasy
+         self.data = start                        # Nie zostaje przechwycony: wykonany normalnie
+      def size(self):
+         return len(self.data)                    # Metody działają bez sprawdzania
+      def double(self):                           # Ponieważ prywatność nie jest dziedziczona
+         for i in range(self.size()):
+            self.data[i] = self.data[i] * 2
+      def display(self):
+         print('%s => %s' % (self.label, self.data))
+
+   X = Doubler('X to', [1, 2, 3])
+   Y = Doubler('Y to', [-10, -20, -30])
+
+   # Poniższe testy kończą się powodzeniem
+   print(X.label)                                  # Próby dostępu spoza podmiotowej klasy
+   X.display(); X.double(); X.display()            # Przechwycony: sprawdzony, wydelegowany
+   print(Y.label)
+   Y.display(); Y.double()
+   Y.label = 'Mielonka'
+   Y.display()
+
+   # Poniższe testy wszystkie kończą się niepowodzeniem (zgodnie z zamierzeniami)
+   """
+   print(X.size())                           # Wyświetla "TypeError: pobranie atrybutu prywatnego: size"
+   print(X.data)
+   X.data = [1, 1, 1]
+   X.size = lambda S: 0
+   print(Y.data)
+   print(Y.size())
+   """
+
+
+
+
+
+### Plik: access.py
+
+"""
+Dekorator klasy z deklaracjami atrybutów jako prywatne oraz publiczne.
+Kontroluje dostęp do atrybutów przechowywanych w instancji lub dziedziczonych przez nią po klasach. Private deklaruje nazwy atrybutów, których nie można pobrać lub przypisać z zewnątrz udekorowanej klasy. Public deklaruje nazwy atrybutów, które można pobrać lub przypisać z zewnątrz.
+Uwaga: działa w Pythonie 3.0 jedynie dla atrybutów o normalnych nazwach. Metody przeciążania operatorów __X__ wykonywane w sposób niejawny dla operacji wbudowanych nie wywołują metod __getattr__ ani __getattribute__ w klasach w nowym stylu. Należy tutaj dodać metody __X__ w celu przechwycenia i wydelegowania nazw wbudowanych.
+"""
+
+traceMe = False
+def trace(*args):
+   if traceMe: print('[' + ' '.join(map(str, args)) + ']')
+
+def accessControl(failIf):
+   def onDecorator(aClass):
+      class onInstance:
+         def __init__(self, *args, **kargs):
+            self.__wrapped = aClass(*args, **kargs)
+         def __getattr__(self, attr):
+            trace('pobranie:', attr)
+            if failIf(attr):
+               raise TypeError('pobranie atrybutu prywatnego: ' + attr)
+            else:
+               return getattr(self.__wrapped, attr)
+         def __setattr__(self, attr, value):
+            trace('ustawienie:', attr, value)
+            if attr == '_onInstance__wrapped':
+               self.__dict__[attr] = value
+            elif failIf(attr):
+               raise TypeError('modyfikacja atrybutu prywatnego: ' + attr)
+            else:
+               setattr(self.__wrapped, attr, value)
+      return onInstance
+   return onDecorator
+
+def Private(*attributes):
+   return accessControl(failIf=(lambda attr: attr in attributes))
+
+def Public(*attributes):
+   return accessControl(failIf=(lambda attr: attr not in attributes))
+
+
+
+
+
+>>> from access import Private, Public
+
+>>> @Private('age')                       # Person = Private('age')(Person)
+... class Person:                         # Person = onInstance ze stanem
+...    def __init__(self, name, age):
+...       self.name = name
+...       self.age = age                  # Próby dostępu z wewnątrz odbywają się normalnie
+...
+>>> X = Person('Robert', 40)
+>>> X.name                                # Próby dostępu z zewnątrz są sprawdzane
+'Robert'
+>>> X.name = 'Anna'
+>>> X.name
+'Anna'
+>>> X.age
+TypeError: private attribute fetch: age
+>>> X.age = 'Tomasz'
+TypeError: private attribute change: age
+
+>>> @Public('name')
+... class Person:
+...    def __init__(self, name, age):
+...       self.name = name
+...       self.age = age
+...
+>>> X = Person('robert', 40)                # X jest instancją onInstance
+>>> X.name                                  # onInstance osadza Person
+'robert'
+>>> X.name = 'Anna'
+>>> X.name
+'Anna'
+>>> X.age
+TypeError: private attribute fetch: age
+>>> X.age = 'Tomasz'
+TypeError: private attribute change: age
+
+
+
+
+
+C:\misc> c:\python26\python
+>>> from access import Private
+>>> @Private('age')
+... class Person:
+...    def __init__(self):
+...       self.age = 42
+...    def __str__(self):
+...       return 'Osoba: ' + str(self.age)
+...    def __add__(self, yrs):
+...       self.age += yrs
+...
+>>> X = Person()
+>>> X.age                               # Sprawdzanie poprawności nie powiedzie się (zgodnie z planem)
+TypeError: pobranie atrybutu prywatnego: age
+>>> print(X)                            # __getattr__ => wykonuje Person.__str__
+Osoba: 42
+>>> X + 10                              # __getattr__ => wykonuje Person.__add__
+>>> print(X)                            # __getattr__ => wykonuje Person.__str__
+Osoba: 52
+
+
+
+C:\misc> c:\python30\python
+>>> from access import Private
+>>> @Private('age')
+... class Person:
+...    def __init__(self):
+...       self.age = 42
+...    def __str__(self):
+...       return 'Osoba: ' + str(self.age)
+...    def __add__(self, yrs):
+...       self.age += yrs
+...
+>>> X = Person()                     # Sprawdzanie poprawności nazw nadal działa
+>>> X.age                            # Jednak Python 3.0 nie deleguje nazw wbudowanych!
+TypeError: pobranie atrybutu prywatnego: age
+>>> print(X)
+<access.onInstance object at 0x025E0790>
+>>> X + 10
+TypeError: unsupported operand type(s) for +: 'onInstance' and 'int'
+>>> print(X)
+<access.onInstance object at 0x025E0790>
+
+
+
+
+
+def accessControl(failIf):
+   def onDecorator(aClass):
+      class onInstance:
+         def __init__(self, *args, **kargs):
+            self.__wrapped = aClass(*args, **kargs)
+
+         # Przechwycenie i wydelegowanie metod przeciążających operatory
+         def __str__(self):
+            return str(self.__wrapped)
+         def __add__(self, other):
+            return self.__wrapped + other
+         def __getitem__(self, index):
+            return self.__wrapped[index]            # W miarę potrzeb
+         def __call__(self, *args, **kargs):
+            return self.__wrapped(*arg, *kargs)     # W miarę potrzeb
+         ...i ewentualne inne potrzebne metody...
+
+         # Przechwycenie i wydelegowanie nazwanych atrybutów
+         def __getattr__(self, attr):
+            ...
+         def __setattr__(self, attr, value):
+            ...
+      return onInstance
+   return onDecorator
+
+
+
+
+# Obsługa śledzenia jak wcześniej
+
+def accessControl(failIf):
+   def onDecorator(aClass):
+      def getattributes(self, attr):
+         trace('pobranie:', attr)
+         if failIf(attr):
+            raise TypeError('pobranie atrybutu prywatnego: ' + attr)
+         else:
+            return object.__getattribute__(self, attr)
+      aClass.__getattribute__ = getattributes
+      return aClass
+   return onDecorator
+
+def Private(*attributes):
+   return accessControl(failIf=(lambda attr: attr in attributes))
+
+def Public(*attributes):
+   return accessControl(failIf=(lambda attr: attr not in attributes))
+
+
+
+
+class Person:
+   def giveRaise(self, percent):               # Sprawdzenie w kodzie metody
+      if percent < 0.0 or percent > 1.0:
+         raise TypeError, 'niepoprawna wartość procentowa'
+      self.pay = int(self.pay * (1 + percent))
+
+class Person:                                   # Sprawdzenie za pomocą instrukcji assert
+   def giveRaise(self, percent):
+      assert percent >= 0.0 and percent <= 1.0, 'niepoprawna wartość procentowa'
+      self.pay = int(self.pay * (1 + percent))
+
+
+
+
+class Person:
+   @rangetest(percent=(0.0, 1.0))              # Użycie dekoratora do sprawdzania
+   def giveRaise(self, percent):
+      self.pay = int(self.pay * (1 + percent))
+
+
+
+
+
+### Plik: devtools.py
+
+def rangetest(*argchecks):               # Sprawdzenie przedziałów argumentów pozycyjnych
+   def onDecorator(func):
+      if not __debug__:                  # True, jeśli "python –O main.py args..."
+         return func                     # Nie działa: bezpośrednie wywołanie oryginału
+      else:                              # Inaczej opakowanie w czasie debugowania
+         def onCall(*args):
+            for (ix, low, high) in argchecks:
+               if args[ix] < low or args[ix] > high:
+                  errmsg = 'Argument %s nie mieści się w przedziale %s..%s' % (ix, low, high)
+                  raise TypeError(errmsg)
+            return func(*args)
+         return onCall
+   return onDecorator
+
+
+
+
+
+# Plik devtools_test.py
+
+from devtools import rangetest
+print(__debug__)                         # False, jeśli "python –O main.py"
+
+@rangetest((1, 0, 120))                  # persinfo = rangetest(...)(persinfo)
+def persinfo(name, age):                 # age musi się mieścić w przedziale 0..120
+   print('%s ma %s lat' % (name, age))
+
+@rangetest([0, 1, 31], [1, 1, 12], [2, 0, 2009])
+def birthday(D, M, Y):
+   print('Data urodzenia = {0}/{1}/{2}'.format(D, M, Y))
+
+class Person:
+   def __init__(self, name, job, pay):
+      self.job = job
+      self.pay = pay
+
+   @rangetest([1, 0.0, 1.0])             # giveRaise = rangetest(...)(giveRaise)
+   def giveRaise(self, percent):         # Argument 0 to tutaj instancja self
+      self.pay = int(self.pay * (1 + percent))
+
+# Wiersze z komentarzem zgłaszają błąd TypeError, o ile w wierszu poleceń powłoki nie wykorzystano "python –O"
+
+persinfo('Robert Zielony', 45)           # Tak naprawdę wykonuje onCall(...) ze stanem
+#persinfo('Robert Zielony', 200)         # Lub person, jeśli ustawiono argument wiersza poleceń –O
+
+birthday(31, 5, 1963)
+#birthday(32, 5, 1963)
+
+anna = Person('Anna Czerwona', 'programista', 100000)
+anna.giveRaise(.10)                       # Tak naprawdę wykonuje onCall(self, .10)
+print(anna.pay)                           # Lub giveRaise(self, .10), jeśli z –O
+#anna.giveRaise(1.10)
+#print(anna.pay)
+
+
+
+
+
+C:\misc> C:\python30\python devtools_test.py
+
+C:\misc> C:\python30\python -O devtools_test.py
+
+
+
+
+### Plik: devtools.py (nowy)
+
+"""
+Plik devtools.py
+Dekorator funkcji wykonujący sprawdzanie poprawności przedziałów dla przekazanych argumentów. Argumenty dla dekoratora określane są po słowach kluczowych. W samym wywołaniu argumenty mogą być przekazywane po pozycji lub za pomocą słowa kluczowego. Wartości domyślne mogą być pomijane.
+Przykładowe przypadki użycia znajdują się w pliku devtools_test.py.
+"""
+
+trace = True
+
+def rangetest(**argchecks):         # Sprawdzenie poprawności przedziałów dla obu oraz wartości domyślnych
+   def onDecorator(func):           # onCall pamięta func oraz argchecks
+      if not __debug__:             # True, jeśli ustawiono "python –O main.py args..."
+         return func                # Opakowanie przy debugowaniu; inaczej użycie oryginału
+      else:
+         import sys
+         code = func.__code__
+         allargs = code.co_varnames[:code.co_argcount]
+         funcname = func.__name__
+
+         def onCall(*pargs, **kargs):
+            # Wszystkie argumenty pozycyjne pargs dopasowują pierwsze N oczekiwanych argumentów po pozycji
+            # Reszta musi być w kargs lub jest pomijanymi wartościami domyślnymi
+            positionals = list(allargs)
+            positionals = positionals[:len(pargs)]
+
+            for (argname, (low, high)) in argchecks.items():
+               # Dla wszystkich argumentów, które mają być sprawdzone
+               if argname in kargs:
+                  # Przekazane po nazwie
+                  if kargs[argname] < low or kargs[argname] > high:
+                     errmsg = '{0} argument "{1}" nie mieści się w przedziale {2}..{3}'
+                     errmsg = errmsg.format(funcname, argname, low, high)
+                     raise TypeError(errmsg)
+
+               elif argname in positionals:
+                  # Przekazane po pozycji
+                  position = positionals.index(argname)
+                  if pargs[position] < low or pargs[position] > high:
+                     errmsg = '{0} argument "{1}" nie mieści się w przedziale {2}..{3}'
+                     errmsg = errmsg.format(funcname, argname, low, high)
+                     raise TypeError(errmsg)
+
+               else:
+                  # Zakładamy, ze nie został przekazany: wartość domyślna
+                  if trace:
+                     print('Argument "{0}" ma wartość domyślną'.format(argname))
+            return func(*pargs, **kargs)            # OK: wykonanie oryginalnego wywołania
+         return onCall
+   return onDecorator
+
+
+
+
+
+# Plik devtools_test.py
+# Wiersze z komentarzami zgłaszają błąd TypeError, o ile nie ustawiono "python –O" w wierszu poleceń powłoki.
+from devtools import rangetest
+
+# Testowanie funkcji, pozycyjne i po słowach kluczowych
+
+@rangetest(age=(0, 120))                    # persinfo = rangetest(...)(persinfo)
+def persinfo(name, age):
+   print('%s ma %s lat' % (name, age))
+
+@rangetest(D=(1, 31), M=(1, 12), Y=(0, 2009))
+def birthday(D, M, Y):
+   print('birthday = {0}/{1}/{2}'.format(D, M, Y))
+
+persinfo('Robert', 40)
+persinfo(age=40, name='Robert')
+birthday(1, M=5, Y=1963)
+#persinfo('Robert', 150)
+#persinfo(age=150, name='Robert')
+#birthday(40, M=5, Y=1963)
+
+# Testowanie metod, pozycyjne i po słowach kluczowych
+
+class Person:
+   def __init__(self, name, job, pay):
+      self.job = job
+      self.pay = pay
+                                               # giveRaise = rangetest(...)(giveRaise)
+   @rangetest(percent=(0.0, 1.0))              # Wartość percent przekazana po nazwie lub pozycji
+   def giveRaise(self, percent):
+      self.pay = int(self.pay * (1 + percent))
+
+bob = Person('Robert Zielony', 'programista', 100000)
+anna = Person('Anna Czerwona', 'programista', 100000)
+bob.giveRaise(.10)
+anna.giveRaise(percent=.20)
+print(bob.pay, anna.pay)
+#bob.giveRaise(1.10)
+#bob.giveRaise(percent=1.20)
+
+# Testowanie pominiętych wartości domyślnych: pominięte
+
+@rangetest(a=(1, 10), b=(1, 10), c=(1, 10), d=(1, 10))
+def omitargs(a, b=7, c=8, d=9):
+   print(a, b, c, d)
+
+omitargs(1, 2, 3, 4)
+omitargs(1, 2, 3)
+omitargs(1, 2, 3, d=4)
+omitargs(1, d=4)
+omitargs(d=4, a=1)
+omitargs(1, b=2, d=4)
+omitargs(d=8, c=7, a=1)
+
+#omitargs(1, 2, 3, 11)                             # Niepoprawne d
+#omitargs(1, 2, 11)                                 # Niepoprawne c
+#omitargs(1, 2, 3, d=11)                        # Niepoprawne d
+#omitargs(11, d=4)                                # Niepoprawne a
+#omitargs(d=4, a=11)                            # Niepoprawne a
+#omitargs(1, b=11, d=4)                        # Niepoprawne b
+#omitargs(d=8, c=7, a=11)                    # Niepoprawne a
+
+
+
+
+
+C:\misc> C:\python30\python devtools_test.py
+
+
+
+
+# W Pythonie 3.0 (oraz 2.6 dla zgodności):
+>>> def func(a, b, c, d):
+...    x = 1
+...    y = 2
+...
+>>> code = func.__code__                 # Obiekt kodu obiektu funkcji
+>>> code.co_nlocals
+6
+>>> code.co_varnames                     # Nazwy wszystkich zmiennych lokalnych
+('a', 'b', 'c', 'd', 'x', 'y')
+>>> code.co_varnames[:code.co_argcount]  # Pierwsze N zmiennych lokalnych to oczekiwane argumenty
+('a', 'b', 'c', 'd')
+
+>>> import sys                           # Dla zgodności z poprzednimi wersjami
+>>> sys.version_info                     # [0] to numer dużego wydania
+(3, 0, 0, 'final', 0)
+>>> code = func.__code__ if sys.version_info[0] == 3 else func.func_code
+
+
+
+
+omitargs()
+omitargs(d=8, c=7, b=6)
+
+
+
+@rangetest(a=(1, 5), c=(0.0, 1.0))
+def func(a, b, c):                   # func = rangetest(...)(func)
+   print(a + b + c)
+
+
+
+
+@rangetest
+def func(a:(1, 5), b, c:(0.0, 1.0)):
+   print(a + b + c)
+
+
+
+
+# Wykorzystanie argumentów dekoratora
+
+def rangetest(**argchecks):
+   def onDecorator(func):
+      def onCall(*pargs, **kargs):
+         print(argchecks)
+         for check in argchecks: pass          # Tutaj dodanie kodu sprawdzającego
+         return func(*pargs, **kargs)
+      return onCall
+   return onDecorator
+
+@rangetest(a=(1, 5), c=(0.0, 1.0))
+def func(a, b, c):                             # func = rangetest(...)(func)
+   print(a + b + c)
+
+func(1, 2, c=3)                                # Wykonuje onCall, argchecks w zakresie
+
+# Wykorzystanie adnotacji funkcji
+
+def rangetest(func):
+   def onCall(*pargs, **kargs):
+      argchecks = func.__annotations__
+      print(argchecks)
+      for check in argchecks: pass             # Tutaj dodanie kodu sprawdzającego
+      return func(*pargs, **kargs)
+   return onCall
+
+@rangetest
+def func(a:(1, 5), b, c:(0.0, 1.0)):           # func = rangetest(func)
+   print(a + b + c)
+
+func(1, 2, c=3)                                # Wykonuje onCall, adnotacje w funkcji
+
+
+
+
+
+def typetest(**argchecks):
+   def onDecorator(func):
+      ....
+      def onCall(*pargs, **kargs):
+         positionals = list(allargs)[:len(pargs)]
+         for (argname, type) in argchecks.items():
+            if argname in kargs:
+               if not isinstance(kargs[argname], type):
+                  ...
+                  raise TypeError(errmsg)
+            elif argname in positionals:
+               position = positionals.index(argname)
+               if not isinstance(pargs[position], type):
+                  ...
+                  raise TypeError(errmsg)
+            else:
+               # Zakładamy, że nie przekazano: wartości domyślne
+         return func(*pargs, **kargs)
+      return onCall
+   return onDecorator
+
+@typetest(a=int, c=float)
+def func(a, b, c, d):                         # func = typetest(...)(func)
+   ...
+
+func(1, 2, 3.0, 4)                            # OK
+func('mielonka', 2, 99, 4)                    # Poprawnie uruchamia wyjątek
+
+
+
+
+
+@typetest
+def func(a: int, b, c: float, d):         # func = typetest(func)
+   ... # Ach!...
+
+
+
+
+
+### Kod odpowiedzi do quizu
+
+
+
+### Pytanie 1
+
+
+
+import time
+
+def timer(label='', trace=True):                # Dla argumentów dekoratora: zachowanie argumentów
+   def onDecorator(func):                       # Dla dekoracji @: zachowanie udekorowanej funkcji
+      def onCall(*args, **kargs):               # W momencie wywołania: wywołanie oryginału
+         start = time.clock()                   # Stan to zakresy – atrybuty funkcji
+         result = func(*args, **kargs)
+         elapsed = time.clock() - start
+         onCall.alltime += elapsed
+         if trace:
+            format = '%s%s: %.5f, %.5f'
+            values = (label, func.__name__, elapsed, onCall.alltime)
+            print(format % values)
+         return result
+      onCall.alltime = 0
+      return onCall
+   return onDecorator
+
+# Przetestowanie na funkcjach
+
+@timer(trace=True, label='[CCC]==>')
+def listcomp(N):                             # Jak listcomp = timer(...)(listcomp)
+   return [x * 2 for x in range(N)]          # listcomp(...) wywołuje onCall
+
+@timer(trace=True, label='[MMM]==>')
+def mapcall(N):
+   return list(map((lambda x: x * 2), range(N))) # list() dla widoków z Pythona 3.0
+
+for func in (listcomp, mapcall):
+   result = func(5)                        # Czas dla tego wywołania, wszystkich wywołań, zwracana wartość
+   func(5000000)
+   print(result)
+   print('allTime = %s\n' % func.alltime)  # Całkowity czas wszystkich wywołań
+
+# Przetestowanie na metodach
+
+class Person:
+   def __init__(self, name, pay):
+      self.name = name
+      self.pay = pay
+   
+   @timer()
+   def giveRaise(self, percent):                      # giveRaise = timer()(giveRaise)
+      self.pay *= (1.0 + percent)                     # tracer pamięta giveRaise
+
+   @timer(label='**')
+   def lastName(self):                                # lastName = timer(...)(lastName)
+      return self.name.split()[-1]                    # Całkowity czas per klasa, nie instancja
+
+bob = Person('Robert Zielony', 50000)
+anna = Person('Anna Czerwona', 100000)
+bob.giveRaise(.10)
+anna.giveRaise(.20)                                    # Wykonuje onCall(anna, .10)
+print(bob.pay, anna.pay)
+print(bob.lastName(), anna.lastName())                 # Wykonuje onCall(bob), pamięta lastName
+print('%.5f %.5f' % (Person.giveRaise.alltime, Person.lastName.alltime))
+
+# Oczekiwane wyniki
+
+[CCC]==>listcomp: 0.00002, 0.00002
+[CCC]==>listcomp: 1.19636, 1.19638
+[0, 2, 4, 6, 8]
+allTime = 1.19637775192
+[MMM]==>mapcall: 0.00002, 0.00002
+[MMM]==>mapcall: 2.29260, 2.29262
+[0, 2, 4, 6, 8]
+allTime = 2.2926232943
+
+giveRaise: 0.00001, 0.00001
+giveRaise: 0.00001, 0.00002
+55000.0 120000.0
+**lastName: 0.00001, 0.00001
+**lastName: 0.00001, 0.00002
+Zielony Czerwona
+0.00002 0.00002
+
+
+
+
+
+### Pytanie 2
+
+
+traceMe = False
+def trace(*args):
+   if traceMe: print('[' + ' '.join(map(str, args)) + ']')
+
+def accessControl(failIf):
+   def onDecorator(aClass):
+      if not __debug__:
+         return aClass
+      else:
+         class onInstance:
+            def __init__(self, *args, **kargs):
+               self.__wrapped = aClass(*args, **kargs)
+            def __getattr__(self, attr):
+               trace('pobranie:', attr)
+               if failIf(attr):
+                  raise TypeError('pobranie atrybutu prywatnego: ' + attr)
+               else:
+                  return getattr(self.__wrapped, attr)
+            def __setattr__(self, attr, value):
+               trace('ustawienie:', attr, value)
+               if attr == '_onInstance__wrapped':
+                  self.__dict__[attr] = value
+               elif failIf(attr):
+                  raise TypeError('modyfikacja atrybutu prywatnego: ' + attr)
+               else:
+                  setattr(self.__wrapped, attr, value)
+         return onInstance
+   return onDecorator
+
+def Private(*attributes):
+   return accessControl(failIf=(lambda attr: attr in attributes))
+
+def Public(*attributes):
+   return accessControl(failIf=(lambda attr: attr not in attributes))
+
+# Kod testu: by ponownie wykorzystać dekorator, należy wydzielić test do osobnego pliku
+
+@Private('age')                    # Person = Private('age')(Person)
+class Person:                      # Person = onInstance ze stanem
+   def __init__(self, name, age):
+      self.name = name
+      self.age = age               # Dostęp z wewnątrz działa normalnie
+
+X = Person('Robert', 40)
+print(X.name)                      # Dostęp z zewnątrz jest sprawdzany
+X.name = 'Anna'
+print(X.name)
+#print(X.age)                          # NIE POWIEDZIE SIĘ, o ile nie mamy "python –O"
+#X.age = 999                          # Tak samo
+#print(X.age)                          # Tak samo
+
+@Public('name')
+class Person:
+   def __init__(self, name, age):
+      self.name = name
+      self.age = age
+
+X = Person('bob', 40)              # X to onInstance
+print(X.name)                      # onInstance osadza Person
+X.name = 'Anna'
+print(X.name)
+#print(X.age)                           # NIE POWIEDZIE SIĘ, o ile nie mamy "python –O"
+#X.age = 999                           # Tak samo
+#print(X.age)                           # Tak samo
+

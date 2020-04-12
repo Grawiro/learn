@@ -1,0 +1,89 @@
+# UWAGA: cały kod z tego rozdziału jest abstrakcyjny -- nie da się go wykonać
+# w obecnej postaci.
+
+
+class C2: ...                                # Utworzenie obiektu klasy (owalu)
+class C3: ...
+class C1(C2, C3): ...                        # Połączona z klasami nadrzędnymi
+
+I1 = C1()                                    # Utworzenie obiektów instancji (prostokątów)
+I2 = C1()                                    # Połączenie z ich klasami
+
+
+
+
+# Klasy C2 oraz C3 muszą w poniższym kodzie istnieć
+
+
+class C1(C2, C3):                            # Utworzenie i połączenie klasy C1
+   def setname(self, who):                   # Przypisanie nazwy: C1.setname
+      self.name = who                        # self to albo I1, albo I2
+
+I1 = C1()                                    # Utworzenie dwóch instancji
+I2 = C1()
+I1.setname('amadeusz')                       # Ustawia I1.name na 'amadeusz'
+I2.setname('aleksander')                     # Ustawia I2.name na 'aleksander'
+print(I1.name)                               # Wyświetla 'amadeusz'
+
+
+
+
+class C1(C2, C3):
+   def __init__(self, who):                  # Ustawia name przy utworzeniu
+      self.name = who                        # self to albo I1, albo I2
+
+I1 = C1('amadeusz')                          # Ustawia I1.name na 'amadeusz'
+I2 = C1('aleksander')                        # Ustawia I2.name na 'aleksander'
+print(I1.name)                               # Wyświetla 'amadeusz'
+
+
+
+
+class Employee:                              # Ogólna klasa nadrzędna
+   def computeSalary(self): ...              # Wspólne lub domyślne zachowanie
+   def giveRaise(self): ...
+   def promote(self): ...
+   def retire(self): ...
+
+
+
+class Engineer(Employee):                    # Wyspecjalizowana klasa podrzędna
+   def computeSalary(self): ...              # Coś własnego
+
+
+
+
+amadeusz = Employee()                        # Zachowanie domyślne
+aleksander = Engineer()                      # Własne obliczenie wynagrodzenia
+
+
+
+
+company = [amadeusz, aleksander]             # Obiekt kompozytowy
+for emp in company:
+   print(emp.computeSalary())                # Wykonanie wersji tego obiektu
+
+
+
+
+def processor(reader, converter, writer):
+   while 1:
+      data = reader.read()
+      if not data: break
+      data = converter(data)
+      writer.write(data)
+
+
+
+
+class Reader:
+   def read(self): ...                       # Domyślne zachowanie oraz narzędzia
+   def other(self): ...
+class FileReader(Reader):
+   def read(self): ...                       # Odczytanie z lokalnego pliku
+class SocketReader(Reader):
+   def read(self): ...                       # Odczytanie z gniazda sieciowego
+...
+processor(FileReader(...), Converter, FileWriter(...))
+processor(SocketReader(...), Converter, TapeWriter(...))
+processor(FtpReader(...), Converter, XmlWriter(...))   

@@ -1,0 +1,195 @@
+>>> def fetcher(obj, index):
+...    return obj[index]
+...
+
+
+
+>>> x = 'mielonka'
+>>> fetcher(x, 3)                            # Jak x[3]
+'l'
+
+
+
+
+>>> fetcher(x, 8)                            # Domyślny program obsługi wyjątków — interfejs powłoki
+Traceback (most recent call last):
+   File "<stdin>", line 1, in <module>
+   File "<stdin>", line 2, in fetcher
+IndexError: string index out of range
+
+
+
+
+>>> fetcher(x, 8)                      # Domyślny program obsługi wyjątków — graficzny interfejs IDLE
+Traceback (most recent call last):
+   File "<pyshell#6>", line 1, in <module>
+      fetcher(x, 8)
+   File "<pyshell#3>", line 2, in fetcher
+      return obj[index]
+IndexError: string index out of range
+
+
+
+
+>>> try:
+...   fetcher(x, 8)
+... except IndexError:                             # Przechwycenie i poradzenie sobie
+...   print('mam wyjątek')
+...
+mam wyjątek
+>>>
+
+
+
+
+>>> def catcher():
+...    try:
+...       fetcher(x, 8)
+...    except IndexError:
+...       print('mam wyjątek')
+...    print('kontynuuję')
+...
+>>> catcher()
+mam wyjątek
+kontynuuję
+>>>
+
+
+
+
+>>> try:
+...    raise IndexError                                # Ręczne wywołanie wyjątku
+... except IndexError:
+...    print('mam wyjątek')
+...
+mam wyjątek
+
+
+
+
+>>> raise IndexError
+Traceback (most recent call last):
+   File "<stdin>", line 1, in <module>
+IndexError
+
+
+
+
+>>> assert False, 'Nikt nie spodziewa się hiszpańskiej inkwizycji!'
+Traceback (most recent call last):
+   File "<stdin>", line 1, in <module>
+AssertionError: Nikt nie spodziewa się hiszpańskiej inkwizycji!
+
+
+
+
+>>> class Bad(Exception):                  # Wyjątek zdefiniowany przez użytkownika
+...    pass
+...
+>>> def doomed():
+...    raise Bad()                         # Zgłoszenie instancji
+...
+>>> try:
+...    doomed()
+... except Bad:                            # Przechwycenie nazwy klasy
+...    print('przechwycenie Bad')
+...
+przechwycenie Bad
+>>>
+
+
+
+
+>>> try:
+...    fetcher(x, 3)
+... finally:                                # Działania końcowe
+...    print('po pobraniu')
+...
+'l'
+po pobraniu
+>>>
+
+
+
+
+fetcher(x, 3)
+print('po pobraniu')
+
+
+
+
+>>> def after():
+...    try:
+...       fetcher(x, 8)
+...    finally:
+...       print('po pobraniu')
+...    print('po try?')
+...
+>>> after()
+po pobraniu
+Traceback (most recent call last):
+   File "<stdin>", line 1, in <module>
+   File "<stdin>", line 3, in after
+   File "<stdin>", line 2, in fetcher
+IndexError: string index out of range
+>>>
+
+
+
+
+>>> def after():
+...    try:
+...       fetcher(x, 3)
+...    finally:
+...       print('po pobraniu')
+...    print('po try?')
+...
+>>> after()
+po pobraniu
+po try?
+>>>
+
+
+
+
+>>> with open('lumberjack.txt', 'w') as file:      # Zawsze zamyka plik przy wyjściu
+...    file.write('Modrzew!\n')
+
+
+
+
+doStuff()
+{                                            # Program w języku C
+   if (doFirstThing() == ERROR)              # Wykrywa błędy wszędzie
+      return ERROR;                          # nawet jeśli nie są tu obsłużone
+   if (doNextThing() == ERROR)
+      return ERROR;
+   ...
+   return doLastThing();
+}
+
+main()
+{
+   if (doStuff() == ERROR)
+      badEnding();
+   else
+      goodEnding();
+}
+
+
+
+
+def doStuff():                               # Kod w Pythonie
+   doFirstThing()                            # Nie przejmujemy się wyjątkami
+   doNextThing()                             # więc nie musimy ich wykrywać
+   ...
+   doLastThing()
+
+if __name__ == '__main__':
+   try:
+      doStuff()                              # Tu martwimy się o wyniki
+   except:                                   # więc jest to jedyne miejsce, które musimy sprawdzić
+      badEnding()
+   else:
+      goodEnding()
+

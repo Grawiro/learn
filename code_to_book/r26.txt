@@ -1,0 +1,253 @@
+>>> class FirstClass:                        # Zdefiniowanie obiektu klasy
+...    def setdata(self, value):             # Zdefiniowanie metod klasy
+...       self.data = value                  # self to instancja
+...    def display(self):
+...       print(self.data)                   # self.data: dla instancji
+...
+
+
+
+
+>>> x = FirstClass()                         # Utworzenie dwóch instancji
+>>> y = FirstClass()                         # Każda jest nową przestrzenią nazw
+
+
+
+>>> x.setdata("Król Artur")                  # Wywołanie metod: self to x
+>>> y.setdata(3.14159)                       # Wykonuje FirstClass.setdata(y, 3.14159)
+
+
+
+
+>>> x.display()                              # self.data różni się w każdej instancji
+Król Artur
+>>> y.display()
+3.14159
+
+
+
+
+>>> x.data = "Nowa wartość"                  # Pobiera lub ustawia atrybuty
+>>> x.display()                              # Również poza klasą
+Nowa wartość
+
+
+
+>>> x.anothername = "mielonka"               # Można tutaj również ustawiać nowe atrybuty!
+
+
+
+>>> class SecondClass(FirstClass):           # Dziedziczy metodę setdata
+...    def display(self):                    # Modyfikuje metodę display
+...       print('Aktualna wartość = "%s"' % self.data)
+...
+
+
+
+
+>>> z = SecondClass()
+>>> z.setdata(42)                            # Odnajduje metodę setdata w FirstClass
+>>> z.display()                              # Odnajduje przesłoniętą metodę w SecondClass
+Aktualna wartość = "42"
+
+
+
+
+>>> x.display()                              # x nadal jest instancją FirstClass (stary komunikat)
+Nowa wartość
+
+
+
+
+from modulename import FirstClass            # Skopiowanie nazwy do mojego zakresu
+class SecondClass(FirstClass):               # Bezpośrednie wykorzystanie nazwy klasy
+   def display(self): ...
+
+
+
+
+from modulename import FirstClass            # Skopiowanie nazwy do mojego zakresu
+class SecondClass(FirstClass):               # Bezpośrednie wykorzystanie nazwy klasy
+   def display(self): ...
+
+
+
+
+# Plik food.py
+
+var = 1                                      # food.var
+def func():                                  # food.func
+   ...
+class spam:                                  # food.spam
+   ...
+class ham:                                   # food.ham
+   ...
+class eggs:                                  # food.eggs
+   ...
+
+
+
+
+class person:
+   ...
+
+import person                                # Zaimportowanie modułu
+x = person.person()                          # Klasa wewnątrz modułu
+
+
+
+from person import person                    # Pobranie klasy z modułu
+x = person()                                 # Wykorzystanie nazwy klasy
+
+
+
+import person                                # Mała litera w modułach
+x = person.Person()                          # Wielka litera w klasach
+
+
+
+
+>>> class ThirdClass(SecondClass):           # Dziedziczy po SecondClass
+...    def __init__(self, value):            # Przy "ThirdClass(value)"
+...       self.data = value
+...    def __add__(self, other):             # Przy "self + other"
+...       return ThirdClass(self.data + other)
+...    def __str__(self):                    # Przy "print(self)", "str()"
+...       return '[ThirdClass: %s]' % self.data
+...    def mul(self, other):
+...       self.data *= other                 # Modyfikacja w miejscu: nazwana metoda
+...
+>>> a = ThirdClass('abc')                    # Wywołanie metody __init__
+>>> a.display()                              # Wywołanie odziedziczonej metody
+Aktualna wartość = "abc"
+>>> print(a)                                 # __str__ zwraca wyświetlany łańcuch znaków
+[ThirdClass: abc]
+
+>>> b = a + 'xyz'                            # __add__: utworzenie nowej instancji
+>>> b.display()                              # b ma wszystkie metody klasy ThirdClass
+Aktualna wartość = "abcxyz"
+>>> print(b)                                 # __str__ zwraca wyświetlany łańcuch znaków
+[ThirdClass: abcxyz]
+
+>>> a.mul(3)                                 #  mul: modyfikuje instancję w miejscu
+>>> print(a)
+[ThirdClass: abcabcabc]
+
+
+
+
+>>> class rec: pass                          # Pusty obiekt przestrzeni nazw
+
+>>> rec.name = 'Edward'                      # Obiekty z atrybutami
+>>> rec.age = 40
+
+
+>>> print(rec.name)                          # Jak struktura z języka C lub rekord
+Edward
+
+
+>>> x = rec()                                # Instancje dziedziczą nazwy klas
+>>> y = rec()
+
+
+>>> x.name, y.name                           # Zmienna jest przechowywana tylko w klasie
+('Edward', 'Edward')
+
+
+>>> x.name = 'Amadeusz'                      # Przypisanie modyfikuje jedynie x
+>>> rec.name, x.name, y.name
+('Edward', 'Amadeusz', 'Edward')
+
+
+>>> rec.__dict__.keys()
+['__module__', 'name', 'age', '__dict__', '__weakref__', '__doc__']
+
+>>> list(x.__dict__.keys())
+['name']
+
+>>> list(y.__dict__.keys())                 # list() nie jest wymagane w Pythonie 2.6
+[]
+
+
+>>> x.__class__
+<class '__main__.rec'>
+
+>>> rec.__bases__                           # () — pusta krotka w Pythonie 2.6
+(<class 'object'>,)
+
+
+>>> def upperName(self):
+...    return self.name.upper()             # Nadal potrzebuje self
+
+
+>>> upperName(x)                            # Wywołanie jak prostej funkcji
+'AMADEUSZ'
+
+
+>>> rec.method = upperName
+
+>>> x.method()                               # Wykonanie metody w celu przetworzenia x
+'AMADEUSZ'
+
+>>> y.method()                               # To samo, jednak przekazuje y do self
+'EDWARD'
+
+>>> rec.method(x)                            # Można wywołać przez instancję lub klasę
+'AMADEUSZ'
+
+
+
+
+>>> rec = {}
+>>> rec['name'] = 'mel'                      # Informacje zapisane w słowniku
+>>> rec['age'] = 45
+>>> rec['job'] = 'instruktor'
+>>>
+>>> print(rec['name'])
+mel
+
+
+
+
+>>> class rec: pass
+...
+>>> rec.name = 'mel'                          # Informacje zapisane w klasie
+>>> rec.age = 45
+>>> rec.job = 'instruktor'
+>>>
+>>> print(rec.age)
+40
+
+
+
+
+>>> class rec: pass
+...
+>>> pers1 = rec()                             # Informacje zapisane w instancjach
+>>> pers1.name = 'mel'
+>>> pers1.job = 'instruktor'
+>>> pers1.age = 40
+>>>
+>>> pers2 = rec()
+>>> pers2.name = 'vls'
+>>> pers2.job = 'programista'
+>>>
+>>> pers1.name, pers2.name
+('mel', 'vls') 
+
+
+
+
+>>> class Person:
+...    def __init__(self, name, job):              # Klasa = Dane + Logika
+...       self.name = name
+...       self.job = job
+...    def info(self):
+...       return (self.name, self.job)
+...
+>>> rec1 = Person('mel', 'instruktor')
+>>> rec2 = Person('vls', 'programista')
+>>>
+>>> rec1.job, rec2.info()
+('instruktor', ('vls', 'programista'))
+

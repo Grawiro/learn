@@ -1,0 +1,251 @@
+### Plik: nestedexc.py
+
+def action2():
+   print(1 + [])                             # Wygenerowanie wyjątku TypeError
+
+def action1():
+   try:
+      action2()
+   except TypeError:                         # Najbardziej aktualna pasująca instrukcja try
+      print('wewnętrzne try')
+
+try:
+   action1()
+except TypeError:                            # Tutaj tylko jeśli action1 ponownie zgłasza wyjątek
+   print('zewnętrzne try')
+
+% python nestexc.py
+wewnętrzne try
+
+
+
+
+try:
+   try:
+      action2()
+   except TypeError:                         # Najbardziej aktualna pasująca instrukcja try
+      print('wewnętrzne try')
+except TypeError:                            # Tutaj tylko jeśli action1 ponownie zgłasza wyjątek
+   print('zewnętrzne try')
+
+
+
+
+>>> try:
+...    try:
+...       raise IndexError
+...    finally:
+...       print('mielonka')
+... finally:
+...    print('MIELONKA')
+...
+mielonka
+MIELONKA
+Traceback (most recent call last):
+   File "<stdin>", line 3, in <module>
+IndexError
+
+
+
+
+### Plik: except-finally.py
+
+def raise1(): raise IndexError
+def noraise(): return
+def raise2(): raise SyntaxError
+
+for func in (raise1, noraise, raise2):
+   print('\n', func, sep='')
+   try:
+      try:
+         func()
+      except IndexError:
+         print('przechwycono IndexError')
+   finally:
+      print('wykonano finally')
+
+
+
+
+% python except-finally.py
+
+
+
+while True:
+   try:
+      line = input()                         # Wczytanie wiersza ze stdin
+   except EOFError:
+      break                                  # Wyjście z pętli na końcu pliku
+   else:
+      ...przetwarzanie kolejnego wiersza...
+
+
+
+
+class Found(Exception): pass
+
+def searcher():
+   if ...sukces...:
+      raise Found()
+   else:
+      return
+
+try:
+   searcher()
+except Found:                                # Wyjątek, jeśli element został odnaleziony
+   ...sukces...
+else:                                        # else zwracane, kiedy element nie został odnaleziony
+   ...porażka...
+
+
+
+
+class Failure(Exception): pass
+
+def searcher():
+   if ...sukces...:
+      return ...znaleziony element...
+   else:
+      raise Failure()
+
+try:
+   item = searcher()
+except Failure:
+   ...zgłoszenie...
+else:
+   ...tutaj wykorzystanie elementu...
+
+
+
+
+myfile = open(r'C:\misc\script', 'w')
+try:
+   ...przetworzenie myfile...
+finally:
+   myfile.close()
+
+
+
+
+with open(r'C:\misc\script', 'w') as myfile:
+   ...przetworzenie myfile...
+
+
+
+
+try:
+   ...wykonanie programu...
+except:                                      # Wszystkie nieprzechwycone wyjątki trafiają tutaj
+   import sys
+   print('nie przechwycono!', sys.exc_info()[0], sys.exc_info()[1])
+
+
+
+
+import sys
+log = open('testlog', 'a')
+from testapi import moreTests, runNextTest, testName
+def testdriver():
+   while moreTests():
+      try:
+         runNextTest()
+      except:
+         print('PORAŻKA', testName(), sys.exc_info()[:2], file=log)
+      else:
+         print('SUKCES', testName(), file=log)
+testdriver()
+
+
+
+
+try:
+   ...
+except:
+   # sys.exc_info()[0:2] to klasa i instancja wyjątku
+
+
+
+
+try:
+   ...
+except General as instance:
+   # instance.__class__ to klasa wyjątku
+
+
+
+
+try:
+   ...
+except General as instance:
+   # instance.method() robi, co należy, dla tej instancji
+
+
+
+
+def func():
+   try:
+      ...                                    # Tu zgłaszany jest wyjątek IndexError
+   except:
+      ...                                    # Jednak wszystko trafia tu i się zatrzymuje
+
+try:
+   func()
+except IndexError:                           # Wyjątek powinien być przetworzony tutaj
+   ...
+
+
+
+
+### Plik: exiter.py
+
+import sys
+def bye():
+   sys.exit(40)                              # Kluczowy błąd — zakończenie!
+try:
+   bye()
+except:
+   print('mam go')                           # Oj — zignorowaliśmy wyjście
+print('kontynuuję...')
+
+% python exiter.py
+mam go
+kontynuuję...  
+
+
+
+
+try:
+   bye()
+except Exception:                           # Nie przechwyci wyjść, ale *przechwyci* wiele innych wyjątków
+   ...
+
+
+
+
+mydictionary = {...}
+...
+try:
+   x = myditctionary['mielonka']             # Oj — błąd w pisowni
+except:
+   x = None                                  # Zakłada, że mamy KeyError   
+...kontynuujemy z x...
+
+
+
+
+try:
+   ...
+except (MyExcept1, MyExcept2):               # Przestaje działać po dodaniu MyExcept3
+   ...                                       # Nie-błędy
+else:
+   ...                                       # Zakładamy, że jest błędem
+
+
+
+
+try:
+   ...
+except SuccessCategoryName:                  # Będzie OK, jeśli dodamy podklasę MyExcept3
+   ...                                       # Nie-błędy
+else:
+   ...                                       # Zakładamy, że jest błędem
