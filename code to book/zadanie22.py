@@ -1,0 +1,8 @@
+list(map(lambda i:2*i if i%2 else i,filter(lambda i:i%3,l)))
+list(map(lambda j:''.join(filter(lambda i:i.isalpha(),j)),l))
+list(map(int,filter(bool,map(lambda j:''.join(filter(lambda i:i.isdigit(),j)),l))))
+list(map(lambda i:tuple(i[:2]),filter(lambda i:len(i)>1,l)))
+list(filter(lambda i:sum(i)%2,l))
+list(filter(lambda i:all(map(lambda j:j%3==0,i)),l))
+list(filter(lambda i:any(map(lambda j:j%3==0,i)),l))
+list(map(lambda i:i.split(' ',1)[0],filter(lambda i:' ' in i,l)))
