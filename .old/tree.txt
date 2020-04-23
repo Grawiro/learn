@@ -1,0 +1,10 @@
+./klasy2/Organizm.py
+./klasy2/__init__.py
+./klasy2/Punkt.py
+./importy_modolow_i_pakietow.py
+./operacje_na_tekscie.py
+./test_wszystkich_funkcji.py
+./test_wszystkich_funkcji_import.py
+./klasy/Organizm.py
+./klasy/__init__.py
+./klasy/Punkt.py
