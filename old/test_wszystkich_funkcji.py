@@ -20,9 +20,9 @@ pokarz_czas = False
 pokarz_funkcje = False
 pokarz_import_i_operacje_na_plikach = False
 pokarz_operacje_na_systemie = False
-pokarz_inne_bibloiteki_i_funkcje = True
+pokarz_inne_bibloiteki_i_funkcje = False
 pokarz_wyjatki = False
-pokarz_klasy = False
+pokarz_klasy = True
 
 if pokarz_petle == True:
     for i in range(0,3): #petla for od 0 do 3 i jest zwiekszana o 1
@@ -228,9 +228,7 @@ if pokarz_czas:
     time.sleep(3)
     minelo = time.time() - timer
     print(minelo)
-    timer = time.time()
-    timer1 = time.time()
-    timer2 = time.time()
+    timer2 = timer1 = timer = time.time()
     
     while True: #praca z kilkoma opznieniami jednoczesnie
         if time.time() - timer > 5:
@@ -323,6 +321,8 @@ if pokarz_funkcje:
     print(v+'('+str(x)+",tpl)")
     # eval traktuje napis jak instrukcję pythona i tak ją wywołuje/wykonuje
     eval(v+'('+str(x)+",tpl)")  # fragment tpl zostaje zamieniony na wartość zmiennej tpl !
+    # its the same
+    eval(v+'('+str(x)+",'"+tpl+"')")
 
     print('multiArgs(1,2,3)=',multiArgs(1,2,3))
     nums = (1,2,3,4,5,0.5,'rabarbar') # kroteczka, posłuży jako kolejne argumenty
@@ -367,7 +367,7 @@ if pokarz_funkcje:
 
     # yield czyli YIELD czyli bardzo ciekawy sposób na opuszczanie funkcji :)
     # yield w funkcjiach wychodzi z funkcji jak return, ale ponowne wywołanie funkcji
-    # kontunuuje jej działa za ostatnim yield'em ! Punkt dla pythona !
+    # kontunuuje jej działa za ostatnim yield'em
     # yield, gdzie każdy yield zwraca coś, co utworzy w przyszłości zbiór
 
     for i in yieldPresentation(5) :
@@ -381,8 +381,8 @@ if pokarz_funkcje:
     print (v2) # zatem v2 jest już obiektem przechowującym wszystkie yield'y dla tej funkcji
 
     # funkcja next() pozwala pobrać kolejne rozwiązania
-    print(next(v1), next(v1), next(v1), next(v1))
-    print(next(v2), next(v2), next(v2), next(v2))
+    print(next(v1), next(v2), next(v1), next(v2))
+    print(next(v1), next(v2), next(v1), next(v2))
 
     # kiedy rzutujemy nasz obiekt (tzw. generator) na listę, wszystkie zwrócone yield'y utworzą listę
     v3 = yieldPresentation(2)
@@ -403,7 +403,8 @@ if pokarz_funkcje:
     except:
         pass
 
-    print(list(fibo(999999999999)))
+    for x in (list(fibo(999999999999))):
+        print(x)
 
 def myReadFile(path) :
     if os.path.isfile(path):  # test na obecność pliku   
@@ -464,16 +465,16 @@ if pokarz_import_i_operacje_na_plikach:
     with open('plik.pickle','rb') as inPut: #'rb' odczyt binarny
         unpickle = pickle.load(inPut) #odczytywanie z pliku i wkladanie tego do zmiennej
     print(unpickle,type(unpickle))
-    
+
 if pokarz_operacje_na_systemie:
     lista_plikow_w_katalogu = os.listdir("..") #zapisz w liscie pliki z katalogu "."-biezacego, ".."-poprzedniego (poziom wyzej)
     #"../.."-dwa foldery wyzej, lub "/dev/..."-podajac sciezke bezwzglegna
     print(lista_plikow_w_katalogu)
     
     for plik_czy_katalog in lista_plikow_w_katalogu: #pokazuje         jest plikiem czy katalogiem
-        if os.path.isfile(os.path.join("/home/pi/Python",plik_czy_katalog)): #join musi byc sciezka bezwzgledna bo inaczej nie dziala
+        if os.path.isfile(os.path.join("/home/grawiro/Documents/python/learn",plik_czy_katalog)): #join musi byc sciezka bezwzgledna bo inaczej nie dziala
             print("{} jest plikiem".format(plik_czy_katalog))
-        if os.path.isdir(os.path.join("/home/pi/Python",plik_czy_katalog)):
+        if os.path.isdir(os.path.join("/home/grawiro/Documents/python/learn",plik_czy_katalog)):
             print("{} jest katalogiem".format(plik_czy_katalog))
     
     os.mkdir("folder_testtowy") #tworzy folder o podanej nazwie
@@ -536,8 +537,8 @@ if pokarz_wyjatki:
 
     try:
         raise WlasnyWyjatek_2(parametr_bledu) #z parametrem
-    except WlasnyWyjatek_2:
-        print("uruchomiono wlasny wyjatek 2")
+    except WlasnyWyjatek_2 as erro:
+        print("uruchomiono wlasny wyjatek 2", erro, sep='\n')
 
     try:
         input("Napisz cos ")
