@@ -4,7 +4,8 @@ create = False
 insert = False
 
 try:
-    # conection to database if args default can be skip host/user/passwd
+    # noinspection SpellCheckingInspection
+    # connection to database if args default can be skip host/user/pass
     mydb = mysql.connector.connect(host='localhost', user='root', passwd='', database='test')
     # co ask the database
     cursor = mydb.cursor()
@@ -32,7 +33,7 @@ try:
     query = 'select first_name, last_name from tested;'
     # the return values is save in cursor
     cursor.execute(query)
-    # show return cloumn names
+    # show return column names
     print(cursor.column_names)
     for i in cursor:
         # which row I am in
@@ -40,5 +41,7 @@ try:
 
 except mysql.connector.Error as err:
     print('error:', err)
+    # noinspection PyUnboundLocalVariable
+    mydb.close()
 finally:
     mydb.close()

@@ -2,6 +2,7 @@ import tkinter
 import tkinter.messagebox
 
 
+# noinspection SpellCheckingInspection
 def button_click():
     print('click!')
     # to print in terminal what i write in entry_1
@@ -9,33 +10,34 @@ def button_click():
     entry = entry_1.get()
 
     # print all from entry_2
-    # 1.0 is the start in first line 0 charactr, END is end of field
+    # 1.0 is the start in first line 0 character, END is end of field
     print(entry_2.get('1.0', tkinter.END))
     # print first line can be 3.5 is mean 3 line 5 character,
-    # line ends when prees Enter
+    # line ends when press Enter
     print(entry_2.get('1.0', '2.0'))
     # clear field
     entry_2.delete('1.0', tkinter.END)
 
-    # messagebox.showerror/showwarrning
+    # messagebox.showerror/showwarning
     tkinter.messagebox.showerror('This is a window name', 'The date from entry_1: '+entry)
     # insert value to entry_2
-    entry_2.insert('1.0', 'the secound line\n')
+    entry_2.insert('1.0', 'the second line\n')
     entry_2.insert('2.0', 'the last line\n')
     entry_2.insert('1.0', 'the first line\n')
 
 
-def create_squere(event):
+def create_square(event):
     # this is a mouse coordinates
     print(event.x, event.y)
-    # draw squere, coordinates, border
+    # draw square, coordinates, border
     canvas.create_rectangle(event.x+5, event.y+5, event.x-5, event.y-5, outline='pink', fill='blue')
 
 
+# noinspection PyUnusedLocal
 def clear_canvas(event):
-    # print all squeres coordinates
+    # print all squares coordinates
     print(canvas.find_all())
-    # this delete all squeres from canvas
+    # this delete all squares from canvas
     list(map(lambda i: canvas.delete(i), canvas.find_all()))
 
 
@@ -46,7 +48,7 @@ def on_select(event):
     if list_select.curselection():
         # return index of first select object
         index = int(list_select.curselection()[0])
-        # pritn selected object
+        # print selected object
         print(index, '->', list_select.get(index))
 
         if entry_1.get() == 'del' and list_field.size() > 1:
@@ -72,7 +74,7 @@ frame_1.config(background='black')
 
 text_2 = tkinter.Label(frame_1, text='text in frame')
 # sticky is a geographical direction like East/West/North/South
-# padx and pady is padding x and y
+# pad-x/y is padding x and y
 text_2.grid(sticky=tkinter.E, row=0, column=1, padx=5, pady=5)
 
 # to put the text
@@ -84,15 +86,15 @@ button_1.grid(row=1, column=0)
 # foreground is a font color
 button_1.config(background='red', foreground='blue')
 
-# this create multilines entry field
+# this create multi lines entry field
 entry_2 = tkinter.Text(frame_1, width=20, heigh=10)
 entry_2.grid(row=2, column=0)
 
-# thic create list
+# this create list
 list_field = tkinter.Listbox(root)
 list_field.grid(row=1, column=1)
 # add item to list (index, value)
-list_field.insert(0, 'secound')
+list_field.insert(0, 'second')
 list_field.insert(1, 'middle')
 list_field.insert(tkinter.END, 'end')
 list_field.insert(0, 'first')
@@ -104,10 +106,11 @@ canvas = tkinter.Canvas(frame_1, width=100, height=175)
 canvas.grid(sticky=tkinter.S, row=2, column=1, padx=5, pady=5)
 canvas.config(background='green')
 # use the events (events, function)
-canvas.bind('<B1-Motion>', create_squere)
-canvas.bind('<Button-1>', create_squere)
+canvas.bind('<B1-Motion>', create_square)
+canvas.bind('<Button-1>', create_square)
 canvas.bind('<Button-3>', clear_canvas)
 # list of events
+# noinspection SpellCheckingInspection
 '''
   B1/2/3/4-Motion ruch z trzymanym przyciskiem
   Button-1/2/3/4 klik
