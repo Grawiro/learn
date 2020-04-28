@@ -5,7 +5,7 @@ app = Flask(__name__)
 api = Api(app)
 
 STUDENTS = {
-    'api': {'name': 'Kamil', 'age': 20, 'spec': 'programmer'},
+    'api': {'name': 'Kamila', 'age': 20, 'spec': 'programmer'},
     '2': {'name': 'Bob', 'age': 22, 'spec': 'UX'},
     '3': {'name': 'Tom', 'age': 21, 'spec': 'tester'},
     '4': {'name': 'Jim', 'age': 20, 'spec': 'engineer'},
@@ -39,7 +39,7 @@ class Student(Resource):
     @staticmethod
     def get(student_id):
         if student_id not in STUDENTS:
-            return  'Not found', 404
+            return 'Not found', 404
         else:
             return STUDENTS[student_id]
 
@@ -51,7 +51,7 @@ class Student(Resource):
         args = parser.parse_args()
 
         if student_id not in STUDENTS:
-            return  'Record not found', 404
+            return 'Record not found', 404
         else:
             student = STUDENTS[student_id]
             student['name'] = args['name'] if args['name'] is not None else student['name']

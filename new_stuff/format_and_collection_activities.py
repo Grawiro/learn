@@ -1,7 +1,7 @@
 import itertools
 
 # new format string
-a, b, c, text = 'abe', 'get', 'sa', 'tomess'
+a, b, c, text = 'first', 'last', 8, 'string'
 print(f'{a} is not a  {b} or "{c}" and text\n{text}')
 
 # combination and permutation
